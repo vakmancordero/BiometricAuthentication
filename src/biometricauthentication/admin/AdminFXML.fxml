@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.cell.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="560.0" prefWidth="1091.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.AdminController">
+   <children>
+      <MenuBar layoutX="22.0" layoutY="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Archivo">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Herramientas">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Ayuda">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <SplitPane dividerPositions="0.4915254237288136" layoutX="73.0" layoutY="409.0" prefHeight="413.0" prefWidth="946.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <TableView fx:id="employeesTV" layoutX="93.0" layoutY="39.0" prefHeight="271.0" prefWidth="422.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
+                    <columns>
+                        <TableColumn prefWidth="144.0" text="Nombre">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="name" />
+                            </cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                  </TableView>
+                  <Label alignment="CENTER" layoutX="29.0" layoutY="32.0" prefHeight="34.0" prefWidth="422.0" text="Tabla de empleados" textAlignment="CENTER" textFill="#a1a1a1" textOverrun="CENTER_WORD_ELLIPSIS" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font name="System Bold" size="23.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="44.0" prefHeight="25.0" prefWidth="229.0" spacing="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                     <children>
+                        <Label text="Buscar:" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField prefHeight="25.0" prefWidth="353.0" promptText="Introducir el nombre del empleado" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <Accordion fx:id="accordion" layoutX="59.0" layoutY="33.0" prefHeight="345.0" prefWidth="422.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                    <panes>
+                      <TitledPane fx:id="first" animated="false" expanded="false" text="Registrar">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                               <AnchorPane id="AnchorPane" layoutX="14.0" prefHeight="369.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+                                    <children>
+                                       <Label fx:id="titleLabel" alignment="CENTER" layoutX="96.0" layoutY="14.0" text="Registrar huella" textFill="#1e2546" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-10.0">
+                                          <font>
+                                             <Font name="Freestyle Script" size="52.0" />
+                                          </font>
+                                       </Label>
+                                          <Button fx:id="fingerPrintButton" disable="true" layoutX="50.0" layoutY="226.0" mnemonicParsing="false" onAction="#setFinger" prefHeight="25.0" prefWidth="175.0" text="Establecer huella" AnchorPane.leftAnchor="50.0" />
+                                          <Button fx:id="imageButton" disable="true" layoutX="264.79999999999995" layoutY="226.0" mnemonicParsing="false" onAction="#setPhoto" prefHeight="25.0" prefWidth="175.0" text="Establecer imagen" AnchorPane.rightAnchor="50.0" />
+                                          <Label alignment="CENTER" contentDisplay="CENTER" layoutX="172.0" layoutY="50.0" text="Detalles de empleado" textFill="#00000085" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="0.0">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox layoutX="50.0" layoutY="102.0" prefHeight="97.0" prefWidth="390.0" spacing="10.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="330.0" spacing="16.0">
+                                                   <children>
+                                                      <Label text="Empresa:" />
+                                                      <TextField fx:id="companyTF" prefHeight="25.0" prefWidth="327.0" promptText="Nombre de la empresa" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
+                                                   <children>
+                                                      <Label prefHeight="17.0" prefWidth="56.0" text="Nombre:" />
+                                                      <TextField fx:id="nameTF" prefHeight="25.0" prefWidth="330.0" promptText="Nombre del empleado" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="23.0">
+                                                   <children>
+                                                      <Label text="Horario:" />
+                                                      <ComboBox fx:id="shiftCB" prefHeight="25.0" prefWidth="180.0" promptText="Turno laboral" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                    </children>
+                                 </AnchorPane>
+                            </children>
+                          </AnchorPane>
+                        </content>
+                      </TitledPane>
+                    </panes>
+                  </Accordion>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
