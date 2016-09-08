@@ -40,15 +40,17 @@ public class BiometricController implements Initializable {
     @FXML
     private Label hourLabel, dateLabel, dayLabel;
     
-    public static ReaderEvent readerEvent;
-    
-    public static Thread readerThread;
-    
     private Service<Void> clock;
     
     private Biometric biometric;
     
-    private Alert alert;
+    private Alert notFound;
+    
+    private Stage found;
+    
+    public static ReaderEvent readerEvent;
+    
+    public static Thread readerThread;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -58,18 +60,21 @@ public class BiometricController implements Initializable {
         this.initServices();
         this.initInformation();
         this.initObserver();
-        this.initAlert();
+        this.initDialogs();
 
         readerThread = new Thread(readerEvent);
         readerThread.start();
         
     }
     
-    private void initAlert() {
+    private void initDialogs() {
         
-        alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Captura biométrica");
-        alert.setHeaderText("Captura de huella");
+        notFound = new Alert(Alert.AlertType.ERROR);
+        notFound.setTitle("Captura biométrica");
+        notFound.setHeaderText("Captura de huella");
+        notFound.setContentText("No encontrado, inténtelo de nuevo");
+        
+        found = new Stage();
         
     }
     
@@ -87,9 +92,8 @@ public class BiometricController implements Initializable {
                     
                     DPFPTemplate template = biometric.deserializeTemplate(employee);
                     
-                    if (alert.isShowing()) {
-                        alert.close();
-                    }
+                    if (notFound.isShowing()) notFound.close();
+                    if (found.isShowing()) found.close();
                     
                     if (template != null) {
 
@@ -98,10 +102,6 @@ public class BiometricController implements Initializable {
                         if (verified) {
                             
                             this.openDialogEmployee(employee);
-                            
-//                            alert.setAlertType(Alert.AlertType.INFORMATION);
-//                            alert.setContentText(employee.getName());
-//                            alert.show();
                             
                             return;
 
@@ -113,9 +113,7 @@ public class BiometricController implements Initializable {
 
                 if (!verified) {
                     
-                    alert.setAlertType(Alert.AlertType.ERROR);
-                    alert.setContentText("No encontrado, inténtelo de nuevo");
-                    alert.show();
+                    notFound.show();
 
                 }
             });
@@ -163,14 +161,13 @@ public class BiometricController implements Initializable {
             
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/biometricauthentication/dialog/DialogEmployeeFXML.fxml"));
             
-            Stage stage = new Stage();
-            stage.setScene(new Scene((Pane) loader.load()));
+            this.found.setScene(new Scene((Pane) loader.load()));
             
             DialogEmployeeController employeeDialog = loader.<DialogEmployeeController>getController();
             
             employeeDialog.initData(employee, this.hourLabel.getText());
             
-            stage.showAndWait();
+            this.found.show();
             
         } catch (IOException ex) {
             

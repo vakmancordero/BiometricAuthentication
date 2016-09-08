@@ -59,11 +59,7 @@ public class Biometric {
             
             shifts = session.createQuery("FROM Shift").list();
             
-            for (Shift shift : shifts) {
-                
-                System.out.println("Biometric Class -> getShifts() -> " + shift.getDescription());
-                
-            }
+            //for (Shift shift : shifts) System.out.println("Biometric Class -> getShifts() -> " + shift.getDescription());
             
             transaction.commit();
              
@@ -98,11 +94,7 @@ public class Biometric {
             
             employees = session.createQuery("FROM Employee").list();
             
-            for (Employee employee : employees) {
-                
-                System.out.println("Biometric Class -> " + employee.toString());
-                
-            }
+            //for (Employee employee : employees) System.out.println("Biometric Class -> " + employee.toString());
             
             transaction.commit();
              
@@ -167,15 +159,11 @@ public class Biometric {
         
         File file = new File("image.jpg");
         
-        System.out.println(file.length());
-        
         try (FileOutputStream fos = new FileOutputStream(file)) {
             
             fos.write(bytes);
             
         }
-        
-        System.out.println(file.length());
         
         return file;
         
@@ -191,17 +179,13 @@ public class Biometric {
             DPFPFeatureSet featureSet = featureExtractor.createFeatureSet(sample, DPFPDataPurpose.DATA_PURPOSE_VERIFICATION);
             
             DPFPVerification matcher = DPFPGlobal.getVerificationFactory().createVerification();
-            matcher.setFARRequested(DPFPVerification.LOW_SECURITY_FAR);
+            matcher.setFARRequested(DPFPVerification.MEDIUM_SECURITY_FAR);
             
             DPFPVerificationResult result = matcher.verify(featureSet, template);
             
             verified = result.isVerified();
             
-            if (verified) {
-                
-                System.out.println((double)result.getFalseAcceptRate() / DPFPVerification.PROBABILITY_ONE);
-                
-            }
+            //if (verified) System.out.println((double)result.getFalseAcceptRate() / DPFPVerification.PROBABILITY_ONE);
             
         } catch (DPFPImageQualityException ex) {
             
