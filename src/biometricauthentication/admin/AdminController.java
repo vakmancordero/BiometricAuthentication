@@ -35,7 +35,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import java.util.List;
 import javafx.scene.control.ComboBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -83,7 +82,7 @@ public class AdminController implements Initializable {
         
         this.fillEmployees();
         
-        this.fillCB();
+        this.fillShifts();
         
         this.initTV();
         
@@ -113,13 +112,15 @@ public class AdminController implements Initializable {
                 
                 nameTF.setText(employee.getName());
                 
+                shiftCB.getSelectionModel().select(employee.getShift());
+                
             }
             
         });
         
     }
     
-    private void fillCB() {
+    private void fillShifts() {
         
         this.shiftCB.getItems().addAll(
                 
@@ -127,13 +128,36 @@ public class AdminController implements Initializable {
                 
         );
         
+        if (!this.shiftCB.getItems().isEmpty()) {
+            this.shiftCB.getSelectionModel().selectFirst();
+        }
+        
     }
     
     private void fillEmployees() {
         
-        List<Employee> employees = biometric.getEmployees();
+        this.employeesList.addAll(
+                biometric.getEmployees()
+        );
         
-        this.employeesList.addAll(employees);
+    }
+    
+    @FXML
+    private void setShift() {
+        
+        Shift shift = shiftCB.getValue();
+        
+        Employee employee = employeesTV.getSelectionModel().getSelectedItem();
+        
+        employee.setShift(shift);
+        
+        biometric.saveEmployee(employee);
+        
+        new Alert(
+                Alert.AlertType.INFORMATION,
+                "Turno del empleado asignado: " + employee.getShift() + ", ha sido establecida",
+                ButtonType.OK
+        ).showAndWait();
         
     }
     
@@ -149,54 +173,54 @@ public class AdminController implements Initializable {
         
         this.myReader.findReader();
         
-        if (!myReader.getActiveReader().equals("empty")) {
-        
+        if (!this.myReader.getActiveReader().equals("empty")) {
+            
             try {
-
+                
                 while (enrollment.getFeaturesNeeded() > 0) {
-
+                    
                     alert.setContentText("Ingresar dedo... " + enrollment.getFeaturesNeeded());
                     alert.show();
-
-                    DPFPSample sample = myReader.getSample();
-
+                    
+                    DPFPSample sample = this.myReader.getSample();
+                    
                     if (sample == null) {
                         continue;
                     }
-
+                    
                     DPFPFeatureSet featureSet;
-
+                    
                     try {
-
+                        
                         featureSet = featureExtractor.createFeatureSet(sample, DPFPDataPurpose.DATA_PURPOSE_ENROLLMENT);
-
+                        
                     } catch (DPFPImageQualityException ex) {
-
+                        
                         System.out.println("Error, mala calidad en la huella capturada");
-
+                        
                         continue;
-
+                        
                     }
-
+                    
                     alert.close();
-
+                    
                     enrollment.addFeatures(featureSet);
                 }
-
+                
             } catch (DPFPImageQualityException | InterruptedException ex) {
-
+                
                 ex.printStackTrace();
-
+                
             }
-
+            
             Employee employee = employeesTV.getSelectionModel().getSelectedItem();
-
+            
             DPFPTemplate template = enrollment.getTemplate();
-
+            
             employee.setTemplate(biometric.serializeTemplate(template));
-
+            
             biometric.saveEmployee(employee);
-
+            
             new Alert(Alert.AlertType.INFORMATION, "La huella ha sido registrada correctamente", ButtonType.OK).showAndWait();
             
         } else {
@@ -218,25 +242,31 @@ public class AdminController implements Initializable {
                 new ExtensionFilter("Archivos de imagen", "*.png", "*.jpg")
         );
         
-        File selectedFile = fileChooser.showOpenDialog(null);
+        File file = fileChooser.showOpenDialog(null);
         
-        if (selectedFile != null) {
+        if (file != null) {
             
-            byte[] bytes = new byte[(int) selectedFile.length()];
+            if (file.length() / (1024 * 1024) < 3.0) {
+                
+                employee.setPhoto(biometric.serializeFile(file));
             
-            FileInputStream inputStream = new FileInputStream(selectedFile);
-            
-            inputStream.read(bytes);
-            
-            employee.setPhoto(bytes);
-            
-            biometric.saveEmployee(employee);
-            
-            new Alert(
-                    Alert.AlertType.INFORMATION,
-                    "La imagen del empleado: " + employee.getName() + ", ha sido establecida",
-                    ButtonType.OK
-            ).showAndWait();
+                biometric.saveEmployee(employee);
+
+                new Alert(
+                        Alert.AlertType.INFORMATION,
+                        "La imagen del empleado: " + employee.getName() + ", ha sido establecida",
+                        ButtonType.OK
+                ).showAndWait();
+                
+            } else {
+                
+                new Alert(
+                        Alert.AlertType.ERROR,
+                        "La imagen es demasiado grande, intente con otra",
+                        ButtonType.OK
+                ).showAndWait();
+                
+            }
             
         }
         

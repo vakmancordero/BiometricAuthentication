@@ -1,2 +1,2 @@
 # BiometricAuthentication
-Aplicación desarrollada para el control de asistencias de los empleados
+Aplicación desarrollada para el control de asistencias e inasistencias de los empleados de MexicaTours

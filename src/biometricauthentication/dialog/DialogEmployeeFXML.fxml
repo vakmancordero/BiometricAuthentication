@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="702.0" prefWidth="537.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.dialog.DialogEmployeeController">
+   <children>
+      <Label alignment="CENTER" layoutX="146.0" layoutY="14.0" text="Bievenido!" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-10.0">
+         <font>
+            <Font name="Freestyle Script" size="108.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutY="124.0" text="Arturo Cordero" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <font>
+            <Font name="Anzeigen Grotesk D" size="44.0" />
+         </font>
+         <textFill>
+            <LinearGradient endX="1.0" endY="1.0" startX="1.0" startY="0.5000000000000001">
+               <stops>
+                  <Stop color="#6b6b6bb0" />
+                  <Stop color="#222222" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </textFill>
+      </Label>
+      <StackPane layoutX="83.0" layoutY="181.0" prefHeight="352.0" prefWidth="352.0" style="-fx-padding: 10; -fx-background-color: rgba(142,142,142, 0.5);">
+         <children>
+            <ImageView fitHeight="339.0" fitWidth="332.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../14184459_1153694691340633_4880218528078134168_n.jpg" />
+               </image>
+            </ImageView>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </StackPane>
+      <Label fx:id="hourLabel" alignment="CENTER" layoutY="555.0" text="08:39:45 PM" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <font>
+            <Font name="System Bold" size="65.0" />
+         </font>
+         <textFill>
+            <LinearGradient endX="0.7523809523809524" endY="0.5714285714285714" startX="0.7285714285714285">
+               <stops>
+                  <Stop color="BLACK" />
+                  <Stop color="#41404dcd" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </textFill>
+      </Label>
+   </children>
+</AnchorPane>

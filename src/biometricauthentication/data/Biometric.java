@@ -9,6 +9,9 @@ import com.digitalpersona.onetouch.DPFPFeatureSet;
 import com.digitalpersona.onetouch.DPFPGlobal;
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,6 +138,17 @@ public class Biometric {
         
         return template;
         
+    }
+    
+    public byte[] serializeFile(File file) throws IOException {
+        
+        byte[] bytes = new byte[(int) file.length()];
+            
+        FileInputStream inputStream = new FileInputStream(file);
+        
+        inputStream.read(bytes);
+        
+        return bytes;
     }
     
     public boolean verify(DPFPSample sample, DPFPTemplate template)  {

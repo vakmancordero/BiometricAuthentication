@@ -155,6 +155,13 @@ public class BiometricController implements Initializable {
         
     }
     
+    private void openDialogEmployee() {
+        
+        
+        
+        
+    }
+    
     private void openFXML(String fxml, String title) throws IOException {
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml)); 

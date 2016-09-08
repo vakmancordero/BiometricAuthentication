@@ -5,7 +5,6 @@ import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.capture.DPFPCapture;
 import com.digitalpersona.onetouch.capture.DPFPCapturePriority;
 import com.digitalpersona.onetouch.capture.event.DPFPDataEvent;
-import com.digitalpersona.onetouch.capture.event.DPFPDataListener;
 import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusAdapter;
 import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusEvent;
 import com.digitalpersona.onetouch.readers.DPFPReadersCollection;
@@ -60,25 +59,19 @@ public class DPFPReader {
             
             capture.setPriority(DPFPCapturePriority.CAPTURE_PRIORITY_LOW);
             
-            capture.addDataListener(new DPFPDataListener() {
+            capture.addDataListener((DPFPDataEvent event) -> {
                 
-                @Override
-                public void dataAcquired(DPFPDataEvent event) {
+                if (event != null && event.getSample() != null) {
                     
-                    if (event != null && event.getSample() != null) {
+                    try {
                         
-                        try {
-                            
-                            samples.put(event.getSample());
-                            
-                        } catch (InterruptedException ex) {
-
-                        }
+                        samples.put(event.getSample());
+                        
+                    } catch (InterruptedException ex) {
                         
                     }
                     
                 }
-                
             });
             
             capture.addReaderStatusListener(new DPFPReaderStatusAdapter() {
@@ -90,7 +83,7 @@ public class DPFPReader {
 
                     if (lastStatus != event.getReaderStatus()){
 
-                        System.out.println("Reader is connected");
+                        System.out.println("El lector ha sido conectado");
 
                     }
 
@@ -103,7 +96,7 @@ public class DPFPReader {
 
                     if (lastStatus != event.getReaderStatus()) {
 
-                        System.out.println("Reader is disconnected");
+                        System.out.println("El lector ha sido desconectado");
 
                     }
 
@@ -121,7 +114,10 @@ public class DPFPReader {
 
             } catch (RuntimeException ex) {
 
-                System.out.printf("Failed to start capture. Check that reader is not used by another application.\n");
+                System.out.println(
+                        "Imposible comenzar captura. "
+                      + "Compruebe si otra aplicación no está haciendo uso del lector."
+                );
 
                 throw ex;
 

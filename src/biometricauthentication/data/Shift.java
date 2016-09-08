@@ -41,7 +41,7 @@ public class Shift implements Serializable {
     
     @Column
     private int status;
-
+    
     public int getId() {
         return id;
     }
@@ -49,45 +49,50 @@ public class Shift implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-
+    
     public String getDescription() {
         return description;
     }
-
+    
     public void setDescription(String description) {
         this.description = description;
     }
-
+    
     public Date getCheck_in() {
         return check_in;
     }
-
+    
     public void setCheck_in(Date check_in) {
         this.check_in = check_in;
     }
-
+    
     public Date getCheck_out() {
         return check_out;
     }
-
+    
     public void setCheck_out(Date check_out) {
         this.check_out = check_out;
     }
-
+    
     public int getTo_work() {
         return to_work;
     }
-
+    
     public void setTo_work(int to_work) {
         this.to_work = to_work;
     }
-
+    
     public int getStatus() {
         return status;
     }
-
+    
     public void setStatus(int status) {
         this.status = status;
+    }
+    
+    @Override
+    public String toString() {
+        return this.description + " : " + to_work + " horas";
     }
     
 }
