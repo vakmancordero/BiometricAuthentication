@@ -22,8 +22,6 @@ import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.stage.WindowEvent;
 
-import biometricauthentication.BiometricController;
-
 import static biometricauthentication.BiometricAuthentication.sqlConnection;
 import static biometricauthentication.BiometricController.readerEvent;
 import static biometricauthentication.BiometricController.readerThread;
@@ -42,6 +40,9 @@ public class LoginController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        readerEvent.setIsRunning(false);
+        readerThread.interrupt();
         
     }
     

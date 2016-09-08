@@ -1,5 +1,7 @@
 package biometricauthentication.admin;
 
+import static biometricauthentication.BiometricController.readerEvent;
+import static biometricauthentication.BiometricController.readerThread;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -31,7 +33,6 @@ import biometricauthentication.data.Employee;
 import biometricauthentication.data.Shift;
 import biometricauthentication.utils.DPFPReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -71,6 +72,9 @@ public class AdminController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        readerEvent.setIsRunning(false);
+        readerThread.interrupt();
         
         this.myReader = new DPFPReader();
         

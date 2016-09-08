@@ -3,6 +3,7 @@ package biometricauthentication;
 import biometricauthentication.data.Biometric;
 import biometricauthentication.data.Employee;
 import biometricauthentication.data.ReaderEvent;
+import biometricauthentication.dialog.DialogEmployeeController;
 import biometricauthentication.utils.Clock;
 
 import java.io.IOException;
@@ -27,6 +28,8 @@ import javafx.stage.StageStyle;
 
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
+import javafx.event.EventHandler;
+import javafx.stage.WindowEvent;
 
 /**
  *
@@ -94,9 +97,11 @@ public class BiometricController implements Initializable {
 
                         if (verified) {
                             
-                            alert.setAlertType(Alert.AlertType.INFORMATION);
-                            alert.setContentText(employee.getName());
-                            alert.show();
+                            this.openDialogEmployee(employee);
+                            
+//                            alert.setAlertType(Alert.AlertType.INFORMATION);
+//                            alert.setContentText(employee.getName());
+//                            alert.show();
                             
                             return;
 
@@ -150,15 +155,28 @@ public class BiometricController implements Initializable {
         
         openFXML("/biometricauthentication/admin/login/LoginFXML.fxml", "Login");
         
-        readerEvent.setIsRunning(false);
-        readerThread.interrupt();
-        
     }
     
-    private void openDialogEmployee() {
+    private void openDialogEmployee(Employee employee) {
         
-        
-        
+        try {
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/biometricauthentication/dialog/DialogEmployeeFXML.fxml"));
+            
+            Stage stage = new Stage();
+            stage.setScene(new Scene((Pane) loader.load()));
+            
+            DialogEmployeeController employeeDialog = loader.<DialogEmployeeController>getController();
+            
+            employeeDialog.initData(employee, this.hourLabel.getText());
+            
+            stage.showAndWait();
+            
+        } catch (IOException ex) {
+            
+            System.out.println("Error de ruta -> FXML");
+            
+        }
         
     }
     
@@ -168,6 +186,20 @@ public class BiometricController implements Initializable {
        
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setScene(new Scene((Pane) loader.load()));
+        
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            
+            @Override
+            public void handle(WindowEvent event) {
+                
+                readerEvent.setIsRunning(true);
+                readerThread = new Thread(readerEvent);
+                
+                readerThread.start();
+                
+            }
+            
+        });
         
         stage.setTitle(title);
         

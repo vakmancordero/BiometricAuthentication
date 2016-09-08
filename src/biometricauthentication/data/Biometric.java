@@ -11,6 +11,8 @@ import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -134,7 +136,15 @@ public class Biometric {
         
         DPFPTemplate template = DPFPGlobal.getTemplateFactory().createTemplate();
         
-        template.deserialize(employee.getTemplate());
+        try {
+            
+            template.deserialize(employee.getTemplate());
+            
+        } catch (IllegalArgumentException ex) {
+            
+            template = null;
+            
+        }
         
         return template;
         
@@ -149,6 +159,26 @@ public class Biometric {
         inputStream.read(bytes);
         
         return bytes;
+    }
+    
+    public File deserializeFile(Employee employee) throws FileNotFoundException, IOException {
+        
+        byte[] bytes = employee.getPhoto();
+        
+        File file = new File("image.jpg");
+        
+        System.out.println(file.length());
+        
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            
+            fos.write(bytes);
+            
+        }
+        
+        System.out.println(file.length());
+        
+        return file;
+        
     }
     
     public boolean verify(DPFPSample sample, DPFPTemplate template)  {

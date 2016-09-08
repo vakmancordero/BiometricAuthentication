@@ -18,7 +18,7 @@
             <Font name="Freestyle Script" size="108.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutY="124.0" text="Arturo Cordero" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <Label fx:id="nameLabel" alignment="CENTER" layoutY="124.0" text="Arturo Cordero" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <font>
             <Font name="Anzeigen Grotesk D" size="44.0" />
          </font>
@@ -33,7 +33,7 @@
       </Label>
       <StackPane layoutX="83.0" layoutY="181.0" prefHeight="352.0" prefWidth="352.0" style="-fx-padding: 10; -fx-background-color: rgba(142,142,142, 0.5);">
          <children>
-            <ImageView fitHeight="339.0" fitWidth="332.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imageView" fitHeight="339.0" fitWidth="332.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../../14184459_1153694691340633_4880218528078134168_n.jpg" />
                </image>

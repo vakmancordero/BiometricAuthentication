@@ -5,23 +5,59 @@
  */
 package biometricauthentication.dialog;
 
+import biometricauthentication.data.Biometric;
+import biometricauthentication.data.Employee;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.Initializable;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
- * FXML Controller class
  *
  * @author VakSF
  */
 public class DialogEmployeeController implements Initializable {
-
-    /**
-     * Initializes the controller class.
-     */
+    
+    @FXML
+    private Label nameLabel, hourLabel;
+    
+    @FXML
+    private ImageView imageView;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        
+    }
+    
+    public void initData(Employee employee, String hour) {
+        
+        this.nameLabel.setText(employee.getName());
+        this.hourLabel.setText(hour);
+        
+        this.setImage(employee);
+        
+    }
+    
+    private void setImage(Employee employee) {
+        
+        try {
+            
+            Biometric biometric = new Biometric();
+            File file = biometric.deserializeFile(employee);
+            
+            this.imageView.setImage(new Image(file.toURI().toString()));
+            
+        } catch (IOException ex) {
+            
+        }
+        
+    }
     
 }
