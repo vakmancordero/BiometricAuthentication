@@ -19,14 +19,14 @@ public class AutoCompleteTextField extends TextField {
     
     private final SortedSet<String> entries;
     
-    private ContextMenu entriesPopup;
+    private ContextMenu entriesPopup_;
 
     public AutoCompleteTextField() {
         
         super();
         
         entries = new TreeSet<>();
-        entriesPopup = new ContextMenu();
+        entriesPopup_ = new ContextMenu();
     
         this.textProperty().addListener(new ChangeListener<String>() {
             
@@ -35,7 +35,7 @@ public class AutoCompleteTextField extends TextField {
                 
                 if (getText().length() == 0) {
                     
-                    entriesPopup.hide();
+                    entriesPopup_.hide();
                     
                 } else {
                     
@@ -52,13 +52,13 @@ public class AutoCompleteTextField extends TextField {
                         
                         populatePopup(searchResult);
                         
-                        if (!entriesPopup.isShowing()) {
+                        if (!entriesPopup_.isShowing()) {
                             
-                            entriesPopup.show(AutoCompleteTextField.this, Side.BOTTOM, 0, 0);
+                            entriesPopup_.show(AutoCompleteTextField.this, Side.BOTTOM, 0, 0);
                         }
                         
                     } else {
-                        entriesPopup.hide();
+                        entriesPopup_.hide();
                     }
                 }
             }
@@ -69,7 +69,7 @@ public class AutoCompleteTextField extends TextField {
             @Override
             public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2) {
                 
-                entriesPopup.hide();
+                entriesPopup_.hide();
                 
             }
             
@@ -107,7 +107,7 @@ public class AutoCompleteTextField extends TextField {
 
                     System.out.println(result);
 
-                    entriesPopup.hide();
+                    entriesPopup_.hide();
                 }
             });
 
@@ -115,9 +115,9 @@ public class AutoCompleteTextField extends TextField {
 
         }
 
-        entriesPopup.getItems().clear();
+        entriesPopup_.getItems().clear();
 
-        entriesPopup.getItems().addAll(menuItems);
+        entriesPopup_.getItems().addAll(menuItems);
 
     }
 
