@@ -11,11 +11,13 @@ import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -45,6 +47,145 @@ public class Biometric {
         transaction.commit();
         
         session.flush(); session.close();
+        
+    }
+    
+    private BinnacleRecord getLastBinnacleRecord(int employee_id) {
+        
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        BinnacleRecord binnacleRecord = null;
+        
+        try {
+            
+            binnacleRecord = (BinnacleRecord) session.createQuery(
+                    "FROM BinnacleRecord where employee_id = " + employee_id + " order by id desc"
+            ).setMaxResults(1).uniqueResult();
+            
+            transaction.commit();
+             
+        } catch (HibernateException ex) {
+            
+            ex.printStackTrace();
+              
+            if (transaction != null) {
+                
+                transaction.rollback();
+                
+            }
+             
+        } finally {
+            
+            session.close();
+            
+        }
+        
+        return binnacleRecord;
+    }
+    
+    private String getSimpleDate(Date date) {
+        
+        Calendar calendar = Calendar.getInstance();
+                    
+        calendar.setTime(date);
+        
+        return calendar.get(Calendar.DAY_OF_MONTH) + "-"
+              + calendar.get(Calendar.MONTH) + "-"
+              + calendar.get(Calendar.YEAR);
+        
+    }
+    
+    public String saveBinnacleRecord(Employee employee) {
+        
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        String operation = "";
+        
+        Date date = new Date();
+        
+        BinnacleRecord binnacleRecord = getLastBinnacleRecord(employee.getId());
+        
+        if (binnacleRecord != null) {
+            
+            String check_in = binnacleRecord.getCheck_in();
+            
+            if (check_in == null) {
+                
+                binnacleRecord.setCheck_in(check_in);
+                
+                operation = "Entrada";
+                
+            } else {
+                
+                String check_out = binnacleRecord.getCheck_out();
+                
+                if (check_out == null) {
+                    
+                    binnacleRecord.setCheck_out(new SimpleDateFormat("HH:mm:ss").format(date));
+                    
+                    operation = "Salida";
+                    
+                } else {
+                    
+                    Date binnacleDate = binnacleRecord.getDate();
+                    
+                    if (date.after(binnacleDate)) {
+                        
+                        String simple_binnacle_date = getSimpleDate(binnacleDate);
+                        
+                        String current_simple_date = getSimpleDate(date);
+                        
+                        if (!simple_binnacle_date.equals(current_simple_date)) {
+                            
+                            binnacleRecord = new BinnacleRecord();
+                            
+                            String new_check_in = new SimpleDateFormat("HH:mm:ss").format(date);
+                            
+                            binnacleRecord.setCheck_in(new_check_in);
+                            
+                            binnacleRecord.setDate(date);
+                            
+                            binnacleRecord.setEmployee_id(employee.getId());
+                            
+                            operation = "Entrada";
+                            
+                        } else {
+                            
+                            operation = "same_day";
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            session.saveOrUpdate(binnacleRecord);   
+        
+        } else {
+            
+            binnacleRecord = new BinnacleRecord();
+
+            binnacleRecord.setCheck_in(new SimpleDateFormat("HH:mm:ss").format(date));
+
+            binnacleRecord.setDate(date);
+
+            binnacleRecord.setEmployee_id(employee.getId());
+
+            session.save(binnacleRecord);
+            
+            operation = "Entrada";
+            
+        }
+        
+        transaction.commit();
+
+        session.flush(); session.close();
+        
+        return operation;
         
     }
     
@@ -153,15 +294,19 @@ public class Biometric {
         return bytes;
     }
     
-    public File deserializeFile(Employee employee) throws FileNotFoundException, IOException {
-        
-        byte[] bytes = employee.getPhoto();
+    public File deserializeFile(Employee employee) {
         
         File file = new File("image.jpg");
         
-        try (FileOutputStream fos = new FileOutputStream(file)) {
+        try {
+            
+            byte[] bytes = employee.getPhoto();
+            
+            FileOutputStream fos = new FileOutputStream(file);
             
             fos.write(bytes);
+            
+        } catch (IOException | NullPointerException ex) {
             
         }
         

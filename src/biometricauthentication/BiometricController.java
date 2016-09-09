@@ -72,7 +72,6 @@ public class BiometricController implements Initializable {
         notFound = new Alert(Alert.AlertType.ERROR);
         notFound.setTitle("Captura biométrica");
         notFound.setHeaderText("Captura de huella");
-        notFound.setContentText("No encontrado, inténtelo de nuevo");
         
         found = new Stage();
         
@@ -101,7 +100,21 @@ public class BiometricController implements Initializable {
 
                         if (verified) {
                             
-                            this.openDialogEmployee(employee);
+                            String operation = biometric.saveBinnacleRecord(employee);
+                            
+                            System.out.println(operation);
+                            
+                            if (!operation.equals("same_day")) {
+                                
+                                this.openDialogEmployee(employee, operation);
+                                
+                            } else {
+                                
+                                notFound.setContentText("Ya ha checado");
+                                
+                                notFound.show();
+                                
+                            }
                             
                             return;
 
@@ -113,6 +126,7 @@ public class BiometricController implements Initializable {
 
                 if (!verified) {
                     
+                    notFound.setContentText("No encontrado, inténtelo de nuevo");
                     notFound.show();
 
                 }
@@ -155,7 +169,7 @@ public class BiometricController implements Initializable {
         
     }
     
-    private void openDialogEmployee(Employee employee) {
+    private void openDialogEmployee(Employee employee, String operation) {
         
         try {
             
@@ -165,7 +179,7 @@ public class BiometricController implements Initializable {
             
             DialogEmployeeController employeeDialog = loader.<DialogEmployeeController>getController();
             
-            employeeDialog.initData(employee, this.hourLabel.getText());
+            employeeDialog.initData(employee, this.hourLabel.getText(), operation);
             
             this.found.show();
             

@@ -157,6 +157,8 @@ public class AdminController implements Initializable {
         
         biometric.saveEmployee(employee);
         
+        this.employeesTV.refresh();
+        
         new Alert(
                 Alert.AlertType.INFORMATION,
                 "Turno del empleado asignado: " + employee.getShift() + ", ha sido establecida",

@@ -3,7 +3,6 @@ package biometricauthentication;
 import biometricauthentication.utils.SQLConnection;
 import java.sql.SQLException;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -39,7 +38,7 @@ public class BiometricAuthentication extends Application {
         
         try {
             
-            BiometricAuthentication.sqlConnection = new SQLConnection("root", "root", "localhost", "hotel", "mysql");
+            BiometricAuthentication.sqlConnection = new SQLConnection("root", "jaqart_56923", "localhost", "biometric", "mysql");
             
             System.out.println("Conexion a la base de datos exitosa!");
             

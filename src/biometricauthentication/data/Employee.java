@@ -1,9 +1,12 @@
 package biometricauthentication.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -22,8 +25,17 @@ public class Employee implements Serializable {
     @OneToOne
     private Shift shift;
     
+    @OneToOne
+    private EmployeeType employeetype;
+    
+    @OneToOne
+    private Company company;
+    
     @Column
     private String name;
+    
+    @Column (name = "last_name") 
+    private String lastName; 
     
     @Column (name = "fingerprint")
     private byte[] template;
@@ -53,6 +65,22 @@ public class Employee implements Serializable {
     public void setShift(Shift shift) {
         this.shift = shift;
     }
+
+    public EmployeeType getEmployeetype() {
+        return employeetype;
+    }
+
+    public void setEmployeetype(EmployeeType employeetype) {
+        this.employeetype = employeetype;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
     
     public String getName() {
         return name;
@@ -60,6 +88,14 @@ public class Employee implements Serializable {
     
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
     
     public byte[] getTemplate() {

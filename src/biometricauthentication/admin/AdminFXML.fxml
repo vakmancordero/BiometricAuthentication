@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.cell.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="560.0" prefWidth="1091.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.AdminController">
+<AnchorPane id="AnchorPane" prefHeight="560.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.AdminController">
    <children>
       <MenuBar layoutX="22.0" layoutY="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -31,15 +31,40 @@
           </Menu>
         </menus>
       </MenuBar>
-      <SplitPane dividerPositions="0.4915254237288136" layoutX="73.0" layoutY="409.0" prefHeight="413.0" prefWidth="946.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
+      <SplitPane dividerPositions="0.5539906103286385" layoutX="73.0" layoutY="409.0" prefHeight="413.0" prefWidth="946.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <TableView fx:id="employeesTV" layoutX="93.0" layoutY="39.0" prefHeight="271.0" prefWidth="422.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
                     <columns>
-                        <TableColumn prefWidth="144.0" text="Nombre">
+                        <TableColumn prefWidth="58.0" text="ID">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="id" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="116.0" text="Nombre">
                             <cellValueFactory>
                                 <PropertyValueFactory property="name" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="192.0" text="Apellidos">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="lastName" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="145.0" text="Empresa">
+                           <cellValueFactory>
+                              <PropertyValueFactory property="company" />
+                           </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="145.0" text="Tipo de empleado">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="employeetype" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="153.0" text="Turno">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="shift" />
                             </cellValueFactory>
                         </TableColumn>
                     </columns>

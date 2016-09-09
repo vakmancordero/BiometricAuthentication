@@ -92,7 +92,7 @@ public class Shift implements Serializable {
     
     @Override
     public String toString() {
-        return this.description + " : " + to_work + " horas";
+        return this.id + " : " + this.description + " : " + to_work + " horas";
     }
     
 }
