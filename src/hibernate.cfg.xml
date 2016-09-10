@@ -4,14 +4,14 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/biometric</property>
-    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.url">jdbc:mysql://74.63.215.106:3306/woloskyg_biometric</property>
+    <property name="hibernate.connection.username">woloskyg_vaksfk</property>
     <property name="hibernate.connection.password">jaqart_56923</property>
     <property name="hibernate.hbm2ddl.auto">update</property>
-    <mapping class="biometricauthentication.data.Employee"/>
-    <mapping class="biometricauthentication.data.Shift"/>
-    <mapping class="biometricauthentication.data.EmployeeType"/>
-    <mapping class="biometricauthentication.data.Company"/>
-    <mapping class="biometricauthentication.data.BinnacleRecord"/>
+    <mapping class="biometricauthentication.model.Employee"/>
+    <mapping class="biometricauthentication.model.Shift"/>
+    <mapping class="biometricauthentication.model.EmployeeType"/>
+    <mapping class="biometricauthentication.model.Company"/>
+    <mapping class="biometricauthentication.model.BinnacleRecord"/>
   </session-factory>
 </hibernate-configuration>
