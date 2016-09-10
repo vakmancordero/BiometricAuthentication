@@ -1,4 +1,4 @@
-package biometricauthentication.data;
+package biometricauthentication.model;
 
 import static javax.persistence.TemporalType.DATE;
 

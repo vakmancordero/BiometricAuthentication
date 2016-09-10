@@ -1,5 +1,8 @@
-package biometricauthentication.data;
+package biometricauthentication.utils;
 
+import biometricauthentication.model.BinnacleRecord;
+import biometricauthentication.model.Employee;
+import biometricauthentication.model.Shift;
 import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
 import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
 import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
@@ -9,6 +12,7 @@ import com.digitalpersona.onetouch.DPFPFeatureSet;
 import com.digitalpersona.onetouch.DPFPGlobal;
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -37,6 +41,15 @@ public class Biometric {
         this.sessionFactory = HibernateUtil.getSessionFactory();   
     }
     
+    public boolean login(String user, String password) {
+        
+        return sessionFactory.openSession().createSQLQuery(
+                "SELECT * FROM user_accounts WHERE "
+              + "user = '" + user + "' AND password = '" + password + "'"
+        ).setMaxResults(1).uniqueResult() != null;
+        
+    }
+    
     public void saveEmployee(Employee employee) {
         
         Session session = sessionFactory.openSession();
@@ -45,7 +58,6 @@ public class Biometric {
         session.saveOrUpdate(employee);
         
         transaction.commit();
-        
         session.flush(); session.close();
         
     }

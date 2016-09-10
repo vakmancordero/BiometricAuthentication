@@ -1,8 +1,8 @@
 package biometricauthentication;
 
-import biometricauthentication.data.Biometric;
-import biometricauthentication.data.Employee;
-import biometricauthentication.data.ReaderEvent;
+import biometricauthentication.utils.Biometric;
+import biometricauthentication.model.Employee;
+import biometricauthentication.utils.Reader;
 import biometricauthentication.dialog.DialogEmployeeController;
 import biometricauthentication.utils.Clock;
 
@@ -28,7 +28,6 @@ import javafx.stage.StageStyle;
 
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
-import javafx.event.EventHandler;
 import javafx.stage.WindowEvent;
 
 /**
@@ -48,7 +47,7 @@ public class BiometricController implements Initializable {
     
     private Stage found;
     
-    public static ReaderEvent readerEvent;
+    public static Reader readerEvent;
     
     public static Thread readerThread;
     
@@ -61,7 +60,7 @@ public class BiometricController implements Initializable {
         this.initInformation();
         this.initObserver();
         this.initDialogs();
-
+        
         readerThread = new Thread(readerEvent);
         readerThread.start();
         
@@ -95,14 +94,12 @@ public class BiometricController implements Initializable {
                     if (found.isShowing()) found.close();
                     
                     if (template != null) {
-
+                        
                         verified = biometric.verify(sample, template);
 
                         if (verified) {
                             
                             String operation = biometric.saveBinnacleRecord(employee);
-                            
-                            System.out.println(operation);
                             
                             if (!operation.equals("same_day")) {
                                 
@@ -110,8 +107,7 @@ public class BiometricController implements Initializable {
                                 
                             } else {
                                 
-                                notFound.setContentText("Ya ha checado");
-                                
+                                notFound.setContentText("Usted ya ha checado un turno completo");
                                 notFound.show();
                                 
                             }
@@ -130,10 +126,11 @@ public class BiometricController implements Initializable {
                     notFound.show();
 
                 }
+                
             });
         };
         
-        readerEvent = new ReaderEvent();
+        readerEvent = new Reader();
         readerEvent.addObserver(observer);
         
     }
@@ -173,7 +170,9 @@ public class BiometricController implements Initializable {
         
         try {
             
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/biometricauthentication/dialog/DialogEmployeeFXML.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/biometricauthentication/dialog/DialogEmployeeFXML.fxml")
+            );
             
             this.found.setScene(new Scene((Pane) loader.load()));
             
@@ -198,17 +197,12 @@ public class BiometricController implements Initializable {
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setScene(new Scene((Pane) loader.load()));
         
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        stage.setOnCloseRequest((WindowEvent event) -> {
             
-            @Override
-            public void handle(WindowEvent event) {
-                
-                readerEvent.setIsRunning(true);
-                readerThread = new Thread(readerEvent);
-                
-                readerThread.start();
-                
-            }
+            readerEvent.setIsRunning(true);
+            readerThread = new Thread(readerEvent);
+            
+            readerThread.start();
             
         });
         

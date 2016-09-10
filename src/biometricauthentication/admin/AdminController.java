@@ -1,7 +1,14 @@
 package biometricauthentication.admin;
 
-import static biometricauthentication.BiometricController.readerEvent;
-import static biometricauthentication.BiometricController.readerThread;
+import com.digitalpersona.onetouch.DPFPDataPurpose;
+import com.digitalpersona.onetouch.DPFPFeatureSet;
+import com.digitalpersona.onetouch.DPFPGlobal;
+import com.digitalpersona.onetouch.DPFPSample;
+import com.digitalpersona.onetouch.DPFPTemplate;
+import com.digitalpersona.onetouch.processing.DPFPEnrollment;
+import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
+import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
+
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -18,27 +25,24 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 
-import com.digitalpersona.onetouch.DPFPDataPurpose;
-import com.digitalpersona.onetouch.DPFPFeatureSet;
-import com.digitalpersona.onetouch.DPFPGlobal;
-import com.digitalpersona.onetouch.DPFPSample;
-import com.digitalpersona.onetouch.DPFPTemplate;
-import com.digitalpersona.onetouch.processing.DPFPEnrollment;
-import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
-import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
-import biometricauthentication.data.Biometric;
-import biometricauthentication.data.Employee;
-import biometricauthentication.data.Shift;
-import biometricauthentication.utils.DPFPReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javafx.scene.control.ComboBox;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import biometricauthentication.utils.Biometric;
+import biometricauthentication.model.Employee;
+import biometricauthentication.model.Shift;
+import biometricauthentication.utils.DPFPReader;
+
+import static biometricauthentication.BiometricController.readerEvent;
+import static biometricauthentication.BiometricController.readerThread;
+import javafx.scene.layout.Pane;
+
 
 /**
  *
@@ -53,7 +57,7 @@ public class AdminController implements Initializable {
     private TitledPane first;
     
     @FXML
-    private Button fingerPrintButton, imageButton;
+    private Pane blockPane;
     
     @FXML
     private TextField companyTF, nameTF;
@@ -90,12 +94,10 @@ public class AdminController implements Initializable {
         
         this.initTV();
         
-        if (!this.employeesTV.getItems().isEmpty()) {
+        if (!this.employeesList.isEmpty()) {
             
             this.employeesTV.getSelectionModel().selectFirst();
-            
-            this.fingerPrintButton.setDisable(false);
-            this.imageButton.setDisable(false);
+            this.blockPane.setVisible(true);
             
         }
         
@@ -126,11 +128,7 @@ public class AdminController implements Initializable {
     
     private void fillShifts() {
         
-        this.shiftCB.getItems().addAll(
-                
-                biometric.getShifts()
-                
-        );
+        this.shiftCB.getItems().addAll(biometric.getShifts());
         
         if (!this.shiftCB.getItems().isEmpty()) {
             this.shiftCB.getSelectionModel().selectFirst();
@@ -140,20 +138,16 @@ public class AdminController implements Initializable {
     
     private void fillEmployees() {
         
-        this.employeesList.addAll(
-                biometric.getEmployees()
-        );
+        this.employeesList.addAll(biometric.getEmployees());
         
     }
     
     @FXML
     private void setShift() {
         
-        Shift shift = shiftCB.getValue();
-        
         Employee employee = employeesTV.getSelectionModel().getSelectedItem();
         
-        employee.setShift(shift);
+        employee.setShift(shiftCB.getValue());
         
         biometric.saveEmployee(employee);
         
@@ -163,7 +157,7 @@ public class AdminController implements Initializable {
                 Alert.AlertType.INFORMATION,
                 "Turno del empleado asignado: " + employee.getShift() + ", ha sido establecida",
                 ButtonType.OK
-        ).showAndWait();
+        ).show();
         
     }
     
@@ -227,11 +221,19 @@ public class AdminController implements Initializable {
             
             biometric.saveEmployee(employee);
             
-            new Alert(Alert.AlertType.INFORMATION, "La huella ha sido registrada correctamente", ButtonType.OK).showAndWait();
+            new Alert(
+                    Alert.AlertType.INFORMATION, 
+                    "La huella ha sido registrada correctamente",
+                    ButtonType.OK
+            ).show();
             
         } else {
             
-            new Alert(Alert.AlertType.ERROR, "No hay lector conectado", ButtonType.OK).showAndWait();
+            new Alert(
+                    Alert.AlertType.ERROR, 
+                    "No hay lector conectado", 
+                    ButtonType.OK
+            ).show();
             
         }
         
@@ -252,7 +254,7 @@ public class AdminController implements Initializable {
         
         if (file != null) {
             
-            if (file.length() / (1024 * 1024) < 3.0) {
+            if (file.length() / (1024 * 1024) < 1.5) {
                 
                 employee.setPhoto(biometric.serializeFile(file));
             
@@ -262,7 +264,7 @@ public class AdminController implements Initializable {
                         Alert.AlertType.INFORMATION,
                         "La imagen del empleado: " + employee.getName() + ", ha sido establecida",
                         ButtonType.OK
-                ).showAndWait();
+                ).show();
                 
             } else {
                 
@@ -270,7 +272,7 @@ public class AdminController implements Initializable {
                         Alert.AlertType.ERROR,
                         "La imagen es demasiado grande, intente con otra",
                         ButtonType.OK
-                ).showAndWait();
+                ).show();
                 
             }
             

@@ -1,7 +1,7 @@
 package biometricauthentication.dialog;
 
-import biometricauthentication.data.Biometric;
-import biometricauthentication.data.Employee;
+import biometricauthentication.utils.Biometric;
+import biometricauthentication.model.Employee;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;

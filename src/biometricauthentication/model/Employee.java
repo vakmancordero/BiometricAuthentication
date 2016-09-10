@@ -1,4 +1,4 @@
-package biometricauthentication.data;
+package biometricauthentication.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

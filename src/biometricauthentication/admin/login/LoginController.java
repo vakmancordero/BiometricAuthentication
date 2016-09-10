@@ -2,8 +2,6 @@ package biometricauthentication.admin.login;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,16 +13,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.WindowEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.StageStyle;
 import javafx.stage.Stage;
 
-import javafx.event.EventHandler;
-import javafx.stage.WindowEvent;
-
-import static biometricauthentication.BiometricAuthentication.sqlConnection;
+import biometricauthentication.utils.Biometric;
 import static biometricauthentication.BiometricController.readerEvent;
 import static biometricauthentication.BiometricController.readerThread;
+
 
 /**
  *
@@ -47,40 +44,45 @@ public class LoginController implements Initializable {
     }
     
     @FXML
-    private void login(ActionEvent event) throws IOException, SQLException {
+    private void login(ActionEvent event) throws IOException {
         
         String user = this.userTF.getText();
         String password = this.passwordPF.getText();
         
         if (!user.isEmpty() && !password.isEmpty()) {
             
-            ResultSet result = sqlConnection.search("SELECT user, password FROM user_accounts "
-                    + "WHERE user = '" + user + "' AND password = '" + password + "';");
-            
-            if (result != null && result.first()) {
+            if (new Biometric().login(user, password)) {
                     
-                openFXML("/biometricauthentication/admin/AdminFXML.fxml", "Administrador \t-\t @Kaizen Soft by Arturo Cordero");
+                openFXML("/biometricauthentication/admin/AdminFXML.fxml", "Administrador");
                 ((Node) event.getSource()).getScene().getWindow().hide();
                 
             } else {
-                
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Error!");
-                alert.setHeaderText("No se ha podido iniciar sesión");
-                alert.setContentText("Usuario y/o contraseña incorrectos...");
-                alert.showAndWait();
-
+                notFound();
             }
             
         } else {
-            
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error!");
-            alert.setHeaderText("Ha olvidado llenar algún campo");
-            alert.setContentText("Por favor introduzca los campos faltantes...");
-            alert.showAndWait();
-            
+            emptyFields();
         }
+        
+    }
+    
+    private void notFound() {
+        
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error!");
+        alert.setHeaderText("No se ha podido iniciar sesión");
+        alert.setContentText("Usuario y/o contraseña incorrectos...");
+        alert.showAndWait();
+        
+    }
+    
+    private void emptyFields() {
+        
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error!");
+        alert.setHeaderText("Ha olvidado llenar algún campo");
+        alert.setContentText("Por favor introduzca los campos faltantes...");
+        alert.showAndWait();
         
     }
     
@@ -93,17 +95,12 @@ public class LoginController implements Initializable {
         
         stage.setTitle(title);
         
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        stage.setOnCloseRequest((WindowEvent event) -> {
             
-            @Override
-            public void handle(WindowEvent event) {
-                                
-                readerEvent.setIsRunning(true);
-                readerThread = new Thread(readerEvent);
-                
-                readerThread.start();
-                
-            }
+            readerEvent.setIsRunning(true);
+            readerThread = new Thread(readerEvent);
+            
+            readerThread.start();
             
         });
         

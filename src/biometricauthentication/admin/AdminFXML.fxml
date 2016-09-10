@@ -35,40 +35,6 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <TableView fx:id="employeesTV" layoutX="93.0" layoutY="39.0" prefHeight="271.0" prefWidth="422.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
-                    <columns>
-                        <TableColumn prefWidth="58.0" text="ID">
-                            <cellValueFactory>
-                                <PropertyValueFactory property="id" />
-                            </cellValueFactory>
-                        </TableColumn>
-                        <TableColumn prefWidth="116.0" text="Nombre">
-                            <cellValueFactory>
-                                <PropertyValueFactory property="name" />
-                            </cellValueFactory>
-                        </TableColumn>
-                        <TableColumn prefWidth="192.0" text="Apellidos">
-                            <cellValueFactory>
-                                <PropertyValueFactory property="lastName" />
-                            </cellValueFactory>
-                        </TableColumn>
-                        <TableColumn prefWidth="145.0" text="Empresa">
-                           <cellValueFactory>
-                              <PropertyValueFactory property="company" />
-                           </cellValueFactory>
-                        </TableColumn>
-                        <TableColumn prefWidth="145.0" text="Tipo de empleado">
-                            <cellValueFactory>
-                                <PropertyValueFactory property="employeetype" />
-                            </cellValueFactory>
-                        </TableColumn>
-                        <TableColumn prefWidth="153.0" text="Turno">
-                            <cellValueFactory>
-                                <PropertyValueFactory property="shift" />
-                            </cellValueFactory>
-                        </TableColumn>
-                    </columns>
-                  </TableView>
                   <Label alignment="CENTER" layoutX="29.0" layoutY="32.0" prefHeight="34.0" prefWidth="422.0" text="Tabla de empleados" textAlignment="CENTER" textFill="#1e2546bf" textOverrun="CENTER_WORD_ELLIPSIS" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="System Bold" size="23.0" />
@@ -84,10 +50,49 @@
                         <TextField prefHeight="25.0" prefWidth="353.0" promptText="Introducir el nombre del empleado" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
+                  <TableView fx:id="employeesTV" layoutX="93.0" layoutY="39.0" prefHeight="271.0" prefWidth="422.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
+                    <columns>
+                        <TableColumn prefWidth="58.0" text="ID">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="id" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="116.0" text="Nombre">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="name" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="140.0" text="Apellidos">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="lastName" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="91.0" text="Empresa">
+                           <cellValueFactory>
+                              <PropertyValueFactory property="company" />
+                           </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="137.0" text="Tipo de empleado">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="employeetype" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="122.0" text="Turno">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="shift" />
+                            </cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                  </TableView>
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
+                  <Label alignment="CENTER" layoutX="109.0" prefHeight="34.0" prefWidth="422.0" text="Panel CRUD" textAlignment="CENTER" textFill="#1e2546bf" textOverrun="CENTER_WORD_ELLIPSIS" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font name="System Bold" size="23.0" />
+                     </font>
+                  </Label>
                   <Accordion fx:id="accordion" layoutX="59.0" layoutY="43.0" prefHeight="471.0" prefWidth="511.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="45.0">
                     <panes>
                       <TitledPane fx:id="first" animated="false" expanded="false" text="Registrar">
@@ -96,26 +101,16 @@
                             <children>
                                <AnchorPane id="AnchorPane" layoutX="14.0" prefHeight="369.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
                                     <children>
-                                          <VBox layoutX="50.0" layoutY="254.0" prefHeight="61.0" prefWidth="390.0" spacing="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
-                                             <children>
-                                                <HBox alignment="CENTER" prefHeight="25.0" prefWidth="373.0" spacing="40.0">
-                                                   <children>
-                                                      <Button fx:id="fingerPrintButton" mnemonicParsing="false" onAction="#setFinger" prefHeight="25.0" prefWidth="175.0" text="Establecer huella" />
-                                                      <Button fx:id="imageButton" mnemonicParsing="false" onAction="#setPhoto" prefHeight="25.0" prefWidth="175.0" text="Establecer fotografía" />
-                                                   </children>
-                                                </HBox>
-                                                <HBox alignment="CENTER" prefHeight="25.0" prefWidth="373.0" spacing="40.0">
-                                                   <children>
-                                                      <Button fx:id="fingerPrintButton2" mnemonicParsing="false" onAction="#setFinger" prefHeight="25.0" prefWidth="175.0" text="Visualizar huella" />
-                                                      <Button fx:id="imageButton1" mnemonicParsing="false" onAction="#setPhoto" prefHeight="25.0" prefWidth="175.0" text="Visualizar fotografía" />
-                                                   </children>
-                                                </HBox>
-                                             </children></VBox>
                                        <Label fx:id="titleLabel" alignment="CENTER" layoutX="96.0" layoutY="14.0" text="Registrar empleado" textFill="#1e2546" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-10.0">
                                           <font>
                                              <Font name="Freestyle Script" size="52.0" />
                                           </font>
                                        </Label>
+                                          <Label layoutX="50.0" layoutY="69.0" text="Detalles de empleado" textFill="#000000bf" AnchorPane.leftAnchor="50.0">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
                                           <VBox layoutX="50.0" layoutY="102.0" prefHeight="97.0" prefWidth="390.0" spacing="10.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
                                              <children>
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="330.0" spacing="16.0">
@@ -144,11 +139,23 @@
                                                 <Font name="System Bold" size="16.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="50.0" layoutY="69.0" text="Detalles de empleado" textFill="#000000bf" AnchorPane.leftAnchor="50.0">
-                                             <font>
-                                                <Font name="System Bold" size="16.0" />
-                                             </font>
-                                          </Label>
+                                          <VBox layoutX="50.0" layoutY="254.0" prefHeight="61.0" prefWidth="390.0" spacing="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+                                             <children>
+                                                <HBox alignment="CENTER" prefHeight="25.0" prefWidth="373.0" spacing="40.0">
+                                                   <children>
+                                                      <Button fx:id="fingerPrintButton" mnemonicParsing="false" onAction="#setFinger" prefHeight="25.0" prefWidth="175.0" text="Establecer huella" />
+                                                      <Button fx:id="imageButton" mnemonicParsing="false" onAction="#setPhoto" prefHeight="25.0" prefWidth="175.0" text="Establecer fotografía" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" prefHeight="25.0" prefWidth="373.0" spacing="40.0">
+                                                   <children>
+                                                      <Button fx:id="fingerPrintButton2" mnemonicParsing="false" onAction="#setFinger" prefHeight="25.0" prefWidth="175.0" text="Visualizar huella" />
+                                                      <Button fx:id="imageButton1" mnemonicParsing="false" onAction="#setPhoto" prefHeight="25.0" prefWidth="175.0" text="Visualizar fotografía" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          <Pane fx:id="blockPane" layoutX="68.0" layoutY="266.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </children>
                                  </AnchorPane>
                             </children>
@@ -157,11 +164,6 @@
                       </TitledPane>
                     </panes>
                   </Accordion>
-                  <Label alignment="CENTER" layoutX="109.0" prefHeight="34.0" prefWidth="422.0" text="Panel CRUD" textAlignment="CENTER" textFill="#1e2546bf" textOverrun="CENTER_WORD_ELLIPSIS" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
-                     <font>
-                        <Font name="System Bold" size="23.0" />
-                     </font>
-                  </Label>
                </children>
             </AnchorPane>
         </items>

@@ -1,4 +1,4 @@
-package biometricauthentication.data;
+package biometricauthentication.utils;
 
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
