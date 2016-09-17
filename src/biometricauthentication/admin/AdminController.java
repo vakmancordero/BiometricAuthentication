@@ -20,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -97,7 +96,7 @@ public class AdminController implements Initializable {
         if (!this.employeesList.isEmpty()) {
             
             this.employeesTV.getSelectionModel().selectFirst();
-            this.blockPane.setVisible(true);
+            this.blockPane.setVisible(false);
             
         }
         
@@ -114,7 +113,7 @@ public class AdminController implements Initializable {
                 
                 Employee employee = employeesTV.getSelectionModel().getSelectedItem();
                 
-                companyTF.setText(employee.getName());
+                companyTF.setText(employee.getCompany().getDescription());
                 
                 nameTF.setText(employee.getName());
                 
@@ -254,17 +253,17 @@ public class AdminController implements Initializable {
         
         if (file != null) {
             
-            if (file.length() / (1024 * 1024) < 1.5) {
+            if (file.length() / (1024 * 1024) < 8) {
                 
-                employee.setPhoto(biometric.serializeFile(file));
-            
-                biometric.saveEmployee(employee);
+                if (biometric.saveFile(employee, file)) {
 
-                new Alert(
-                        Alert.AlertType.INFORMATION,
-                        "La imagen del empleado: " + employee.getName() + ", ha sido establecida",
-                        ButtonType.OK
-                ).show();
+                    new Alert(
+                            Alert.AlertType.INFORMATION,
+                            "La imagen del empleado: " + employee.getName() + ", ha sido establecida",
+                            ButtonType.OK
+                    ).show();
+                    
+                }
                 
             } else {
                 

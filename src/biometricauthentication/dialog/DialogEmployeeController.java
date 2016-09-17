@@ -42,7 +42,7 @@ public class DialogEmployeeController implements Initializable {
         
         Biometric biometric = new Biometric();
         
-        File file = biometric.deserializeFile(employee);
+        File file = biometric.getFile(employee);
         
         if (file != null) {
             

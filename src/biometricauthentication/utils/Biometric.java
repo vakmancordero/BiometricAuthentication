@@ -12,6 +12,7 @@ import com.digitalpersona.onetouch.DPFPFeatureSet;
 import com.digitalpersona.onetouch.DPFPGlobal;
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
+import java.awt.image.BufferedImage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -212,8 +214,6 @@ public class Biometric {
             
             shifts = session.createQuery("FROM Shift").list();
             
-            //for (Shift shift : shifts) System.out.println("Biometric Class -> getShifts() -> " + shift.getDescription());
-            
             transaction.commit();
              
         } catch (HibernateException ex) {
@@ -246,8 +246,6 @@ public class Biometric {
         try {
             
             employees = session.createQuery("FROM Employee").list();
-            
-            //for (Employee employee : employees) System.out.println("Biometric Class -> " + employee.toString());
             
             transaction.commit();
              
@@ -295,6 +293,7 @@ public class Biometric {
         
     }
     
+    /*
     public byte[] serializeFile(File file) throws IOException {
         
         byte[] bytes = new byte[(int) file.length()];
@@ -325,6 +324,40 @@ public class Biometric {
         return file;
         
     }
+    */
+    
+    public boolean saveFile(Employee employee, File file) throws IOException {
+        
+        String url = "C:\\Biometric\\".concat(String.valueOf(employee.getId())).concat(".png");
+        
+        File toSave = new File(url);
+        
+        if (!toSave.exists()) toSave.mkdir();
+        
+        BufferedImage image = ImageIO.read(file);
+        
+        boolean written = ImageIO.write(image, "png", toSave);
+        
+        return written;
+    }
+    
+    public File getFile(Employee employee) {
+        
+        String url = "C:\\Biometric\\".concat(String.valueOf(employee.getId())).concat(".png");
+        
+        File file = new File(url); 
+        
+        if (file.exists()) {
+            
+            return file;
+            
+        } else {
+            
+            return null;
+            
+        }
+        
+    }
     
     public boolean verify(DPFPSample sample, DPFPTemplate template)  {
         
@@ -341,9 +374,7 @@ public class Biometric {
             DPFPVerificationResult result = matcher.verify(featureSet, template);
             
             verified = result.isVerified();
-            
-            //if (verified) System.out.println((double)result.getFalseAcceptRate() / DPFPVerification.PROBABILITY_ONE);
-            
+                        
         } catch (DPFPImageQualityException ex) {
             
             ex.printStackTrace();

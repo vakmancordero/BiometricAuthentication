@@ -1,12 +1,9 @@
 package biometricauthentication.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -41,7 +38,7 @@ public class Employee implements Serializable {
     private byte[] template;
     
     @Column (name = "photo")
-    private byte[] photo;
+    private String photo;
     
     public Employee() {
     }
@@ -106,11 +103,11 @@ public class Employee implements Serializable {
         this.template = template;
     }
     
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return this.photo;
     }
     
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
