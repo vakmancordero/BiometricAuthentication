@@ -3,8 +3,6 @@ package biometricauthentication.utils;
 import java.util.Observable;
 import com.digitalpersona.onetouch.DPFPSample;
 
-import biometricauthentication.utils.DPFPReader;
-
 /**
  *
  * @author Arturh

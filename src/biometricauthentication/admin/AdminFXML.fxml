@@ -162,6 +162,52 @@
                           </AnchorPane>
                         </content>
                       </TitledPane>
+                        <TitledPane fx:id="first1" animated="false" expanded="false" text="Crear">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <AnchorPane id="AnchorPane" layoutX="14.0" prefHeight="369.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <Label fx:id="titleLabel1" alignment="CENTER" layoutX="96.0" layoutY="14.0" text="Crear empleado" textFill="#1e2546" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-10.0">
+                                             <font>
+                                                <Font name="Freestyle Script" size="52.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="50.0" layoutY="69.0" text="Datos del empleado" textFill="#000000bf" AnchorPane.leftAnchor="50.0">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox layoutX="50.0" layoutY="102.0" prefHeight="97.0" prefWidth="390.0" spacing="10.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="330.0" spacing="16.0">
+                                                   <children>
+                                                      <Label text="Empresa:" />
+                                                      <TextField fx:id="companyTF1" prefHeight="25.0" prefWidth="327.0" promptText="Nombre de la empresa" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
+                                                   <children>
+                                                      <Label prefHeight="17.0" prefWidth="56.0" text="Nombre:" />
+                                                      <TextField fx:id="nameTF1" prefHeight="25.0" prefWidth="330.0" promptText="Nombre del empleado" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="31.0">
+                                                   <children>
+                                                      <Label text="Turno:" />
+                                                      <ComboBox fx:id="shiftCB1" prefHeight="25.0" prefWidth="180.0" promptText="Turno laboral" />
+                                                      <Button mnemonicParsing="false" onAction="#setShift" text="Establecer turno" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          <Pane fx:id="blockPane1" layoutX="68.0" layoutY="266.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
                     </panes>
                   </Accordion>
                </children>

@@ -1,6 +1,7 @@
 package biometricauthentication.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -31,8 +32,23 @@ public class Employee implements Serializable {
     @Column
     private String name;
     
-    @Column (name = "last_name") 
+    @Column (name = "last_name")
     private String lastName; 
+    
+    @Column (name = "mothers_last_name")
+    private String mothersLastName;
+    
+    @Column
+    private String curp;
+    
+    @Column
+    private String gender;
+    
+    @Column
+    private String town;
+    
+    @Column
+    private String cellphone;
     
     @Column (name = "fingerprint")
     private byte[] template;
@@ -46,19 +62,19 @@ public class Employee implements Serializable {
     public Employee(String name) {
         this.name = name;
     }
-
+    
     public int getId() {
         return id;
     }
-
+    
     public void setId(int id) {
         this.id = id;
     }
-
+    
     public Shift getShift() {
         return shift;
     }
-
+    
     public void setShift(Shift shift) {
         this.shift = shift;
     }

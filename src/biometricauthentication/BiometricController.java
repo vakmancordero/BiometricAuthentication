@@ -58,8 +58,9 @@ public class BiometricController implements Initializable {
         
         this.initServices();
         this.initInformation();
-        this.initObserver();
         this.initDialogs();
+        
+        this.initObserver();
         
         readerThread = new Thread(readerEvent);
         readerThread.start();
@@ -199,10 +200,10 @@ public class BiometricController implements Initializable {
         
         stage.setOnCloseRequest((WindowEvent event) -> {
             
-            readerEvent.setIsRunning(true);
-            readerThread = new Thread(readerEvent);
-            
-            readerThread.start();
+//            readerEvent.setIsRunning(true);
+//            readerThread = new Thread(readerEvent);
+//            
+//            readerThread.start();
             
         });
         

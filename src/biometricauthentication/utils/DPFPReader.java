@@ -30,7 +30,7 @@ public class DPFPReader {
         this.activeReader = this.selectReader();
     }
     
-    private String selectReader() throws IndexOutOfBoundsException {
+    private String selectReader() {
         
         DPFPReadersCollection readers = DPFPGlobal.getReadersFactory().getReaders();
         
@@ -72,6 +72,7 @@ public class DPFPReader {
                     }
                     
                 }
+                
             });
             
             capture.addReaderStatusListener(new DPFPReaderStatusAdapter() {
