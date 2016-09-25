@@ -14,7 +14,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table (name = "binnacle_record")
-@SuppressWarnings("ValidAttributes")
 public class BinnacleRecord implements Serializable {
     
     @Id
@@ -43,6 +42,15 @@ public class BinnacleRecord implements Serializable {
     
     @Column
     private String observation;
+
+    public BinnacleRecord() {
+    }
+
+    public BinnacleRecord(Date date, int employee_id, String check_in) {
+        this.date = date;
+        this.employee_id = employee_id;
+        this.check_in = check_in;
+    }
 
     public int getId() {
         return id;

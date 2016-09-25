@@ -10,7 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="314.0" prefWidth="642.0" style="-fx-background-color: rgb(250, 250, 250);" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.BiometricController">
+<AnchorPane id="AnchorPane" prefHeight="369.0" prefWidth="716.0" style="-fx-background-color: rgb(250, 250, 250);" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.BiometricController">
    <children>
       <ToolBar layoutX="14.0" layoutY="467.0" prefHeight="25.0" prefWidth="747.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <items>
@@ -21,7 +21,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="Archivo">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem mnemonicParsing="false" text="Salir" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Herramientas">
@@ -31,34 +31,34 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Ayuda">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" text="Acerca de" />
             </items>
           </Menu>
         </menus>
       </MenuBar>
-      <Label fx:id="hourLabel" alignment="CENTER" layoutY="110.0" text="08:39:45 PM" textFill="#41404d" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+      <Label fx:id="hourLabel" alignment="CENTER" layoutY="110.0" text="08:39:45 PM" textFill="#41404d" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0">
          <font>
-            <Font name="Francois One" size="96.0" />
+            <Font size="102.0" />
          </font>
       </Label>
-      <Label layoutX="14.0" layoutY="31.0" text="Bienvenido" textFill="#00000080" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="30.0">
+      <Label layoutX="10.0" layoutY="64.0" text="Bienvenido" textFill="#00000080" AnchorPane.leftAnchor="10.0">
          <font>
-            <Font name="System Bold" size="30.0" />
+            <Font name="System Bold" size="36.0" />
          </font>
       </Label>
       <Label fx:id="dateLabel" layoutX="14.0" layoutY="202.0" text="00/00/00" textFill="#000000cf" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="10.0">
          <font>
-            <Font name="System Bold" size="26.0" />
+            <Font name="System Bold" size="36.0" />
          </font>
       </Label>
       <Label fx:id="dayLabel" layoutX="370.0" layoutY="194.0" text="Miercoles" textFill="#000000cf" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="10.0">
          <font>
-            <Font name="System Bold" size="26.0" />
+            <Font name="System Bold" size="36.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutY="197.0" text="Check-In" textFill="#000000c7" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <Label layoutX="14.0" layoutY="33.0" text="Control de Asistencias e Inasistencias" textFill="#317d8f82" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="32.0">
          <font>
-            <Font size="24.0" />
+            <Font name="System Bold" size="24.0" />
          </font>
       </Label>
    </children>
