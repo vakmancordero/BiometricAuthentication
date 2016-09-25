@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table (name = "binnacle_records")
+@Table (name = "binnacle_record")
 @SuppressWarnings("ValidAttributes")
 public class BinnacleRecord implements Serializable {
     

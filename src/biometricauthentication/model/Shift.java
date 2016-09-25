@@ -17,7 +17,7 @@ import org.hibernate.annotations.Type;
  * @author VakSF
  */
 @Entity
-@Table (name = "shifts")
+@Table (name = "shift")
 public class Shift implements Serializable {
     
     @Id
