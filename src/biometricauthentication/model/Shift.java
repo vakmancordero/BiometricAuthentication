@@ -1,16 +1,11 @@
 package biometricauthentication.model;
 
-import static javax.persistence.TemporalType.DATE;
-
-import javax.persistence.Temporal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
 
-import org.hibernate.annotations.Type;
 
 /**
  *
@@ -27,14 +22,10 @@ public class Shift implements Serializable {
     private String description;
     
     @Column
-    @Type(type="date")
-    @Temporal(DATE)
-    private Date check_in;
+    private String check_in;
     
     @Column
-    @Type(type="date")
-    @Temporal(DATE)
-    private Date check_out;
+    private String check_out;
     
     @Column
     private int to_work;
@@ -58,19 +49,19 @@ public class Shift implements Serializable {
         this.description = description;
     }
     
-    public Date getCheck_in() {
+    public String getCheck_in() {
         return check_in;
     }
     
-    public void setCheck_in(Date check_in) {
+    public void setCheck_in(String check_in) {
         this.check_in = check_in;
     }
     
-    public Date getCheck_out() {
+    public String getCheck_out() {
         return check_out;
     }
     
-    public void setCheck_out(Date check_out) {
+    public void setCheck_out(String check_out) {
         this.check_out = check_out;
     }
     

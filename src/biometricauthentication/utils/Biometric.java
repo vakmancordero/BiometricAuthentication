@@ -1,8 +1,8 @@
 package biometricauthentication.utils;
 
 import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
-import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
 import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
+import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
 import com.digitalpersona.onetouch.verification.DPFPVerification;
 import com.digitalpersona.onetouch.DPFPDataPurpose;
 import com.digitalpersona.onetouch.DPFPFeatureSet;
@@ -12,6 +12,7 @@ import com.digitalpersona.onetouch.DPFPTemplate;
 
 import java.io.File;
 import java.io.IOException;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,18 +21,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.LinkedHashMap;
 
-import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import biometricauthentication.model.BinnacleRecord;
 import biometricauthentication.model.Employee;
 import biometricauthentication.model.Shift;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -102,50 +108,91 @@ public class Biometric {
         return binnacleRecord;
     }
     
-    private String getSimpleDate(Date date) {
+    private String getSimpleDate(Date date, String type) {
         
         Calendar calendar = Calendar.getInstance();        
         calendar.setTime(date);
+                
+        if (type.equals("time")) {
+            
+            return calendar.get(Calendar.HOUR_OF_DAY) + ":"
+                    + calendar.get(Calendar.MINUTE) + ":"
+                    + calendar.get(Calendar.SECOND);
+            
+        } else {
+            
+            if (type.equals("date")) {
+                
+                return calendar.get(Calendar.DAY_OF_MONTH) + "-"
+                        + calendar.get(Calendar.MONTH) + "-"
+                        + calendar.get(Calendar.YEAR);
+                
+            }
+            
+        }
         
-        return calendar.get(Calendar.DAY_OF_MONTH) + "-"
-              + calendar.get(Calendar.MONTH) + "-"
-              + calendar.get(Calendar.YEAR);
+        return null;
         
     }
     
-    private Date parseSimpleDate(Date date) {
+    private Date parseSimpleDate(Date date, String type) {
         
-        String simpleDate = getSimpleDate(date);
+        DateFormat df = type.equals("time") ? 
+                new SimpleDateFormat("HH:mm:ss") : 
+                new SimpleDateFormat("dd-MM-yyyy");
         
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String simpleDate = getSimpleDate(date, type);
         
         try {
+            
             return df.parse(simpleDate);
+            
         } catch (ParseException ex) {
+            
             return null;
+            
         }
     }
     
-    public String saveBinnacleRecord(Employee employee) {
+    private Date parseSimpleDate(String date, String type) {
+        
+        DateFormat df = type.equals("time") ? 
+                new SimpleDateFormat("HH:mm:ss") : 
+                new SimpleDateFormat("dd-MM-yyyy");
+        
+        try {
+            
+            return df.parse(date);
+            
+        } catch (ParseException ex) {
+            
+            return null;
+            
+        }
+        
+    }
+    
+    public Information saveBinnacleRecord(Employee employee) {
         
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         
-        String operation = null;
+        String operation = null, verification = null;
         
         /*
-            Obtener la fecha actual
+            Se obtiene la fecha actual
         */
         Date currentDate = new Date();
         
         /*
-            Obtener el último registro del empleado.
+            Se obtiene el último registro del empleado.
         */
         BinnacleRecord lastBinnacleRecord = getLastBinnacleRecord(employee);
         
         /*
             En caso que ya exista un registro
         */
+        
         if (lastBinnacleRecord != null) {
             
             /*
@@ -160,12 +207,18 @@ public class Biometric {
             */
             if (check_in == null) {
                 
-                lastBinnacleRecord.setCheck_in(check_in);
+                verification = this.verifyRange(employee, currentDate, "check_in");
                 
-                /*
-                    La operación es de entrada
-                */
-                operation = "Entrada";
+                if (!verification.equals("early")) {
+                    
+                    lastBinnacleRecord.setCheck_in(new SimpleDateFormat("HH:mm:ss").format(currentDate));
+                
+                    /*
+                        La operación es de entrada
+                    */
+                    operation = "Entrada";
+                    
+                }
             
             /*
                 Si existe un Check In, se verifica la
@@ -184,12 +237,18 @@ public class Biometric {
                 */
                 if (check_out == null) {
                     
-                    lastBinnacleRecord.setCheck_out(new SimpleDateFormat("HH:mm:ss").format(currentDate));
+                    verification = this.verifyRange(employee, currentDate, "check_out");
                     
-                    /*
-                        La operación es de salida
-                    */
-                    operation = "Salida";
+                    if (!verification.equals("early")) {
+                        
+                        lastBinnacleRecord.setCheck_out(new SimpleDateFormat("HH:mm:ss").format(currentDate));
+
+                        /*
+                            La operación es de salida
+                        */
+                        operation = "Salida";
+                        
+                    }
                 
                 /*
                     En caso que ya exista un registro completo
@@ -201,12 +260,16 @@ public class Biometric {
                     /*
                         Se obtiene la fecha simple del último registro
                     */
-                    Date lastBinnacleRecordDate = this.parseSimpleDate(lastBinnacleRecord.getDate());
+                    Date lastBinnacleRecordDate = this.parseSimpleDate(
+                            lastBinnacleRecord.getDate(), "date"
+                    );
                     
                     /*
                         Se asigna la fecha simple del registro actual a la fecha actual
                     */
-                    currentDate = this.parseSimpleDate(currentDate);
+                    currentDate = this.parseSimpleDate(
+                            currentDate, "date"
+                    );
                     
                     /*
                         Se realiza la comprobación de fechas.
@@ -219,7 +282,7 @@ public class Biometric {
                         /*
                             Creación de un nuevo registro.
                         */
-                        this.createBinnacleRecord(employee, currentDate);
+                        verification = this.createBinnacleRecord(employee, currentDate);
             
                         operation = "Entrada";
                         
@@ -231,6 +294,7 @@ public class Biometric {
                     } else {
                         
                         operation = "same_day";
+                        verification = "same_day";
                         
                     }
                     
@@ -242,6 +306,7 @@ public class Biometric {
                 Finalmente se realiza una actualización
                 a la base de datos.
             */
+            
             session.saveOrUpdate(lastBinnacleRecord);   
             
         /*
@@ -251,43 +316,195 @@ public class Biometric {
         } else {
             
             /*
-                Creación de un nuevo registro.
-            */
-            this.createBinnacleRecord(employee, currentDate);
+            Creación de un nuevo registro.
+             */
+            verification = this.createBinnacleRecord(employee, currentDate);
             
             operation = "Entrada";
             
         }
         
+        Information info = new Information(operation, verification);
+        
         transaction.commit();
         session.flush(); session.close();
         
-        return operation;
+        return info;
         
     }
     
-    public void createBinnacleRecord(Employee employee, Date currentDate) {
+    public String createBinnacleRecord(Employee employee, Date currentDate) {
         
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         
         /*
-            Se crea un nuevo registro.
-            Se establecen los atributos date, employee_id, check_in.
-        */
-        BinnacleRecord binnacleRecord = new BinnacleRecord(
-                currentDate, employee.getId(), new SimpleDateFormat("HH:mm:ss").format(currentDate)
-        );
+        Se crea un nuevo registro.
+        Se establecen los atributos date, employee_id, check_in.
+         */
         
-        /*
-            Se inserta el nuevo registro.
-        */
-        session.save(binnacleRecord);
+        String verified = this.verifyRange(employee, currentDate, "check_in");
+        
+        if (!verified.equals("early")) {
+            
+            BinnacleRecord binnacleRecord = new BinnacleRecord(
+                    currentDate, employee.getId(), new SimpleDateFormat("HH:mm:ss").format(currentDate)
+            );
+
+            /*
+                Se inserta el nuevo registro.
+            */
+            session.save(binnacleRecord);
+            
+        }
         
         transaction.commit();
 
         session.flush(); session.close();
         
+        return verified;
+        
+    }
+    
+    private String verifyRange(Employee employee, Date currentDate, String type) {
+        
+        Shift shift = employee.getShift();
+        
+        currentDate = this.parseSimpleDate(currentDate, "time");
+        
+        if (type.equals("check_in")) {
+            
+            String check_in_st = shift.getCheck_in();
+            
+            Date check_in = this.parseSimpleDate(check_in_st, "time");
+            
+            check_in = this.parseSimpleDate(check_in, "time");
+            
+            Map<TimeUnit, Long> computeDiff = computeDiff(check_in, currentDate);
+            
+            int hours = computeDiff.get(TimeUnit.HOURS).intValue();
+            int minutes = computeDiff.get(TimeUnit.MINUTES).intValue();
+            
+            System.out.println("Horas = " + hours);
+            System.out.println("Minutos = " + minutes);
+            
+            int early = -15;
+            int normal = 15;
+            int lack = 30;
+            
+            if (hours == 0) {
+                
+                if (minutes < 0) {
+                    
+                    if (minutes >= early) {
+                        
+                        return "normal";
+
+                    } else {
+                        
+                        return "early";
+                        
+                    }
+                    
+                } else {
+                    
+                    if (minutes <= normal) {
+                        
+                        return "normal";
+                        
+                    } else {
+                        
+                        if (minutes < lack) {
+                            
+                            return "late";
+                            
+                        } else {
+                            
+                            return "lack";
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            } else {
+                
+                return "lack";
+                
+            }
+            
+        } else {
+            
+            if (type.equals("check_out")) {
+                
+                System.out.println("checkOut");
+                
+                String check_out_st = shift.getCheck_out();
+            
+                Date check_out = this.parseSimpleDate(check_out_st, "time");
+
+                check_out = this.parseSimpleDate(check_out, "time");
+
+                Map<TimeUnit, Long> computeDiff = computeDiff(check_out, currentDate);
+
+                int hours = computeDiff.get(TimeUnit.HOURS).intValue();
+                int minutes = computeDiff.get(TimeUnit.MINUTES).intValue();
+                
+                System.out.println("Horas = " + hours);
+                System.out.println("Minutos = " + minutes);
+
+                int early = -10;
+                int maxHours = 4;
+
+                if (hours >= 0 && hours < maxHours) {
+                    
+                    if (minutes < early || minutes == 0) {
+
+                        return "early";
+
+                    } else {
+                        
+                        return "normal_out";
+                        
+                    }
+                    
+                } else {
+                    
+                    return "early";
+                    
+                }
+                
+            }
+            
+        }
+        
+        return "empty";
+    }
+    
+    public Map<TimeUnit,Long> computeDiff(Date oldDate, Date currentDate) {
+        
+        long diffInMillies = currentDate.getTime() - oldDate.getTime();
+        
+        List<TimeUnit> units = new ArrayList<>(EnumSet.allOf(TimeUnit.class));
+        
+        Collections.reverse(units);
+        
+        Map<TimeUnit,Long> result = new LinkedHashMap<>();
+        
+        long milliesRest = diffInMillies;
+        
+        for (TimeUnit unit : units) {
+            
+            long diff = unit.convert(milliesRest, TimeUnit.MILLISECONDS);
+            long diffInMilliesForUnit = unit.toMillis(diff);
+            
+            milliesRest = milliesRest - diffInMilliesForUnit;
+            result.put(unit, diff);
+            
+        }
+        
+        return result;
     }
     
     public List<Shift> getShifts() {

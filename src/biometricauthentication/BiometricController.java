@@ -1,34 +1,42 @@
 package biometricauthentication;
 
-import biometricauthentication.utils.Biometric;
-import biometricauthentication.model.Employee;
-import biometricauthentication.utils.Reader;
 import biometricauthentication.dialog.DialogEmployeeController;
+
+import biometricauthentication.model.Employee;
+
+import biometricauthentication.utils.Biometric;
+import biometricauthentication.utils.Reader;
 import biometricauthentication.utils.Clock;
+import biometricauthentication.utils.Information;
 
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
+
 import javafx.application.Platform;
 import javafx.concurrent.Service;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+
 import javafx.scene.Scene;
+import javafx.stage.WindowEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
-import javafx.stage.WindowEvent;
 
 /**
  *
@@ -100,15 +108,24 @@ public class BiometricController implements Initializable {
 
                         if (verified) {
                             
-                            String operation = biometric.saveBinnacleRecord(employee);
+                            Information info = biometric.saveBinnacleRecord(employee);
                             
-                            if (!operation.equals("same_day")) {
+                            if (!info.getVerification().equals("early")) {
                                 
-                                this.openDialogEmployee(employee, operation);
+                                if (!info.getOperation().equals("same_day")) {
+                                
+                                    this.openDialogEmployee(employee, info);
+
+                                } else {
+
+                                    notFound.setContentText("Usted ya ha checado un turno completo");
+                                    notFound.show();
+
+                                }
                                 
                             } else {
                                 
-                                notFound.setContentText("Usted ya ha checado un turno completo");
+                                notFound.setContentText("Aún es muy temprano para checar");
                                 notFound.show();
                                 
                             }
@@ -167,7 +184,7 @@ public class BiometricController implements Initializable {
         
     }
     
-    private void openDialogEmployee(Employee employee, String operation) {
+    private void openDialogEmployee(Employee employee, Information info) {
         
         try {
             
@@ -179,7 +196,7 @@ public class BiometricController implements Initializable {
             
             DialogEmployeeController employeeDialog = loader.<DialogEmployeeController>getController();
             
-            employeeDialog.initData(employee, this.hourLabel.getText(), operation);
+            employeeDialog.initData(employee, this.hourLabel.getText(), info);
             
             this.found.show();
             
