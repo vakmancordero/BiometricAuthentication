@@ -72,8 +72,16 @@ public class Biometric {
         
     }
     
+    /**
+     * Retorna el ultimo registro del empleado que recibe.
+     * 
+     * @param employee es el empleado que contiene el registro a buscar
+     * @return      El último registro del empleado
+     * @see         BinnacleRecord
+     */
     private BinnacleRecord getLastBinnacleRecord(Employee employee) {
         
+        // Se obtiene el ID del empleado
         int employee_id = employee.getId();
         
         Session session = sessionFactory.openSession();
@@ -108,17 +116,36 @@ public class Biometric {
         return binnacleRecord;
     }
     
+    /**
+     * Retorna una fecha simple en base a un tipo y una fecha definida.
+     * El tipo puede ser "time" o "date"
+     * 
+     * @param date es una fecha completa
+     * @param type el tipo a convertir
+     * @return      la fecha esperada en base al tipo
+     */
     private String getSimpleDate(Date date, String type) {
         
-        Calendar calendar = Calendar.getInstance();        
+        // Se obtiene un calendario
+        Calendar calendar = Calendar.getInstance();
+        
+        // Se le establece una fecha
         calendar.setTime(date);
-                
+        
+        /*
+            Si el tipo es por tiempo, se retornará un String
+            en forma de tiempo separado por dos puntos.
+        */
         if (type.equals("time")) {
             
             return calendar.get(Calendar.HOUR_OF_DAY) + ":"
                     + calendar.get(Calendar.MINUTE) + ":"
                     + calendar.get(Calendar.SECOND);
-            
+        
+        /*
+            Si el tipo es por fecha, se retornará un String
+            en forma de fecha separado por guiones medios.
+        */
         } else {
             
             if (type.equals("date")) {
@@ -135,17 +162,32 @@ public class Biometric {
         
     }
     
+    /**
+     * Parsea y retorna una fecha simple en base a un tipo y una fecha definida.
+     * El tipo puede ser "time" o "date"
+     * 
+     * @param date es una fecha completa
+     * @param type el tipo a convertir
+     * @return      la fecha esperada en base al tipo
+     * @see         Date
+     */
     private Date parseSimpleDate(Date date, String type) {
         
-        DateFormat df = type.equals("time") ? 
+        // Se obtiene un formato específico
+        DateFormat dateFormat = type.equals("time") ? 
+                
+                // Si el tipo es de tiempo
                 new SimpleDateFormat("HH:mm:ss") : 
+                
+                // Si el tipo es de fecha
                 new SimpleDateFormat("dd-MM-yyyy");
         
         String simpleDate = getSimpleDate(date, type);
         
         try {
             
-            return df.parse(simpleDate);
+            // Se parsea la fecha
+            return dateFormat.parse(simpleDate);
             
         } catch (ParseException ex) {
             
@@ -154,15 +196,31 @@ public class Biometric {
         }
     }
     
-    private Date parseSimpleDate(String date, String type) {
+    
+    /**
+     * Parsea y retorna una fecha simple en base a un tipo y una cadena.
+     * El tipo puede ser "time" o "date"
+     * 
+     * @param dateSt es una fecha en String
+     * @param type el tipo a convertir
+     * @return      la fecha esperada en base al tipo
+     * @see         Date
+     */
+    private Date parseSimpleDate(String dateSt, String type) {
         
-        DateFormat df = type.equals("time") ? 
-                new SimpleDateFormat("HH:mm:ss") : 
+        // Se obtiene un formato específico
+        DateFormat dateFormat = type.equals("time") ? 
+                
+                // Si el tipo es de tiempo
+                new SimpleDateFormat("HH:mm:ss") :
+                
+                // Si el tipo es de fecha
                 new SimpleDateFormat("dd-MM-yyyy");
         
         try {
             
-            return df.parse(date);
+            // Se parsea la fecha
+            return dateFormat.parse(dateSt);
             
         } catch (ParseException ex) {
             
@@ -172,6 +230,14 @@ public class Biometric {
         
     }
     
+    /**
+     * Retorna la información del guardado en bitácora.
+     * El tipo puede ser "time" o "date"
+     * 
+     * @param employee especifica a que empleado se le guadará la bitacora
+     * @return      informacion del guardado
+     * @see         Information
+     */
     public Information saveBinnacleRecord(Employee employee) {
         
         Session session = sessionFactory.openSession();
@@ -282,6 +348,9 @@ public class Biometric {
                         /*
                             Creación de un nuevo registro.
                         */
+                        
+                        currentDate = new Date();
+                        
                         verification = this.createBinnacleRecord(employee, currentDate);
             
                         operation = "Entrada";
@@ -316,8 +385,8 @@ public class Biometric {
         } else {
             
             /*
-            Creación de un nuevo registro.
-             */
+                Creación de un nuevo registro.
+            */
             verification = this.createBinnacleRecord(employee, currentDate);
             
             operation = "Entrada";
@@ -339,9 +408,9 @@ public class Biometric {
         Transaction transaction = session.beginTransaction();
         
         /*
-        Se crea un nuevo registro.
-        Se establecen los atributos date, employee_id, check_in.
-         */
+            Se crea un nuevo registro.
+            Se establecen los atributos date, employee_id, check_in.
+        */
         
         String verified = this.verifyRange(employee, currentDate, "check_in");
         
@@ -373,6 +442,8 @@ public class Biometric {
         currentDate = this.parseSimpleDate(currentDate, "time");
         
         if (type.equals("check_in")) {
+            
+            System.out.println("CheckIn");
             
             String check_in_st = shift.getCheck_in();
             
@@ -430,7 +501,15 @@ public class Biometric {
                 
             } else {
                 
-                return "lack";
+                if (hours < 0) {
+                    
+                    return "early";
+                    
+                } else {
+                    
+                    return "lack";
+                    
+                }
                 
             }
             
@@ -438,7 +517,7 @@ public class Biometric {
             
             if (type.equals("check_out")) {
                 
-                System.out.println("checkOut");
+                System.out.println("CheckOut");
                 
                 String check_out_st = shift.getCheck_out();
             
@@ -483,6 +562,9 @@ public class Biometric {
     }
     
     public Map<TimeUnit,Long> computeDiff(Date oldDate, Date currentDate) {
+        
+        System.out.println(oldDate);
+        System.out.println(currentDate);
         
         long diffInMillies = currentDate.getTime() - oldDate.getTime();
         

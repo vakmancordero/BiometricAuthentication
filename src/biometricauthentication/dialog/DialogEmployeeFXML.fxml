@@ -19,7 +19,7 @@
                <children>
                   <AnchorPane layoutX="-135.0" layoutY="-48.0" prefHeight="569.0" prefWidth="467.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <StackPane layoutX="57.0" layoutY="110.0" prefHeight="0.0" prefWidth="0.0" style="-fx-padding: 10; -fx-background-color: rgba(142,142,142, 0.2);">
+                        <StackPane layoutX="77.0" layoutY="110.0" prefHeight="0.0" prefWidth="0.0" style="-fx-padding: 10; -fx-background-color: rgba(142,142,142, 0.2);" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="75.0">
                            <children>
                               <ImageView fx:id="imageView" fitHeight="298.0" fitWidth="456.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
