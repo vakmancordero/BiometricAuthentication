@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -23,16 +24,19 @@ public class BinnacleRecord implements Serializable {
     private int operation;
     
     @Column
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date date;
     
     @Column
     private int employee_id;
     
     @Column
-    private String check_in;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date check_in;
     
     @Column
-    private String check_out;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date check_out;
     
     @Column
     private int hours_worked;
@@ -46,7 +50,7 @@ public class BinnacleRecord implements Serializable {
     public BinnacleRecord() {
     }
 
-    public BinnacleRecord(Date date, int employee_id, String check_in) {
+    public BinnacleRecord(Date date, int employee_id, Date check_in) {
         this.date = date;
         this.employee_id = employee_id;
         this.check_in = check_in;
@@ -84,19 +88,19 @@ public class BinnacleRecord implements Serializable {
         this.employee_id = employee_id;
     }
 
-    public String getCheck_in() {
+    public Date getCheck_in() {
         return check_in;
     }
 
-    public void setCheck_in(String check_in) {
+    public void setCheck_in(Date check_in) {
         this.check_in = check_in;
     }
 
-    public String getCheck_out() {
+    public Date getCheck_out() {
         return check_out;
     }
 
-    public void setCheck_out(String check_out) {
+    public void setCheck_out(Date check_out) {
         this.check_out = check_out;
     }
 

@@ -16,7 +16,7 @@ import javafx.scene.image.ImageView;
  *
  * @author VakSF
  */
-public class DialogEmployeeController implements Initializable {
+public class EmployeeDialogController implements Initializable {
     
     @FXML
     private Label nameLabel, hourLabel, operationLabel, verificationLabel;
@@ -29,7 +29,7 @@ public class DialogEmployeeController implements Initializable {
         
     }
     
-    public void initData(Employee employee, String hour, Information info) {
+    public void setData(Employee employee, String hour, Information info) {
         
         this.nameLabel.setText(employee.getName());
         this.hourLabel.setText(hour);

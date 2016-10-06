@@ -22,6 +22,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -34,10 +38,7 @@ import org.hibernate.Transaction;
 import biometricauthentication.model.BinnacleRecord;
 import biometricauthentication.model.Employee;
 import biometricauthentication.model.Shift;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+
 
 /**
  *
@@ -51,8 +52,19 @@ public class Biometric {
         this.sessionFactory = HibernateUtil.getSessionFactory();   
     }
     
+    /**
+     * Guarda un empleado
+     * 
+     * @param user Nombre de usuario¡
+     * @param password Contraseña de usuario
+     * @return La existencia del usuario
+     */
     public boolean login(String user, String password) {
         
+        /*
+            Se obtiene un registro correspondiente
+            al usuario y contraseña
+        */
         return sessionFactory.openSession().createSQLQuery(
                 "SELECT * FROM user_account WHERE "
               + "user = '" + user + "' AND password = '" + password + "'"
@@ -60,11 +72,20 @@ public class Biometric {
         
     }
     
+    /**
+     * Guarda un empleado
+     * 
+     * @param employee es el empleado que se guardará
+     * @see         Employee
+     */
     public void saveEmployee(Employee employee) {
         
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         
+        /*
+            Se guarda o actualiza el empleado
+        */
         session.saveOrUpdate(employee);
         
         transaction.commit();
@@ -91,6 +112,10 @@ public class Biometric {
         
         try {
             
+            /*
+                Se obtienen los registros, se ordenan en orden descendiente y 
+                se devuelve un único registro
+            */
             binnacleRecord = (BinnacleRecord) session.createQuery(
                     "FROM BinnacleRecord where employee_id = " + employee_id + " order by id desc"
             ).setMaxResults(1).uniqueResult();
@@ -264,7 +289,7 @@ public class Biometric {
             /*
                 Se obtiene el Check In del último registro
             */
-            String check_in = lastBinnacleRecord.getCheck_in();
+            Date check_in = lastBinnacleRecord.getCheck_in();
             
             /*
                 Se comprueba si existe un Check In 
@@ -277,7 +302,7 @@ public class Biometric {
                 
                 if (!verification.equals("early")) {
                     
-                    lastBinnacleRecord.setCheck_in(new SimpleDateFormat("HH:mm:ss").format(currentDate));
+                    lastBinnacleRecord.setCheck_in(currentDate);
                 
                     /*
                         La operación es de entrada
@@ -295,7 +320,7 @@ public class Biometric {
                 /*
                     Se obtiene el Check Out del último registro
                 */
-                String check_out = lastBinnacleRecord.getCheck_out();
+                Date check_out = lastBinnacleRecord.getCheck_out();
                 
                 /*
                     Se comprueba si existe un Check Out
@@ -307,7 +332,7 @@ public class Biometric {
                     
                     if (!verification.equals("early")) {
                         
-                        lastBinnacleRecord.setCheck_out(new SimpleDateFormat("HH:mm:ss").format(currentDate));
+                        lastBinnacleRecord.setCheck_out(currentDate);
 
                         /*
                             La operación es de salida
@@ -417,7 +442,7 @@ public class Biometric {
         if (!verified.equals("early")) {
             
             BinnacleRecord binnacleRecord = new BinnacleRecord(
-                    currentDate, employee.getId(), new SimpleDateFormat("HH:mm:ss").format(currentDate)
+                    currentDate, employee.getId(), currentDate
             );
 
             /*
@@ -451,10 +476,10 @@ public class Biometric {
             
             check_in = this.parseSimpleDate(check_in, "time");
             
-            Map<TimeUnit, Long> computeDiff = computeDiff(check_in, currentDate);
+            Map<TimeUnit, Long> difference = getDifference(check_in, currentDate);
             
-            int hours = computeDiff.get(TimeUnit.HOURS).intValue();
-            int minutes = computeDiff.get(TimeUnit.MINUTES).intValue();
+            int hours = difference.get(TimeUnit.HOURS).intValue();
+            int minutes = difference.get(TimeUnit.MINUTES).intValue();
             
             System.out.println("Horas = " + hours);
             System.out.println("Minutos = " + minutes);
@@ -525,10 +550,10 @@ public class Biometric {
 
                 check_out = this.parseSimpleDate(check_out, "time");
 
-                Map<TimeUnit, Long> computeDiff = computeDiff(check_out, currentDate);
+                Map<TimeUnit, Long> difference = getDifference(check_out, currentDate);
 
-                int hours = computeDiff.get(TimeUnit.HOURS).intValue();
-                int minutes = computeDiff.get(TimeUnit.MINUTES).intValue();
+                int hours = difference.get(TimeUnit.HOURS).intValue();
+                int minutes = difference.get(TimeUnit.MINUTES).intValue();
                 
                 System.out.println("Horas = " + hours);
                 System.out.println("Minutos = " + minutes);
@@ -561,10 +586,7 @@ public class Biometric {
         return "empty";
     }
     
-    public Map<TimeUnit,Long> computeDiff(Date oldDate, Date currentDate) {
-        
-        System.out.println(oldDate);
-        System.out.println(currentDate);
+    public Map<TimeUnit,Long> getDifference(Date oldDate, Date currentDate) {
         
         long diffInMillies = currentDate.getTime() - oldDate.getTime();
         
@@ -703,39 +725,6 @@ public class Biometric {
         
     }
     
-    /*
-    public byte[] serializeFile(File file) throws IOException {
-        
-        byte[] bytes = new byte[(int) file.length()];
-            
-        FileInputStream inputStream = new FileInputStream(file);
-        
-        inputStream.read(bytes);
-        
-        return bytes;
-    }
-    
-    public File deserializeFile(Employee employee) {
-        
-        File file = new File("image.jpg");
-        
-        try {
-            
-            byte[] bytes = employee.getPhoto();
-            
-            FileOutputStream fos = new FileOutputStream(file);
-            
-            fos.write(bytes);
-            
-        } catch (IOException | NullPointerException ex) {
-            
-        }
-        
-        return file;
-        
-    }
-    */
-    
     public boolean saveFile(Employee employee, File file) throws IOException {
         
         /*
@@ -779,7 +768,7 @@ public class Biometric {
             Se establece una instancia de un archivo, 
             el cual será recuperado.
         */
-        File file = new File(url); 
+        File file = new File(url);
         
         /*
             Si el archivo existe, se retornará.
