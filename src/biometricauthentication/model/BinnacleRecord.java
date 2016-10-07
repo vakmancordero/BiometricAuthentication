@@ -24,18 +24,15 @@ public class BinnacleRecord implements Serializable {
     private int operation;
     
     @Column
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date date;
     
     @Column
     private int employee_id;
     
     @Column
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date check_in;
     
     @Column
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date check_out;
     
     @Column

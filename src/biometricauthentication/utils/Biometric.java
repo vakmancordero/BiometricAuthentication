@@ -13,18 +13,10 @@ import com.digitalpersona.onetouch.DPFPTemplate;
 import java.io.File;
 import java.io.IOException;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -36,6 +28,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import biometricauthentication.model.BinnacleRecord;
+import biometricauthentication.model.Company;
 import biometricauthentication.model.Employee;
 import biometricauthentication.model.Shift;
 
@@ -47,9 +40,36 @@ import biometricauthentication.model.Shift;
 public class Biometric {
     
     private SessionFactory sessionFactory;
+    
+    private DateUtil dateUtil;
+    
+    private Check check;
 
     public Biometric() {   
         this.sessionFactory = HibernateUtil.getSessionFactory();   
+        this.dateUtil = new DateUtil();
+        this.check = new Check();
+        
+        this.createRoot();
+    }
+    
+    /**
+     * Crea la carpeta raíz de las imágenes
+     */
+    private void createRoot() {
+        
+        File file = new File("C:\\Biometric\\");
+        
+        if (!file.exists()) {
+            
+            if (file.mkdir()) {
+                
+                System.out.println("Root creado: " + file.getAbsolutePath());
+                
+            }
+            
+        }
+        
     }
     
     /**
@@ -142,120 +162,6 @@ public class Biometric {
     }
     
     /**
-     * Retorna una fecha simple en base a un tipo y una fecha definida.
-     * El tipo puede ser "time" o "date"
-     * 
-     * @param date es una fecha completa
-     * @param type el tipo a convertir
-     * @return      la fecha esperada en base al tipo
-     */
-    private String getSimpleDate(Date date, String type) {
-        
-        // Se obtiene un calendario
-        Calendar calendar = Calendar.getInstance();
-        
-        // Se le establece una fecha
-        calendar.setTime(date);
-        
-        /*
-            Si el tipo es por tiempo, se retornará un String
-            en forma de tiempo separado por dos puntos.
-        */
-        if (type.equals("time")) {
-            
-            return calendar.get(Calendar.HOUR_OF_DAY) + ":"
-                    + calendar.get(Calendar.MINUTE) + ":"
-                    + calendar.get(Calendar.SECOND);
-        
-        /*
-            Si el tipo es por fecha, se retornará un String
-            en forma de fecha separado por guiones medios.
-        */
-        } else {
-            
-            if (type.equals("date")) {
-                
-                return calendar.get(Calendar.DAY_OF_MONTH) + "-"
-                        + calendar.get(Calendar.MONTH) + "-"
-                        + calendar.get(Calendar.YEAR);
-                
-            }
-            
-        }
-        
-        return null;
-        
-    }
-    
-    /**
-     * Parsea y retorna una fecha simple en base a un tipo y una fecha definida.
-     * El tipo puede ser "time" o "date"
-     * 
-     * @param date es una fecha completa
-     * @param type el tipo a convertir
-     * @return      la fecha esperada en base al tipo
-     * @see         Date
-     */
-    private Date parseSimpleDate(Date date, String type) {
-        
-        // Se obtiene un formato específico
-        DateFormat dateFormat = type.equals("time") ? 
-                
-                // Si el tipo es de tiempo
-                new SimpleDateFormat("HH:mm:ss") : 
-                
-                // Si el tipo es de fecha
-                new SimpleDateFormat("dd-MM-yyyy");
-        
-        String simpleDate = getSimpleDate(date, type);
-        
-        try {
-            
-            // Se parsea la fecha
-            return dateFormat.parse(simpleDate);
-            
-        } catch (ParseException ex) {
-            
-            return null;
-            
-        }
-    }
-    
-    
-    /**
-     * Parsea y retorna una fecha simple en base a un tipo y una cadena.
-     * El tipo puede ser "time" o "date"
-     * 
-     * @param dateSt es una fecha en String
-     * @param type el tipo a convertir
-     * @return      la fecha esperada en base al tipo
-     * @see         Date
-     */
-    private Date parseSimpleDate(String dateSt, String type) {
-        
-        // Se obtiene un formato específico
-        DateFormat dateFormat = type.equals("time") ? 
-                
-                // Si el tipo es de tiempo
-                new SimpleDateFormat("HH:mm:ss") :
-                
-                // Si el tipo es de fecha
-                new SimpleDateFormat("dd-MM-yyyy");
-        
-        try {
-            
-            // Se parsea la fecha
-            return dateFormat.parse(dateSt);
-            
-        } catch (ParseException ex) {
-            
-            return null;
-            
-        }
-        
-    }
-    
-    /**
      * Retorna la información del guardado en bitácora.
      * El tipo puede ser "time" o "date"
      * 
@@ -330,7 +236,7 @@ public class Biometric {
                     
                     verification = this.verifyRange(employee, currentDate, "check_out");
                     
-                    if (!verification.equals("early")) {
+                    if (!verification.equals("temprano")) {
                         
                         lastBinnacleRecord.setCheck_out(currentDate);
 
@@ -351,14 +257,14 @@ public class Biometric {
                     /*
                         Se obtiene la fecha simple del último registro
                     */
-                    Date lastBinnacleRecordDate = this.parseSimpleDate(
+                    Date lastBinnacleRecordDate = this.dateUtil.parseSimpleDate(
                             lastBinnacleRecord.getDate(), "date"
                     );
                     
                     /*
                         Se asigna la fecha simple del registro actual a la fecha actual
                     */
-                    currentDate = this.parseSimpleDate(
+                    currentDate = this.dateUtil.parseSimpleDate(
                             currentDate, "date"
                     );
                     
@@ -441,8 +347,10 @@ public class Biometric {
         
         if (!verified.equals("early")) {
             
+            Date newDate = new Date();
+            
             BinnacleRecord binnacleRecord = new BinnacleRecord(
-                    currentDate, employee.getId(), currentDate
+                    newDate, employee.getId(), newDate 
             );
 
             /*
@@ -464,151 +372,51 @@ public class Biometric {
         
         Shift shift = employee.getShift();
         
-        currentDate = this.parseSimpleDate(currentDate, "time");
+        currentDate = this.dateUtil.parseSimpleDate(currentDate, "time");
         
         if (type.equals("check_in")) {
             
-            System.out.println("CheckIn");
+            String checkInSt = shift.getCheck_in();
             
-            String check_in_st = shift.getCheck_in();
+            Date checkIn = this.dateUtil.parseSimpleDate(checkInSt, "time");
             
-            Date check_in = this.parseSimpleDate(check_in_st, "time");
+            Map<TimeUnit, Long> difference = this.dateUtil.getDifference(checkIn, currentDate);
             
-            check_in = this.parseSimpleDate(check_in, "time");
+            int hours = this.dateUtil.getHours(difference);
+            int minutes = this.dateUtil.getMinutes(difference);
             
-            Map<TimeUnit, Long> difference = getDifference(check_in, currentDate);
+            this.dateUtil.printDifference(difference);
             
-            int hours = difference.get(TimeUnit.HOURS).intValue();
-            int minutes = difference.get(TimeUnit.MINUTES).intValue();
+            String cin = this.check.checkIn(hours, minutes);
             
-            System.out.println("Horas = " + hours);
-            System.out.println("Minutos = " + minutes);
+            System.out.println(cin);
             
-            int early = -15;
-            int normal = 15;
-            int lack = 30;
-            
-            if (hours == 0) {
-                
-                if (minutes < 0) {
-                    
-                    if (minutes >= early) {
-                        
-                        return "normal";
-
-                    } else {
-                        
-                        return "early";
-                        
-                    }
-                    
-                } else {
-                    
-                    if (minutes <= normal) {
-                        
-                        return "normal";
-                        
-                    } else {
-                        
-                        if (minutes < lack) {
-                            
-                            return "late";
-                            
-                        } else {
-                            
-                            return "lack";
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            } else {
-                
-                if (hours < 0) {
-                    
-                    return "early";
-                    
-                } else {
-                    
-                    return "lack";
-                    
-                }
-                
-            }
+            return cin;
             
         } else {
             
             if (type.equals("check_out")) {
                 
-                System.out.println("CheckOut");
-                
-                String check_out_st = shift.getCheck_out();
+                String checkOutSt = shift.getCheck_out();
             
-                Date check_out = this.parseSimpleDate(check_out_st, "time");
+                Date checkOut = this.dateUtil.parseSimpleDate(checkOutSt, "time");
 
-                check_out = this.parseSimpleDate(check_out, "time");
+                Map<TimeUnit, Long> difference = this.dateUtil.getDifference(checkOut, currentDate);
 
-                Map<TimeUnit, Long> difference = getDifference(check_out, currentDate);
-
-                int hours = difference.get(TimeUnit.HOURS).intValue();
-                int minutes = difference.get(TimeUnit.MINUTES).intValue();
+                int hours = this.dateUtil.getHours(difference);
+                int minutes = this.dateUtil.getMinutes(difference);
                 
-                System.out.println("Horas = " + hours);
-                System.out.println("Minutos = " + minutes);
-
-                int early = -10;
-                int maxHours = 4;
-
-                if (hours >= 0 && hours < maxHours) {
-                    
-                    if (minutes < early || minutes == 0) {
-
-                        return "early";
-
-                    } else {
-                        
-                        return "normal_out";
-                        
-                    }
-                    
-                } else {
-                    
-                    return "early";
-                    
-                }
+                String cout = this.check.checkOut(hours, minutes);
+                
+                System.out.println(checkOut);
+                
+                return cout;
                 
             }
             
         }
         
-        return "empty";
-    }
-    
-    public Map<TimeUnit,Long> getDifference(Date oldDate, Date currentDate) {
-        
-        long diffInMillies = currentDate.getTime() - oldDate.getTime();
-        
-        List<TimeUnit> units = new ArrayList<>(EnumSet.allOf(TimeUnit.class));
-        
-        Collections.reverse(units);
-        
-        Map<TimeUnit,Long> result = new LinkedHashMap<>();
-        
-        long milliesRest = diffInMillies;
-        
-        for (TimeUnit unit : units) {
-            
-            long diff = unit.convert(milliesRest, TimeUnit.MILLISECONDS);
-            long diffInMilliesForUnit = unit.toMillis(diff);
-            
-            milliesRest = milliesRest - diffInMilliesForUnit;
-            result.put(unit, diff);
-            
-        }
-        
-        return result;
+        return "early";
     }
     
     public List<Shift> getShifts() {
@@ -627,6 +435,45 @@ public class Biometric {
         try {
             
             shifts = session.createQuery("FROM Shift").list();
+            
+            transaction.commit();
+             
+        } catch (HibernateException ex) {
+            
+            ex.printStackTrace();
+              
+            if (transaction != null) {
+                
+                transaction.rollback();
+                
+            }
+             
+        } finally {
+            
+            session.close();
+            
+        }
+        
+        return shifts;
+        
+    }
+    
+    public List<Company> getCompanies() {
+        
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        /*
+            Se crea una lista para almacenar las compañias.
+        */
+        List<Company> shifts = new ArrayList<>();
+        
+        /*
+            Se obtienen las compañias existentes.
+        */
+        try {
+            
+            shifts = session.createQuery("FROM Company").list();
             
             transaction.commit();
              

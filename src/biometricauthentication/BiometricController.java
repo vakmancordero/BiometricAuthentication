@@ -83,6 +83,8 @@ public class BiometricController implements Initializable {
         
         this.employeeDialog = new Stage();
         
+        this.initDialogEmployee();
+        
     }
     
     private void initObserver() {
@@ -111,7 +113,7 @@ public class BiometricController implements Initializable {
                             
                             Information info = biometric.saveBinnacleRecord(employee);
                             
-                            if (!info.getVerification().equals("early")) {
+                            if (!info.getVerification().equals("temprano")) {
                                 
                                 if (!info.getOperation().equals("same_day")) {
                                 

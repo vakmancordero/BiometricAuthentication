@@ -40,6 +40,7 @@ import biometricauthentication.utils.DPFPReader;
 
 import static biometricauthentication.BiometricController.readerEvent;
 import static biometricauthentication.BiometricController.readerThread;
+import biometricauthentication.model.Company;
 import javafx.scene.layout.Pane;
 
 
@@ -59,10 +60,13 @@ public class AdminController implements Initializable {
     private Pane blockPane;
     
     @FXML
-    private TextField companyTF, nameTF;
+    private TextField companyTF, nameTF, createNameTF, lastNameTF, mothersLastNameTF;
     
     @FXML
-    private ComboBox<Shift> shiftCB;
+    private ComboBox<Shift> shiftCB, createShiftCB;
+    
+    @FXML
+    private ComboBox<Company> companyCB;
     
     @FXML
     private TableView<Employee> employeesTV;
@@ -87,9 +91,11 @@ public class AdminController implements Initializable {
         
         this.employeesTV.setItems(employeesList);
         
+        this.fillShifts();
+        
         this.fillEmployees();
         
-        this.fillShifts();
+        this.fillCompanies();
         
         this.initTV();
         
@@ -130,7 +136,23 @@ public class AdminController implements Initializable {
         this.shiftCB.getItems().addAll(biometric.getShifts());
         
         if (!this.shiftCB.getItems().isEmpty()) {
+            
             this.shiftCB.getSelectionModel().selectFirst();
+            
+            this.createShiftCB.getItems().addAll(shiftCB.getItems());
+            
+            this.createShiftCB.getSelectionModel().selectFirst();
+            
+        }
+        
+    }
+    
+    private void fillCompanies() {
+        
+        this.companyCB.getItems().addAll(biometric.getCompanies());
+        
+        if (!this.companyCB.getItems().isEmpty()) {
+            this.companyCB.getSelectionModel().selectFirst();
         }
         
     }
@@ -138,6 +160,30 @@ public class AdminController implements Initializable {
     private void fillEmployees() {
         
         this.employeesList.addAll(biometric.getEmployees());
+        
+    }
+    
+    @FXML
+    private void saveEmployee() {
+        
+        String name = this.createNameTF.getText();
+        String lastName = this.lastNameTF.getText();
+        String mothersLastName = this.mothersLastNameTF.getText();
+        
+        Shift shift = this.createShiftCB.getValue();
+        Company company = this.companyCB.getValue();
+        
+        Employee employee = new Employee(
+                name, lastName, mothersLastName, shift, company
+        );
+        
+        biometric.saveEmployee(employee);
+        
+        new Alert(
+                Alert.AlertType.INFORMATION, "Empleado creado", ButtonType.OK
+        ).showAndWait();
+        
+        this.employeesList.add(employee);
         
     }
     

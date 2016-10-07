@@ -61,6 +61,14 @@ public class Employee implements Serializable {
     public Employee(String name) {
         this.name = name;
     }
+
+    public Employee(String name, String lastName, String mothersLastName, Shift shift, Company company) {
+        this.name = name;
+        this.lastName = lastName;
+        this.mothersLastName = mothersLastName;
+        this.shift = shift;
+        this.company = company;
+    }
     
     public int getId() {
         return id;
@@ -105,9 +113,49 @@ public class Employee implements Serializable {
     public String getLastName() {
         return lastName;
     }
-
+    
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getMothersLastName() {
+        return mothersLastName;
+    }
+
+    public void setMothersLastName(String mothersLastName) {
+        this.mothersLastName = mothersLastName;
+    }
+
+    public String getCurp() {
+        return curp;
+    }
+
+    public void setCurp(String curp) {
+        this.curp = curp;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getCellphone() {
+        return cellphone;
+    }
+
+    public void setCellphone(String cellphone) {
+        this.cellphone = cellphone;
     }
     
     public byte[] getTemplate() {

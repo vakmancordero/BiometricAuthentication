@@ -94,7 +94,7 @@
                                           <Font name="System Bold" size="30.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="operationLabel" alignment="TOP_LEFT" prefHeight="100.0" prefWidth="250.0" text="Operation" textFill="#ae2020">
+                                    <Label fx:id="operationLabel" alignment="TOP_LEFT" prefHeight="100.0" prefWidth="250.0" text="Operation" textFill="#2169ad">
                                        <font>
                                           <Font name="Freestyle Script" size="72.0" />
                                        </font>
