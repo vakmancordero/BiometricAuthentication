@@ -101,10 +101,6 @@ public class BiometricController implements Initializable {
                     
                     DPFPTemplate template = biometric.deserializeTemplate(employee);
                     
-                    if (errorDialog.isShowing()) errorDialog.close();
-                    
-                    if (employeeDialog.isShowing()) employeeDialog.close();
-                    
                     if (template != null) {
                         
                         verified = biometric.verify(sample, template);
@@ -116,9 +112,9 @@ public class BiometricController implements Initializable {
                             if (!info.getVerification().equals("temprano")) {
                                 
                                 if (!info.getOperation().equals("same_day")) {
-                                
+                                        
                                     this.openDialogEmployee(employee, info);
-
+                                    
                                 } else {
 
                                     errorDialog.setContentText("Usted ya ha checado un turno completo");
@@ -148,11 +144,46 @@ public class BiometricController implements Initializable {
 
                 }
                 
+                this.closeDialogs();
+                
+                
             });
         };
         
         readerEvent = new Reader();
         readerEvent.addObserver(observer);
+        
+    }
+    
+    private void closeDialogs() {
+        
+        if (errorDialog.isShowing()) {
+                    
+            try {
+
+                Thread.sleep(3000);
+
+                errorDialog.close();
+
+            } catch (InterruptedException ex) {
+
+            }
+
+        }
+
+        if (employeeDialog.isShowing()) {
+
+            try {
+
+                Thread.sleep(3000);
+
+                employeeDialog.close();
+
+            } catch (InterruptedException ex) {
+
+            }
+
+        }
         
     }
     

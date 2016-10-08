@@ -24,6 +24,7 @@ public class BiometricAuthentication extends Application {
             System.exit(0);
         });
         
+        stage.setResizable(false);
         stage.setTitle("Biometric Authentication");
         stage.setScene(scene);
         stage.show();

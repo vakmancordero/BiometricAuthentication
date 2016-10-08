@@ -12,12 +12,15 @@ import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+
+import javafx.scene.layout.Pane;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
@@ -40,8 +43,10 @@ import biometricauthentication.utils.DPFPReader;
 
 import static biometricauthentication.BiometricController.readerEvent;
 import static biometricauthentication.BiometricController.readerThread;
+
 import biometricauthentication.model.Company;
-import javafx.scene.layout.Pane;
+import biometricauthentication.utils.Check;
+import biometricauthentication.utils.XMLUtil;
 
 
 /**
@@ -69,6 +74,9 @@ public class AdminController implements Initializable {
     private ComboBox<Company> companyCB;
     
     @FXML
+    private ComboBox<Integer> earlyInCB, normalInCB, lateInCB, earlyOutCB, normalOutCB;
+    
+    @FXML
     private TableView<Employee> employeesTV;
     
     private ObservableList<Employee> employeesList;
@@ -91,22 +99,74 @@ public class AdminController implements Initializable {
         
         this.employeesTV.setItems(employeesList);
         
-        this.fillShifts();
-        
-        this.fillEmployees();
-        
-        this.fillCompanies();
+        this.initCBs();
         
         this.initTV();
         
         if (!this.employeesList.isEmpty()) {
             
             this.employeesTV.getSelectionModel().selectFirst();
+            
             this.blockPane.setVisible(false);
             
         }
         
         this.accordion.setExpandedPane(first);
+        
+        this.setXMLCBs();
+        
+    }
+    
+    private void initCBs() {
+        
+        this.fillShifts();
+        
+        this.fillEmployees();
+        
+        this.fillCompanies();
+        
+        this.initXMLConfigCBs();
+        
+    }
+    
+    private void initXMLConfigCBs() {
+        
+        for (int i = 0; i <= 59; i++) {
+            
+            this.normalInCB.getItems().add(i);
+            
+            this.lateInCB.getItems().add(i);
+            
+        }
+        
+        for (int i = 0; i >= -59; i--) {
+            
+            this.earlyInCB.getItems().add(i);
+            
+            this.earlyOutCB.getItems().add(i);
+            
+        }
+        
+        this.normalOutCB.getItems().addAll(1, 2, 3, 4, 5);
+        
+        
+        this.earlyInCB.getSelectionModel().selectFirst();   this.normalInCB.getSelectionModel().selectFirst();
+            
+        this.lateInCB.getSelectionModel().selectFirst();    this.earlyOutCB.getSelectionModel().selectFirst();
+        
+        this.normalOutCB.getSelectionModel().selectFirst();
+        
+    }
+    
+    private void setXMLCBs() {
+        
+        Check check = this.biometric.getCheck();
+        
+        this.earlyInCB.setValue(check.getEarlyIn());    this.normalInCB.setValue(check.getNormalIn());
+        
+        this.lateInCB.setValue(check.getLateIn());    this.earlyOutCB.setValue(check.getEarlyOut());    
+        
+        this.normalOutCB.setValue(check.getNormalOut());
         
     }
     
@@ -320,6 +380,40 @@ public class AdminController implements Initializable {
                 ).show();
                 
             }
+            
+        }
+        
+    }
+    
+    @FXML
+    private void setXMLConfiguration() {
+        
+        /* CheckIn */
+        Integer earlyIn = this.earlyInCB.getValue();
+        Integer normalIn = this.normalInCB.getValue();
+        Integer lateIn = this.lateInCB.getValue();
+        
+        /* CheckOut */
+        Integer earlyOut = this.earlyOutCB.getValue();
+        Integer normalOut = this.normalOutCB.getValue();
+        
+        XMLUtil xmlUtil = new XMLUtil("BConfig.xml");
+        
+        boolean built = xmlUtil.buildConfig(
+                earlyIn, normalIn, lateIn, earlyOut, normalOut
+        );
+        
+        if (built) {
+            
+            Check check = xmlUtil.getConfig();
+            
+            this.biometric.setCheck(check);
+            
+            new Alert(
+                    Alert.AlertType.INFORMATION,
+                    "Se ha establecido la nueva configuración\n" + xmlUtil.getConfig(),
+                    ButtonType.OK
+            ).show();
             
         }
         

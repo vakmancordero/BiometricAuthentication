@@ -8,6 +8,7 @@ import com.digitalpersona.onetouch.capture.event.DPFPDataEvent;
 import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusAdapter;
 import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusEvent;
 import com.digitalpersona.onetouch.readers.DPFPReadersCollection;
+
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -76,9 +77,9 @@ public class DPFPReader {
             });
             
             capture.addReaderStatusListener(new DPFPReaderStatusAdapter() {
-
+                
                 int lastStatus = DPFPReaderStatusEvent.READER_CONNECTED;
-
+                
                 @Override
                 public void readerConnected(DPFPReaderStatusEvent event) {
 

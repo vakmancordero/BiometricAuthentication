@@ -20,11 +20,11 @@ public class Reader extends Observable implements Runnable {
     @Override
     public void run() {
 
-        while (isRunning) {
+        while (this.isRunning) {
             
-            myReader.findReader();
+            this.myReader.findReader();
             
-            if (!myReader.getActiveReader().equals("empty")) {
+            if (!this.myReader.getActiveReader().equals("empty")) {
                 
                 try {
 

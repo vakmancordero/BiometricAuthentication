@@ -33,6 +33,7 @@ public class EmployeeDialogController implements Initializable {
         
         this.nameLabel.setText(employee.getName());
         this.hourLabel.setText(hour);
+        
         this.operationLabel.setText(info.getOperation());
         this.verificationLabel.setText(info.getVerification());
         

@@ -25,14 +25,54 @@ public class Check {
         
     }
     
-    public void setEntrada(int earlyIn, int normalIn, int lateIn) {
+    public void setCheckIn(int earlyIn, int normalIn, int lateIn) {
         this.earlyIn = earlyIn;
         this.normalIn = normalIn;
         this.lateIn = lateIn;
     }
     
-    public void setSalida(int earlyOut, int normalOut) {
+    public void setCheckOut(int earlyOut, int normalOut) {
         this.earlyOut = earlyOut;
+        this.normalOut = normalOut;
+    }
+
+    public int getEarlyIn() {
+        return earlyIn;
+    }
+
+    public void setEarlyIn(int earlyIn) {
+        this.earlyIn = earlyIn;
+    }
+
+    public int getNormalIn() {
+        return normalIn;
+    }
+
+    public void setNormalIn(int normalIn) {
+        this.normalIn = normalIn;
+    }
+
+    public int getLateIn() {
+        return lateIn;
+    }
+
+    public void setLateIn(int lateIn) {
+        this.lateIn = lateIn;
+    }
+
+    public int getEarlyOut() {
+        return earlyOut;
+    }
+
+    public void setEarlyOut(int earlyOut) {
+        this.earlyOut = earlyOut;
+    }
+
+    public int getNormalOut() {
+        return normalOut;
+    }
+
+    public void setNormalOut(int normalOut) {
         this.normalOut = normalOut;
     }
     
@@ -130,6 +170,15 @@ public class Check {
             
         }
         
+    }
+
+    @Override
+    public String toString() {
+        return "\nCheckIn:\n\tearlyIn: " + this.earlyIn + 
+               "\n\tnormalIn: " + this.normalIn + 
+               "\n\tlateIn: " + this.lateIn + 
+               "\nCheckOut:\n\tearlyOut: " + this.earlyOut +
+               "\n\tnormalOut: " + this.normalOut;
     }
     
 }

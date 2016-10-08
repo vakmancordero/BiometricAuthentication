@@ -45,12 +45,42 @@ public class Biometric {
     
     private Check check;
 
-    public Biometric() {   
+    public Biometric() {
+        
         this.sessionFactory = HibernateUtil.getSessionFactory();   
+        
         this.dateUtil = new DateUtil();
-        this.check = new Check();
+        
+        XMLUtil xmlUtil = new XMLUtil("BConfig.xml");
+        
+        Check getCheck = xmlUtil.getConfig();
+        
+        if (getCheck != null) {
+            
+            this.check = getCheck;
+            
+        } else {
+            
+            System.out.println(
+                    "No se ha podido cargar la configuracion\n" + 
+                    "Se creara una por defecto..."
+            );
+            
+            this.check = new Check();
+            
+            xmlUtil.buildConfig(check);
+            
+        }
         
         this.createRoot();
+    }
+
+    public Check getCheck() {
+        return check;
+    }
+
+    public void setCheck(Check check) {
+        this.check = check;
     }
     
     /**
