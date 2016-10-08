@@ -75,7 +75,7 @@ public class Biometric {
     /**
      * Guarda un empleado
      * 
-     * @param user Nombre de usuario¡
+     * @param user Nombre de usuario
      * @param password Contraseña de usuario
      * @return La existencia del usuario
      */
@@ -123,7 +123,7 @@ public class Biometric {
     private BinnacleRecord getLastBinnacleRecord(Employee employee) {
         
         // Se obtiene el ID del empleado
-        int employee_id = employee.getId();
+        int employeeId = employee.getId();
         
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -137,7 +137,7 @@ public class Biometric {
                 se devuelve un único registro
             */
             binnacleRecord = (BinnacleRecord) session.createQuery(
-                    "FROM BinnacleRecord where employee_id = " + employee_id + " order by id desc"
+                    "FROM BinnacleRecord where employee_id = " + employeeId + " order by id desc"
             ).setMaxResults(1).uniqueResult();
             
             transaction.commit();
@@ -163,7 +163,6 @@ public class Biometric {
     
     /**
      * Retorna la información del guardado en bitácora.
-     * El tipo puede ser "time" o "date"
      * 
      * @param employee especifica a que empleado se le guadará la bitacora
      * @return      informacion del guardado
@@ -184,7 +183,7 @@ public class Biometric {
         /*
             Se obtiene el último registro del empleado.
         */
-        BinnacleRecord lastBinnacleRecord = getLastBinnacleRecord(employee);
+        BinnacleRecord lastBinnacleRecord = this.getLastBinnacleRecord(employee);
         
         /*
             En caso que ya exista un registro
@@ -206,7 +205,7 @@ public class Biometric {
                 
                 verification = this.verifyRange(employee, currentDate, "check_in");
                 
-                if (!verification.equals("early")) {
+                if (!verification.equals("temprano")) {
                     
                     lastBinnacleRecord.setCheck_in(currentDate);
                 
@@ -333,6 +332,14 @@ public class Biometric {
         
     }
     
+    /**
+     * Crea un registro en la bitácora.
+     * 
+     * @param employee especifica a que empleado se le creará la bitacora
+     * @param currentDate es una nueva fecha
+     * @return      informacion de la operación
+     * @see         Employee
+     */
     public String createBinnacleRecord(Employee employee, Date currentDate) {
         
         Session session = sessionFactory.openSession();
@@ -345,14 +352,14 @@ public class Biometric {
         
         String verified = this.verifyRange(employee, currentDate, "check_in");
         
-        if (!verified.equals("early")) {
+        if (!verified.equals("temprano")) {
             
             Date newDate = new Date();
             
             BinnacleRecord binnacleRecord = new BinnacleRecord(
                     newDate, employee.getId(), newDate 
             );
-
+            
             /*
                 Se inserta el nuevo registro.
             */
@@ -361,35 +368,62 @@ public class Biometric {
         }
         
         transaction.commit();
-
+        
         session.flush(); session.close();
         
         return verified;
         
     }
     
+    /**
+     * Verifica un rango de tiempo
+     * 
+     * @param employee especifica a que empleado se le obtendrá el turno
+     * @param currentDate es una nueva fecha
+     * @param type es el tipo de operacion (entrada o salida)
+     * @return      informacion de la operación
+     * @see         Shift
+     */
     private String verifyRange(Employee employee, Date currentDate, String type) {
         
+        /*
+            Se obtiene el turno del empleado
+        */
         Shift shift = employee.getShift();
         
+        /*
+            Se convierte la fecha actual a una fecha de tiempo
+        */
         currentDate = this.dateUtil.parseSimpleDate(currentDate, "time");
         
+        /*
+            Si la operación es de entrada
+        */
         if (type.equals("check_in")) {
             
+            /* Se obtiene el checkIn del turno */
             String checkInSt = shift.getCheck_in();
             
+            /* Se convierte el checkIn del turno a una fecha de tiempo */
             Date checkIn = this.dateUtil.parseSimpleDate(checkInSt, "time");
             
+            /*
+                Se obtiene una diferencia de tiempo entre 2 fechas de tiempo
+            */
             Map<TimeUnit, Long> difference = this.dateUtil.getDifference(checkIn, currentDate);
             
+            /*
+                Se obtienen las horas y minutos de diferencia
+            */
             int hours = this.dateUtil.getHours(difference);
             int minutes = this.dateUtil.getMinutes(difference);
             
             this.dateUtil.printDifference(difference);
             
+            /*
+                Horas y minutos se envían como argumento al CheckIn
+            */
             String cin = this.check.checkIn(hours, minutes);
-            
-            System.out.println(cin);
             
             return cin;
             
@@ -397,18 +431,27 @@ public class Biometric {
             
             if (type.equals("check_out")) {
                 
+                /* Se obtiene el checkIn del turno */
                 String checkOutSt = shift.getCheck_out();
-            
+                
+                /* Se convierte el checkIn del turno a una fecha de tiempo */
                 Date checkOut = this.dateUtil.parseSimpleDate(checkOutSt, "time");
-
+                
+                /*
+                    Se obtiene una diferencia de tiempo entre 2 fechas de tiempo
+                */
                 Map<TimeUnit, Long> difference = this.dateUtil.getDifference(checkOut, currentDate);
-
+                
+                /*
+                    Horas y minutos se envían como argumento al CheckIn
+                */
                 int hours = this.dateUtil.getHours(difference);
                 int minutes = this.dateUtil.getMinutes(difference);
                 
+                /*
+                    Horas y minutos se envían como argumento al CheckOut
+                */
                 String cout = this.check.checkOut(hours, minutes);
-                
-                System.out.println(checkOut);
                 
                 return cout;
                 

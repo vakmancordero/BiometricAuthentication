@@ -127,7 +127,7 @@ public class BinnacleRecord implements Serializable {
     
     @Override
     public String toString() {
-        return this.id + " : " + this.operation + " : " + this.date + " : " 
+        return this.id + " : " + this.operation + " : " + this.date.toString() + " : " 
              + this.check_in + " : " + this.check_out;
     }
     

@@ -65,7 +65,7 @@ public class BiometricController implements Initializable {
         
         this.biometric = new Biometric();
         
-        this.initServices();
+        this.initClock();
         this.initInformation();
         this.initDialogs();
         this.initObserver();
@@ -170,7 +170,7 @@ public class BiometricController implements Initializable {
         
     }
     
-    private void initServices() {
+    private void initClock() {
         
         this.clock = new Clock();
         
@@ -183,7 +183,9 @@ public class BiometricController implements Initializable {
     @FXML
     private void openAuthentication() throws IOException {
         
-        this.openFXML("/biometricauthentication/admin/login/LoginFXML.fxml", "Login");
+        this.openFXML(
+                "/biometricauthentication/admin/login/LoginFXML.fxml", "Login"
+        );
         
     }
     

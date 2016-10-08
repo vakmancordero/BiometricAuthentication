@@ -19,11 +19,15 @@ public class Clock extends Service<Void> {
             @Override
             protected Void call() throws Exception {
                 
+                final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                
                 while (true) {
                     
-                    String hour = new SimpleDateFormat("HH:mm:ss").format(new Date()) + " hrs";
+                    String hour = format.format(new Date()).concat(" hrs");
                     
-                    updateMessage(hour);
+                    super.updateMessage(hour);
+                    
+                    Thread.sleep(1000);
                     
                 }
                 
