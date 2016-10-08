@@ -462,6 +462,12 @@ public class Biometric {
         return "early";
     }
     
+    /**
+     * Obtiene una lista de turnos
+     * 
+     * @return      lista de turnos
+     * @see         Shift
+     */
     public List<Shift> getShifts() {
         
         Session session = sessionFactory.openSession();
@@ -501,6 +507,12 @@ public class Biometric {
         
     }
     
+    /**
+     * Obtiene una lista de compañias
+     * 
+     * @return      lista de compañias
+     * @see         Company
+     */
     public List<Company> getCompanies() {
         
         Session session = sessionFactory.openSession();
@@ -540,6 +552,12 @@ public class Biometric {
         
     }
     
+    /**
+     * Obtiene una lista de empleados
+     * 
+     * @return      lista de empleados
+     * @see         Employee
+     */
     public List<Employee> getEmployees() {
         
         Session session = sessionFactory.openSession();
@@ -579,10 +597,24 @@ public class Biometric {
         
     }
     
-    public byte[] serializeTemplate(DPFPTemplate template) {    
+    /**
+     * Serializa un template
+     * 
+     * @param template es un template de una huella dactilar
+     * @return      un arreglo de bytes
+     * @see         DPFPTemplate
+     */
+    public byte[] serializeTemplate(DPFPTemplate template) {
         return template.serialize();    
     }
     
+    /**
+     * Deserializa un template
+     * 
+     * @param employee es el empleado al que se le obtendrá el template
+     * @return      un template de una huella dactilar
+     * @see         DPFPTemplate
+     */
     public DPFPTemplate deserializeTemplate(Employee employee) {
         
         /*
@@ -615,6 +647,14 @@ public class Biometric {
         
     }
     
+    /**
+     * Guarda un archivo de imagen
+     * 
+     * @param employee es el empleado al que se le guardará la imagen
+     * @param file es la imagen a guardar
+     * @return      si fue guardado o no
+     * @throws java.io.IOException
+     */
     public boolean saveFile(Employee employee, File file) throws IOException {
         
         /*
@@ -647,6 +687,12 @@ public class Biometric {
         return written;
     }
     
+    /**
+     * Obtiene la imagen del empleado
+     * 
+     * @param employee es el empleado al que se le obtendrá la imagen
+     * @return      la imagen del empleado
+     */
     public File getFile(Employee employee) {
         
         /*
@@ -679,20 +725,35 @@ public class Biometric {
         
     }
     
+    /**
+     * Verifica si un sample coincide con un template
+     * 
+     * @param sample es la muestra obtenida por el Reader
+     * @param template es el modelo extraido del empleado
+     * @return      si fue verificado o no
+     */
     public boolean verify(DPFPSample sample, DPFPTemplate template)  {
         
         boolean verified = false;
         
         try {
             
+            /* Se crea un extractor de características */
             DPFPFeatureExtraction featureExtractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
+            
+            /* Se crea un set de características a través de la muestra */
             DPFPFeatureSet featureSet = featureExtractor.createFeatureSet(sample, DPFPDataPurpose.DATA_PURPOSE_VERIFICATION);
             
+            /* Se crea un verificador */
             DPFPVerification matcher = DPFPGlobal.getVerificationFactory().createVerification();
+            
+            /* Se establece la seguridad FAR */
             matcher.setFARRequested(DPFPVerification.MEDIUM_SECURITY_FAR);
             
+            /* Se verifica entre el ser de características y el template */
             DPFPVerificationResult result = matcher.verify(featureSet, template);
             
+            /* Se obtiene el resultado de la verificación */
             verified = result.isVerified();
                         
         } catch (DPFPImageQualityException ex) {
