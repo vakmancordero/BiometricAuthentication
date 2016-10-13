@@ -13,10 +13,10 @@ import com.digitalpersona.onetouch.DPFPTemplate;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -103,7 +103,7 @@ public class Biometric {
     }
     
     /**
-     * Guarda un empleado
+     * Da acceso a un usuario administrador
      * 
      * @param user Nombre de usuario
      * @param password Contraseña de usuario
@@ -224,14 +224,14 @@ public class Biometric {
             /*
                 Se obtiene el Check In del último registro
             */
-            Date check_in = lastBinnacleRecord.getCheck_in();
+            Date checkIn = lastBinnacleRecord.getCheck_in();
             
             /*
                 Se comprueba si existe un Check In 
                 para evitar algún error en el registro.
-                Si no existe, se crea.
+                Si no existe, entonces se crea.
             */
-            if (check_in == null) {
+            if (checkIn == null) {
                 
                 verification = this.verifyRange(employee, currentDate, "check_in");
                 
@@ -255,24 +255,97 @@ public class Biometric {
                 /*
                     Se obtiene el Check Out del último registro
                 */
-                Date check_out = lastBinnacleRecord.getCheck_out();
+                Date checkOut = lastBinnacleRecord.getCheck_out();
                 
                 /*
                     Se comprueba si existe un Check Out
                     Si no existe, se crea.
                 */
-                if (check_out == null) {
+                if (checkOut == null) {
                     
-                    verification = this.verifyRange(employee, currentDate, "check_out");
+                    Date cinDate = this.dateUtil.parseSimpleDate(
+                            lastBinnacleRecord.getCheck_in(), "date"
+                    );
                     
-                    if (!verification.equals("temprano")) {
+                    Date nowDate = this.dateUtil.parseSimpleDate(
+                            currentDate, "date"
+                    );
+                    
+                    Map<TimeUnit, Long> difference = this.dateUtil.getDifference(nowDate, cinDate);
+                    
+                    String description = employee.getShift().getDescription();
+                    
+                    int days = difference.get(TimeUnit.DAYS).intValue();
+                    
+                    if (description.equals("Nocturno")) {
                         
-                        lastBinnacleRecord.setCheck_out(currentDate);
+                        if (days < 0) {
+                            
+                            /* Comprueba si el checkOut puede ser válido */
+                            if (days == -1) {
+                                
+                                verification = this.verifyRange(employee, currentDate, "check_out");
+                                
+                                if (!verification.equals("temprano")) {
+                                    
+                                    lastBinnacleRecord.setCheck_out(currentDate);
+                                    
+                                    /*
+                                        La operación es de salida
+                                    */
+                                    operation = "Salida";
+                                    
+                                }
+                                
+                            } else {
+                                
+                                verification = this.createBinnacleRecord(employee, currentDate);
+                                
+                                operation = "Entrada";
+                                
+                            }
+                            
+                        } else {
+                            
+                            if (days == 0) {
+                                
+                                verification = "temprano";
+                                
+                                operation = "same_day";
+                                
+                            }
+                            
+                        }
+                        
+                    } else {
+                        
+                        if (days == 0) {
+                            
+                            verification = this.verifyRange(employee, currentDate, "check_out");
 
-                        /*
-                            La operación es de salida
-                        */
-                        operation = "Salida";
+                            if (!verification.equals("temprano")) {
+
+                                lastBinnacleRecord.setCheck_out(currentDate);
+
+                                /*
+                                    La operación es de salida
+                                */
+                                operation = "Salida";
+
+                            }
+                            
+                        } else {
+                            
+                            if (days < 0) {
+                                
+                                verification = this.createBinnacleRecord(employee, currentDate);
+                                
+                                operation = "Entrada";
+                                
+                            }
+                            
+                        }
+                        
                         
                     }
                 
@@ -447,8 +520,6 @@ public class Biometric {
             */
             int hours = this.dateUtil.getHours(difference);
             int minutes = this.dateUtil.getMinutes(difference);
-            
-            this.dateUtil.printDifference(difference);
             
             /*
                 Horas y minutos se envían como argumento al CheckIn

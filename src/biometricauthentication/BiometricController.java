@@ -36,6 +36,7 @@ import javafx.stage.StageStyle;
 
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
+import javafx.stage.WindowEvent;
 
 /**
  *
@@ -104,7 +105,7 @@ public class BiometricController implements Initializable {
                     if (template != null) {
                         
                         verified = biometric.verify(sample, template);
-
+                        
                         if (verified) {
                             
                             Information info = biometric.saveBinnacleRecord(employee);
@@ -116,7 +117,7 @@ public class BiometricController implements Initializable {
                                     this.openDialogEmployee(employee, info);
                                     
                                 } else {
-
+                                    
                                     errorDialog.setContentText("Usted ya ha checado un turno completo");
                                     errorDialog.show();
 
@@ -132,20 +133,19 @@ public class BiometricController implements Initializable {
                             return;
 
                         }
-
+                        
                     }
-
+                    
                 }
-
+                
                 if (!verified) {
                     
                     errorDialog.setContentText("No encontrado, inténtelo de nuevo");
                     errorDialog.show();
-
+                    
                 }
                 
                 this.closeDialogs();
-                
                 
             });
         };
@@ -254,6 +254,15 @@ public class BiometricController implements Initializable {
        
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setScene(new Scene((Pane) loader.load()));
+        
+        stage.setOnCloseRequest((WindowEvent event) -> {
+            
+            readerEvent.setIsRunning(true);
+            readerThread = new Thread(readerEvent);
+            
+            readerThread.start();
+            
+        });
         
         stage.setTitle(title);
         
