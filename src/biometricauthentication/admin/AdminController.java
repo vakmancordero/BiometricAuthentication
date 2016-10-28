@@ -52,8 +52,6 @@ import biometricauthentication.model.Company;
 import static biometricauthentication.BiometricController.readerEvent;
 import static biometricauthentication.BiometricController.readerThread;
 
-import biometricauthentication.admin.dialog.ScheduleController;
-
 /**
  *
  * @author Arturh

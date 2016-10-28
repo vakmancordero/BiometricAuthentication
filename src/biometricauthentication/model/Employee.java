@@ -25,19 +25,13 @@ public class Employee implements Serializable {
     @Column (name = "id")
     private int id;
     
-    @OneToOne (optional = true)
-    @JoinColumn(name = "shift_id", insertable = false, updatable = false)
-    @NotFound(action=NotFoundAction.IGNORE)
+    @OneToOne
     private Shift shift;
     
-    @OneToOne (optional = true)
-    @JoinColumn(name = "employeetype_id", insertable = false, updatable = false)
-    @NotFound(action=NotFoundAction.IGNORE)
+    @OneToOne
     private EmployeeType employeetype;
     
-    @OneToOne (optional = true)
-    @JoinColumn(name = "company_id", insertable = false, updatable = false)
-    @NotFound(action=NotFoundAction.IGNORE)
+    @OneToOne
     private Company company;
     
     @Column

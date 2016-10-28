@@ -100,8 +100,6 @@ public class BiometricController implements Initializable {
                 
                 for (Employee employee : biometric.getEmployees()) {
                     
-                    System.out.println(employee);
-                    
                     DPFPTemplate template = biometric.deserializeTemplate(employee);
                     
                     if (template != null) {

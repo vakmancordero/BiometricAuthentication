@@ -1,5 +1,6 @@
 package biometricauthentication.utils.date;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,9 +33,6 @@ public class DateUtil {
      * @return      un mapping con la diferencia de tiempo en unidades
      */
     public Map<TimeUnit, Long> getDifference(Date oldDate, Date currentDate) {
-        
-        System.out.println(oldDate);
-        System.out.println(currentDate);
         
         /*
             Se obtiene la diferencia en milisegundos
@@ -110,7 +108,7 @@ public class DateUtil {
      * @param type el tipo a convertir
      * @return      la fecha esperada en base al tipo
      */
-    public String getSimpleDate(Date date, String type) {
+    public String getSimpleDateTime(Date date, String type) {
         
         // Se obtiene un calendario
         Calendar calendar = Calendar.getInstance();
@@ -177,7 +175,7 @@ public class DateUtil {
                 // Si el tipo es de fecha
                 new SimpleDateFormat("dd-MM-yyyy");
         
-        String simpleDate = getSimpleDate(date, type);
+        String simpleDate = getSimpleDateTime(date, type);
         
         try {
             
@@ -201,7 +199,7 @@ public class DateUtil {
      * @return      la fecha esperada en base al tipo
      * @see         Date
      */
-    public Date parseSimpleDate(String dateSt, String type) {
+    public Date parseSimpleDateTime(String dateSt, String type) {
         
         // Se obtiene un formato específico
         DateFormat dateFormat = type.equals("time") ? 

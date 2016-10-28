@@ -52,6 +52,10 @@ public class ReportRecord {
     public void setAssistance(int assistance) {
         this.assistance = assistance;
     }
+    
+    public void addAssistance() {
+        this.assistance++;
+    }
 
     public int getDeelays() {
         return deelays;
@@ -59,6 +63,10 @@ public class ReportRecord {
 
     public void setDeelays(int deelays) {
         this.deelays = deelays;
+    }
+    
+    public void addDeelay() {
+        this.deelays++;
     }
 
     public int getLacks() {
@@ -68,6 +76,10 @@ public class ReportRecord {
     public void setLacks(int lacks) {
         this.lacks = lacks;
     }
+    
+    public void addLack() {
+        this.lacks++;
+    }
 
     public int getJustifications() {
         return justifications;
@@ -75,6 +87,15 @@ public class ReportRecord {
 
     public void setJustifications(int justifications) {
         this.justifications = justifications;
+    }
+    
+    public void addJustification() {
+        this.justifications++;
+    }
+
+    @Override
+    public String toString() {
+        return "ReportRecord{" + "employee=" + employee + ", employeeType=" + employeeType + ", assistance=" + assistance + ", deelays=" + deelays + ", lacks=" + lacks + ", justifications=" + justifications + '}';
     }
     
 }

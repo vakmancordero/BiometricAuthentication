@@ -7,9 +7,9 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.cell.*?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="694.0" prefWidth="850.0" style="-fx-background-color: white;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="biometricauthentication.admin.dialog.report.ReportsController">
+<AnchorPane id="AnchorPane" prefHeight="694.0" prefWidth="850.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.dialog.report.ReportsController">
    <children>
       <MenuBar layoutX="32.0" layoutY="12.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <menus>
@@ -37,7 +37,7 @@
                   <Font name="Roboto Regular" size="15.0" />
                </font>
             </Label>
-            <JFXComboBox fx:id="companieCB" prefHeight="25.0" prefWidth="415.0" promptText="Elegir compañía" />
+            <JFXComboBox fx:id="companyCB" prefHeight="25.0" prefWidth="415.0" promptText="Elegir compañía" />
          </children>
       </VBox>
       <VBox layoutX="40.0" layoutY="134.0" prefHeight="46.0" prefWidth="226.0">
@@ -95,12 +95,36 @@
       </HBox>
       <TableView fx:id="reportTV" layoutX="47.0" layoutY="344.0" prefHeight="358.0" prefWidth="770.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0">
         <columns>
-          <TableColumn prefWidth="160.0" text="Nombre" />
-          <TableColumn minWidth="8.0" text="Tipo" />
-            <TableColumn prefWidth="100.0" text="Asistencias" />
-            <TableColumn minWidth="0.0" prefWidth="100.0" text="Retardos" />
-            <TableColumn minWidth="0.0" prefWidth="100.0" text="Faltas" />
-            <TableColumn minWidth="0.0" prefWidth="117.0" text="Justificaciones" />
+            <TableColumn prefWidth="160.0" text="Empleado" >
+                <cellValueFactory>
+                    <PropertyValueFactory property="employee" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn minWidth="8.0" text="Tipo" >
+                <cellValueFactory>
+                    <PropertyValueFactory property="employeeType" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn prefWidth="100.0" text="Asistencias" >
+                <cellValueFactory>
+                    <PropertyValueFactory property="assistance" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn minWidth="0.0" prefWidth="100.0" text="Retardos" >
+                <cellValueFactory>
+                    <PropertyValueFactory property="deelays" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn minWidth="0.0" prefWidth="100.0" text="Faltas" >
+                <cellValueFactory>
+                    <PropertyValueFactory property="lacks" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn minWidth="0.0" prefWidth="117.0" text="Justificaciones" >
+                <cellValueFactory>
+                    <PropertyValueFactory property="justifications" />
+                </cellValueFactory>
+            </TableColumn>
         </columns>
       </TableView>
    </children>

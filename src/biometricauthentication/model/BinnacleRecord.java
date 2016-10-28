@@ -1,6 +1,7 @@
 package biometricauthentication.model;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,7 +36,10 @@ public class BinnacleRecord implements Serializable {
     private String day;
     
     @Column
-    private String worked_hours;
+    private Time worked_hours;
+    
+    @Column (name = "report")
+    private String report;
     
     @Column
     private String observation;
@@ -97,12 +101,20 @@ public class BinnacleRecord implements Serializable {
         this.day = day;
     }
 
-    public String getWorked_hours() {
+    public Time getWorked_hours() {
         return worked_hours;
     }
 
-    public void setWorked_hours(String worked_hours) {
+    public void setWorked_hours(Time worked_hours) {
         this.worked_hours = worked_hours;
+    }
+
+    public String getReport() {
+        return report;
+    }
+
+    public void setReport(String report) {
+        this.report = report;
     }
 
     public String getObservation() {
@@ -115,9 +127,9 @@ public class BinnacleRecord implements Serializable {
 
     @Override
     public String toString() {
-        return "BinnacleRecord{" + "id=" + id + ", employeeId=" + employeeId + ", " +
-               "checkIn=" + checkIn + ", checkOut=" + checkOut + ", date=" + date + ", " +
-               "day=" + day + ", worked_hours=" + worked_hours + ", observation=" + observation + '}';
+        return "BinnacleRecord{" + "employeeId=" + employeeId + ", checkIn=" + checkIn + ", "
+             + "checkOut=" + checkOut + ", date=" + date + ", day=" + day + ", worked_hours=" + worked_hours + ", "
+             + "report=" + report + ", observation=" + observation + '}';
     }
     
 }

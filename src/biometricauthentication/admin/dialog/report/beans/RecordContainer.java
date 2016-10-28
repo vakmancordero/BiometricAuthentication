@@ -18,11 +18,9 @@ public class RecordContainer {
     public RecordContainer(List<Employee> employees) {
         this.map = new HashMap<>();
         
-        for (Employee employee : employees) {
+        employees.forEach((employee) -> {
             this.map.put(employee, new ArrayList<>());
-        }
-        
-        System.out.println(map.size());
+        });
     }
 
     public Map<Employee, ArrayList<BinnacleRecord>> getMap() {

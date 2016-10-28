@@ -13,6 +13,8 @@ import com.digitalpersona.onetouch.DPFPTemplate;
 import java.io.File;
 import java.io.IOException;
 
+import java.sql.Time;
+
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +28,7 @@ import java.awt.image.BufferedImage;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -39,8 +42,6 @@ import biometricauthentication.model.Employee;
 import biometricauthentication.model.Shift;
 import biometricauthentication.model.Config;
 import biometricauthentication.model.EmployeeType;
-import java.util.Calendar;
-import org.hibernate.Query;
 
 /**
  *
@@ -166,6 +167,8 @@ public class Biometric {
         Session session = this.sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         
+        System.out.println("Guardado");
+        
         /*
             Se guarda o actualiza el empleado
         */
@@ -206,6 +209,8 @@ public class Biometric {
             transaction.commit();
              
         } catch (HibernateException ex) {
+            
+            ex.printStackTrace();
               
             if (transaction != null) {
                 
@@ -270,8 +275,14 @@ public class Biometric {
                 
                 if (!verification.equals("temprano") && !verification.equals("outOfRange")) {
                     
+                    String day = new SimpleDateFormat("EEEE", new Locale("es", "ES")).format(currentDate);
+                    
                     lastBinnacleRecord.setCheckIn(currentDate);
-                
+                    
+                    lastBinnacleRecord.setReport(verification);
+            
+                    lastBinnacleRecord.setDay(day);
+                    
                     /*
                         La operación es de entrada
                     */
@@ -328,6 +339,8 @@ public class Biometric {
                                     */
                                     operation = "Salida";
                                     
+                                    lastBinnacleRecord = this.setReport(lastBinnacleRecord);
+                                    
                                 }
                                 
                             } else {
@@ -365,10 +378,8 @@ public class Biometric {
                                 */
                                 operation = "Salida";
                                 
-                                String workedHours = getWorkedHours(lastBinnacleRecord);
+                                lastBinnacleRecord = this.setReport(lastBinnacleRecord);
                                 
-                                lastBinnacleRecord.setWorked_hours(workedHours);
-
                             }
                             
                         } else {
@@ -479,6 +490,88 @@ public class Biometric {
         
     }
     
+    private BinnacleRecord setReport(BinnacleRecord binnacleRecord) {
+        
+        Time workedHours = this.getWorkedHours(binnacleRecord);
+                                
+        binnacleRecord.setWorked_hours(workedHours);
+
+        String report = binnacleRecord.getReport();
+
+        if (!report.equalsIgnoreCase("falta")) {
+
+            int maxMinutes =
+                    Math.abs(this.configuration.getLateIn()) + Math.abs(this.configuration.getEarlyOut());
+
+            Time maxTime = new Time(7, maxMinutes, 0);
+
+            Map<TimeUnit, Long> workedTime = this.dateUtil.getDifference(workedHours, maxTime);
+
+            int hrs = workedTime.get(TimeUnit.HOURS).intValue();
+            int min = workedTime.get(TimeUnit.MINUTES).intValue();
+
+            String action = "";
+
+            System.out.println("hrs = " + hrs);
+
+            if (hrs == 0) {
+
+                if (min > 0) {
+
+                    action = "falta";
+
+                } else {
+
+                    int normalIn = this.configuration.getNormalIn();
+
+                    int absMin = Math.abs(min);
+
+                    if (absMin < normalIn) {
+
+                        action = "retardo";
+
+                    } else {
+
+                        action = "normal";
+
+                    }
+
+                }
+
+            } else {
+
+                if (hrs < 0) {
+
+                    action = "normal";
+
+                }
+
+            }
+
+            if (report.equalsIgnoreCase("retardo")) {
+
+                if (action.equals("falta")) {
+
+                    binnacleRecord.setReport(action);
+
+                }
+
+            } else {
+
+                if (report.equalsIgnoreCase("normal")) {
+
+                    binnacleRecord.setReport(action);
+                    
+                }
+
+            }
+
+        }
+        
+        return binnacleRecord;
+        
+    }
+    
     /**
      * Crea un registro en la bitácora.
      * 
@@ -513,6 +606,8 @@ public class Biometric {
             String day = new SimpleDateFormat("EEEE", new Locale("es", "ES")).format(currentDate);
             
             binnacleRecord.setDay(day);
+            
+            binnacleRecord.setReport(verification);
             
             /*
                 Se inserta el nuevo registro.
@@ -559,7 +654,7 @@ public class Biometric {
             String checkInSt = shift.getCheckIn();
             
             /* Se convierte el checkIn del turno a una fecha de tiempo */
-            Date checkIn = this.dateUtil.parseSimpleDate(checkInSt, "time");
+            Date checkIn = this.dateUtil.parseSimpleDateTime(checkInSt, "time");
             
             /*
                 Se obtiene una diferencia de tiempo entre 2 fechas de tiempo
@@ -593,7 +688,7 @@ public class Biometric {
                 String checkOutSt = shift.getCheckOut();
                 
                 /* Se convierte el checkIn del turno a una fecha de tiempo */
-                Date checkOut = this.dateUtil.parseSimpleDate(checkOutSt, "time");
+                Date checkOut = this.dateUtil.parseSimpleDateTime(checkOutSt, "time");
                 
                 /*
                     Se obtiene una diferencia de tiempo entre 2 fechas de tiempo
@@ -620,7 +715,7 @@ public class Biometric {
         return "outOfRange";
     }
     
-    private String getWorkedHours(BinnacleRecord br) {
+    private Time getWorkedHours(BinnacleRecord br) {
         
         Map<TimeUnit, Long> difference = this.dateUtil.getDifference(
                 this.dateUtil.parseSimpleDate(br.getCheckIn(), "time"), 
@@ -630,14 +725,9 @@ public class Biometric {
         int hours = difference.get(TimeUnit.HOURS).intValue();
         int minutes = difference.get(TimeUnit.MINUTES).intValue();
         
-        Calendar calendar = Calendar.getInstance();
+        Time time = new Time(hours, minutes, 0);
         
-        calendar.set(Calendar.HOUR_OF_DAY, hours);
-        calendar.set(Calendar.MINUTE, minutes);
-        
-        String workedHours = this.dateUtil.getSimpleDate(calendar.getTime(), "simpleTime");
-        
-        return workedHours;
+        return time;
     }
     
     /**

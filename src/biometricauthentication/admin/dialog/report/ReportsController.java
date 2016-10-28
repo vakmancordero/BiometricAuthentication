@@ -1,15 +1,20 @@
 package biometricauthentication.admin.dialog.report;
 
+import java.time.Month;
 
-import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.net.URL;
 
 import javafx.util.Callback;
 
-import javafx.event.ActionEvent;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+
+import javafx.event.ActionEvent;
 
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -18,15 +23,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Paint;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 
 import biometricauthentication.admin.dialog.report.beans.ReportRecord;
+
 import biometricauthentication.model.Company;
 import biometricauthentication.model.EmployeeType;
 import biometricauthentication.utils.Biometric;
 import biometricauthentication.utils.Report;
-import com.jfoenix.controls.JFXComboBox;
-import java.time.Month;
-import java.util.List;
 
 /**
  *
@@ -38,7 +42,7 @@ public class ReportsController implements Initializable {
     private TableView<ReportRecord> reportTV;
     
     @FXML
-    private JFXComboBox<Company> companieCB;
+    private JFXComboBox<Company> companyCB;
     
     @FXML
     private JFXComboBox<EmployeeType> typeCB;
@@ -49,12 +53,16 @@ public class ReportsController implements Initializable {
     @FXML
     private JFXComboBox<String> yearCB, fortnightCB;
     
+    private ObservableList<ReportRecord> reportList;
+    
     private Biometric biometric;
     
     private Report report;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        this.reportList = FXCollections.observableArrayList();
         
         this.biometric = new Biometric();
         
@@ -67,7 +75,11 @@ public class ReportsController implements Initializable {
     @FXML
     private void generate() {
         
-        Company company = this.companieCB.getValue();
+        if (!this.reportList.isEmpty()) {
+            this.reportList.clear();
+        }
+        
+        Company company = this.companyCB.getValue();
         
         EmployeeType employeeType = this.typeCB.getValue();
         
@@ -83,44 +95,52 @@ public class ReportsController implements Initializable {
                 company, employeeType, year, month, fortnight
         );
         
+        this.reportList.addAll(reportRecords);
+        
     }
     
     private void fillInputs() {
         
-        this.companieCB.getItems().addAll(
+        this.companyCB.getItems().addAll(
                 this.biometric.getCompanies()
         );
+        
+        this.companyCB.getSelectionModel().selectFirst();
         
         this.typeCB.getItems().addAll(
                 this.biometric.getEmployeeTypes()
         );
         
+        this.typeCB.getSelectionModel().selectFirst();
+        
         this.yearCB.getItems().addAll(
                 "2016", "2017", "2018" 
         );
         
+        this.yearCB.getSelectionModel().selectFirst();
+        
         this.monthCB.getItems().addAll(
                 Month.values()
         );
+        
+        this.monthCB.getSelectionModel().selectFirst();
         
         this.fortnightCB.getItems().addAll(
                 "Primera",
                 "Segunda"
         );
         
+        this.fortnightCB.getSelectionModel().selectFirst();
+        
     }
     
     private void setupTV() {
         
+        this.reportTV.setItems(this.reportList);
+        
         TableColumn detailsColumn = new TableColumn("Detalles");
         
         detailsColumn.setCellFactory(new PropertyValueFactory("details"));
-        
-        JFXButton button = new JFXButton("Ver detalles");
-        
-        button.setTextFill(Paint.valueOf("#ffffff"));
-                        
-        button.setStyle("-fx-background-color: #324E7F");
         
         Callback<TableColumn<ReportRecord, String>, TableCell<ReportRecord, String>> cellFactory = 
                 (TableColumn<ReportRecord, String> value) -> {
@@ -129,6 +149,12 @@ public class ReportsController implements Initializable {
                         
                         @Override
                         protected void updateItem(String item, boolean empty) {
+                            
+                            final JFXButton button = new JFXButton("Ver detalles");
+        
+                            button.setTextFill(Paint.valueOf("#ffffff"));
+
+                            button.setStyle("-fx-background-color: #324E7F");
                             
                             super.updateItem(item, empty);
                             
@@ -142,15 +168,17 @@ public class ReportsController implements Initializable {
                                 
                                 button.setOnAction((ActionEvent event) -> {
                                     
-                                    ReportRecord report = getTableView().getItems().get(
+                                    ReportRecord reportRecord = getTableView().getItems().get(
                                             super.getIndex()
                                     );
                                     
-                                    System.out.println(report.getEmployee());
+                                    System.out.println(reportRecord.toString());
                                     
                                 });
                                 
                                 super.setGraphic(button);
+                                
+                                super.setText(null);
                                 
                             }
                             
@@ -165,8 +193,6 @@ public class ReportsController implements Initializable {
         detailsColumn.setCellFactory(cellFactory);
         
         this.reportTV.getColumns().add(detailsColumn);
-        
-        this.reportTV.getItems().add(new ReportRecord());
         
     }
     

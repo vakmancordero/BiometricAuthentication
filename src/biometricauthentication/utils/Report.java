@@ -1,6 +1,6 @@
 package biometricauthentication.utils;
 
-import biometricauthentication.admin.dialog.report.beans.RecordContainer;
+import java.util.ArrayList;
 import java.util.List;
 import java.time.Month;
 
@@ -8,18 +8,17 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.SQLQuery;
 
 import biometricauthentication.utils.hibernate.HibernateUtil;
 
+import biometricauthentication.admin.dialog.report.beans.RecordContainer;
 import biometricauthentication.admin.dialog.report.beans.ReportRecord;
 
 import biometricauthentication.model.BinnacleRecord;
-import biometricauthentication.model.Company;
-import biometricauthentication.model.Employee;
 import biometricauthentication.model.EmployeeType;
-import java.util.ArrayList;
-
-import org.hibernate.SQLQuery;
+import biometricauthentication.model.Employee;
+import biometricauthentication.model.Company;
 
 /**
  *
@@ -41,6 +40,8 @@ public class Report {
     
     public List<ReportRecord> getReportRecords(Company company, EmployeeType employeeType,
             String year, Month month, String fortnight) {
+        
+        List<ReportRecord> reports = new ArrayList<>();
         
         Session session = this.sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -66,28 +67,67 @@ public class Report {
                 
             }
             
-            String statement = "SELECT * FROM binnacle_record WHERE date BETWEEN "
-                    + "str_to_date(" + initialDate + ", '%Y-%m-%d') AND "
-                    + "str_to_date(" + finalDate + ", '%Y-%m-%d')";
+            String statement = 
+                    "SELECT * FROM binnacle_record WHERE date BETWEEN "
+                        + "str_to_date(" + initialDate + ", '%Y-%m-%d')"
+                        + " AND "
+                        + "str_to_date(" + finalDate + ", '%Y-%m-%d')";
             
             SQLQuery query = session.createSQLQuery(statement);
             
             query.addEntity(BinnacleRecord.class);
             
-            List<BinnacleRecord> records = query.list();
+            List<BinnacleRecord> recordsList = query.list();
             
-            if (records.size() > 0) {
+            if (recordsList.size() > 0) {
                 
-                records.forEach((record) -> {
+                recordsList.forEach((BinnacleRecord binnacleRecord) -> {
                     
-                    System.out.println(record);
+                    Employee employee = (Employee) session.get(
+                            Employee.class, binnacleRecord.getEmployeeId()
+                    );
                     
-                    Employee employee = (Employee) session.get(Employee.class, record.getEmployeeId());
+                    recordContainer.getMap().get(employee).add(binnacleRecord);
                     
-                    System.out.println(employee);
-                    
-                    recordContainer.getMap().get(employee).add(record);
+                });
+                
+                recordContainer.getMap().forEach(
+                        (Employee employee, ArrayList<BinnacleRecord> employeeBinnacleRecords) -> {
+                
+                    ReportRecord reportRecord = new ReportRecord();
 
+                    reportRecord.setEmployee(employee);
+                    
+                    for (BinnacleRecord binnacleRecord : employeeBinnacleRecords) {
+                        
+                        String report = binnacleRecord.getReport();
+                        
+                        if (report.equalsIgnoreCase("normal")) {
+                            
+                            reportRecord.addAssistance();
+                            
+                        } else {
+                            
+                            if (report.equalsIgnoreCase("retardo")) {
+                                
+                                reportRecord.addDeelay();
+                                
+                            } else {
+                                
+                                if (report.equalsIgnoreCase("falta")) {
+                                    
+                                    reportRecord.addLack();
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                    reports.add(reportRecord);
+                    
                 });
                 
             } else {
@@ -96,18 +136,12 @@ public class Report {
                 
             }
             
-            recordContainer.getMap().forEach((Employee employee, ArrayList<BinnacleRecord> list) -> {
-                
-                System.out.println("Employee = " + employee + " : Cantidad = " + list.size());
-                
-            });
-            
             transaction.commit();
              
         } catch (HibernateException ex) {
             
             ex.printStackTrace();
-              
+            
             if (transaction != null) {
                 
                 transaction.rollback();
@@ -120,7 +154,7 @@ public class Report {
             
         }
         
-        return null;
+        return reports;
     }
     
 }
