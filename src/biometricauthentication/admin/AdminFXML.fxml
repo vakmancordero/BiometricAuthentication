@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.cell.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.AdminController">
+<AnchorPane id="AnchorPane" prefHeight="614.0" prefWidth="1300.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.AdminController">
    <children>
       <MenuBar layoutX="22.0" layoutY="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -21,7 +22,8 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Herramientas">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" onAction="#openScheduleConfiguration" text="Configurar horario" />
+                  <MenuItem mnemonicParsing="false" onAction="#openReports" text="Generar reporte" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Ayuda">
@@ -31,13 +33,13 @@
           </Menu>
         </menus>
       </MenuBar>
-      <SplitPane dividerPositions="0.5" layoutX="73.0" layoutY="409.0" prefHeight="413.0" prefWidth="946.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
+      <SplitPane dividerPositions="0.5608628659476117" layoutX="73.0" layoutY="409.0" prefHeight="413.0" prefWidth="946.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <Label alignment="CENTER" layoutX="29.0" layoutY="32.0" prefHeight="34.0" prefWidth="422.0" text="Tabla de empleados" textAlignment="CENTER" textFill="#1e2546bf" textOverrun="CENTER_WORD_ELLIPSIS" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
+                  <Label alignment="CENTER" layoutX="29.0" layoutY="32.0" prefHeight="34.0" prefWidth="422.0" text="Tabla de empleados" textAlignment="CENTER" textFill="#1e2545e5" textOverrun="CENTER_WORD_ELLIPSIS" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
                      <font>
-                        <Font name="System Bold" size="23.0" />
+                        <Font name="Roboto Bold" size="23.0" />
                      </font>
                   </Label>
                   <TableView fx:id="employeesTV" layoutX="93.0" layoutY="45.0" prefHeight="469.0" prefWidth="665.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="45.0">
@@ -62,17 +64,17 @@
                                 <PropertyValueFactory property="mothersLastName" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn prefWidth="91.0" text="Empresa">
+                        <TableColumn prefWidth="107.0" text="Empresa">
                            <cellValueFactory>
                               <PropertyValueFactory property="company" />
                            </cellValueFactory>
                         </TableColumn>
-                        <TableColumn prefWidth="122.0" text="Turno">
+                        <TableColumn prefWidth="123.0" text="Turno">
                             <cellValueFactory>
                                 <PropertyValueFactory property="shift" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn prefWidth="137.0" text="Tipo de empleado">
+                        <TableColumn prefWidth="120.0" text="Tipo de empleado">
                             <cellValueFactory>
                                 <PropertyValueFactory property="employeetype" />
                             </cellValueFactory>
@@ -103,14 +105,14 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <Label alignment="CENTER" layoutX="109.0" prefHeight="34.0" prefWidth="422.0" text="Panel de Control" textAlignment="CENTER" textFill="#1e2546bf" textOverrun="CENTER_WORD_ELLIPSIS" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
+                  <Label alignment="CENTER" layoutX="109.0" prefHeight="34.0" prefWidth="422.0" text="Panel de control" textAlignment="CENTER" textFill="#1e2545e5" textOverrun="CENTER_WORD_ELLIPSIS" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
                      <font>
-                        <Font name="System Bold" size="23.0" />
+                        <Font name="Roboto Bold" size="23.0" />
                      </font>
                   </Label>
                   <Accordion fx:id="accordion" layoutX="59.0" layoutY="43.0" prefHeight="471.0" prefWidth="511.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="45.0">
                     <panes>
-                      <TitledPane fx:id="first" expanded="false" text="Registrar" textFill="#727272">
+                      <TitledPane fx:id="first" animated="false" expanded="false" text="Registrar" textFill="#727272">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
@@ -154,18 +156,20 @@
                                                 <Font name="System Bold" size="16.0" />
                                              </font>
                                           </Label>
-                                          <VBox layoutX="50.0" layoutY="254.0" prefHeight="61.0" prefWidth="390.0" spacing="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+                                          <VBox layoutX="50.0" layoutY="254.0" prefHeight="65.0" prefWidth="399.0" spacing="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
                                              <children>
                                                 <HBox alignment="CENTER" prefHeight="25.0" prefWidth="373.0" spacing="40.0">
                                                    <children>
-                                                      <Button fx:id="fingerPrintButton" defaultButton="true" mnemonicParsing="false" onAction="#setFinger" prefHeight="25.0" prefWidth="175.0" text="Establecer huella" />
-                                                      <Button fx:id="imageButton" mnemonicParsing="false" onAction="#setPhoto" prefHeight="25.0" prefWidth="175.0" text="Establecer fotografía" />
-                                                   </children>
-                                                </HBox>
-                                                <HBox alignment="CENTER" prefHeight="25.0" prefWidth="373.0" spacing="40.0">
-                                                   <children>
-                                                      <Button fx:id="fingerPrintButton2" disable="true" mnemonicParsing="false" onAction="#setFinger" prefHeight="25.0" prefWidth="175.0" text="Visualizar huella" />
-                                                      <Button fx:id="imageButton1" disable="true" mnemonicParsing="false" onAction="#setPhoto" prefHeight="25.0" prefWidth="175.0" text="Visualizar fotografía" />
+                                                      <JFXButton buttonType="RAISED" onAction="#setFinger" prefHeight="39.0" prefWidth="204.0" ripplerFill="WHITE" style="-fx-background-color: #324E7F;" text="Establecer huella" textFill="WHITE">
+                                                         <font>
+                                                            <Font name="System Bold" size="18.0" />
+                                                         </font>
+                                                      </JFXButton>
+                                                      <JFXButton buttonType="RAISED" onAction="#setPhoto" prefHeight="39.0" prefWidth="190.0" ripplerFill="WHITE" style="-fx-background-color: #659DFF;" text="Establecer foto" textFill="WHITE">
+                                                         <font>
+                                                            <Font name="System Bold" size="18.0" />
+                                                         </font>
+                                                      </JFXButton>
                                                    </children>
                                                 </HBox>
                                              </children>
@@ -180,7 +184,7 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                       </TitledPane>
-                        <TitledPane fx:id="first1" expanded="false" text="Crear" textFill="#727272">
+                        <TitledPane fx:id="first1" animated="false" expanded="false" text="Crear" textFill="#727272">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -200,19 +204,19 @@
                                              <children>
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
                                                    <children>
-                                                      <Label prefHeight="17.0" prefWidth="56.0" text="Nombre:" />
+                                                      <Label prefHeight="17.0" prefWidth="53.0" text="Nombre:" />
                                                       <TextField fx:id="createNameTF" prefHeight="25.0" prefWidth="330.0" promptText="Nombre del empleado" HBox.hgrow="ALWAYS" />
                                                    </children>
                                                 </HBox>
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
                                                    <children>
-                                                      <Label prefHeight="17.0" prefWidth="135.0" text="Apellido paterno:" />
-                                                      <TextField fx:id="lastNameTF" prefHeight="25.0" prefWidth="330.0" promptText="Apellido paterno" HBox.hgrow="ALWAYS" />
+                                                      <Label prefHeight="17.0" prefWidth="102.0" text="Apellido paterno:" />
+                                                      <TextField fx:id="lastNameTF" prefHeight="29.0" prefWidth="234.0" promptText="Apellido paterno" HBox.hgrow="ALWAYS" />
                                                    </children>
                                                 </HBox>
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
                                                    <children>
-                                                      <Label prefHeight="17.0" prefWidth="135.0" text="Apellido materno:" />
+                                                      <Label prefHeight="17.0" prefWidth="143.0" text="Apellido materno:" />
                                                       <TextField fx:id="mothersLastNameTF" prefHeight="25.0" prefWidth="330.0" promptText="Apellido materno" HBox.hgrow="ALWAYS" />
                                                    </children>
                                                 </HBox>
@@ -234,7 +238,11 @@
                                              <children>
                                                 <HBox alignment="CENTER" prefHeight="25.0" prefWidth="373.0" spacing="40.0">
                                                    <children>
-                                                      <Button fx:id="fingerPrintButton1" defaultButton="true" mnemonicParsing="false" onAction="#saveEmployee" prefHeight="25.0" prefWidth="175.0" text="Crear empleado" />
+                                                      <JFXButton buttonType="RAISED" onAction="#saveEmployee" prefHeight="39.0" prefWidth="295.0" ripplerFill="WHITE" style="-fx-background-color: #324E7F;" text="Terminado" textFill="WHITE">
+                                                         <font>
+                                                            <Font name="System Bold" size="18.0" />
+                                                         </font>
+                                                      </JFXButton>
                                                    </children>
                                                 </HBox>
                                              </children>
@@ -242,101 +250,6 @@
                                           <Pane fx:id="blockPane1" layoutX="68.0" layoutY="266.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </TitledPane>
-                        <TitledPane fx:id="first11" expanded="false" text="Configuración de hotario" textFill="#727272">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <ScrollPane layoutX="18.0" layoutY="11.0" prefHeight="480.0" prefWidth="570.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    <Label fx:id="titleLabel11" alignment="CENTER" layoutX="128.0" layoutY="10.0" text="Configuración de horario" textFill="#1e2546">
-                                       <font>
-                                          <Font name="Freestyle Script" size="52.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="65.0" layoutY="83.0" text="Detalles de horario:" textFill="#000000bf">
-                                       <font>
-                                          <Font name="System Bold" size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <AnchorPane layoutX="65.0" layoutY="117.0" prefHeight="272.0" prefWidth="458.0">
-                                       <children>
-                                          <Label layoutY="2.0" text="Check In: " AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <font>
-                                                <Font name="System Bold Italic" size="16.0" />
-                                             </font>
-                                          </Label>
-                                          <VBox layoutY="28.0" prefHeight="114.0" prefWidth="295.0" AnchorPane.leftAnchor="0.0">
-                                             <children>
-                                                <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0">
-                                                   <children>
-                                                      <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Temprano: ">
-                                                         <font>
-                                                            <Font size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ComboBox fx:id="earlyInCB" prefHeight="29.0" prefWidth="195.0" />
-                                                   </children>
-                                                </HBox>
-                                                <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0">
-                                                   <children>
-                                                      <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Normal: ">
-                                                         <font>
-                                                            <Font size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ComboBox fx:id="normalInCB" prefHeight="29.0" prefWidth="195.0" />
-                                                   </children>
-                                                </HBox>
-                                                <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0">
-                                                   <children>
-                                                      <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Retardo: ">
-                                                         <font>
-                                                            <Font size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ComboBox fx:id="lateInCB" prefHeight="29.0" prefWidth="195.0" />
-                                                   </children>
-                                                </HBox>
-                                             </children>
-                                          </VBox>
-                                          <VBox layoutY="177.0" prefHeight="80.0" prefWidth="295.0" AnchorPane.leftAnchor="0.0">
-                                             <children>
-                                                <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0">
-                                                   <children>
-                                                      <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Temprano: ">
-                                                         <font>
-                                                            <Font size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ComboBox fx:id="earlyOutCB" prefHeight="29.0" prefWidth="195.0" />
-                                                   </children>
-                                                </HBox>
-                                                <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0">
-                                                   <children>
-                                                      <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Normal: ">
-                                                         <font>
-                                                            <Font size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ComboBox fx:id="normalOutCB" prefHeight="29.0" prefWidth="195.0" />
-                                                   </children>
-                                                </HBox>
-                                             </children>
-                                          </VBox>
-                                          <Label layoutY="151.0" text="Check Out: " AnchorPane.leftAnchor="0.0">
-                                             <font>
-                                                <Font name="System Bold Italic" size="16.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                    </AnchorPane>
-                                    <Button defaultButton="true" layoutX="180.0" layoutY="406.0" mnemonicParsing="false" onAction="#setXMLConfiguration" prefHeight="29.0" prefWidth="249.0" text="Terminado" />
                                  </children>
                               </AnchorPane>
                            </content>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="694.0" prefWidth="850.0" style="-fx-background-color: white;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="biometricauthentication.admin.dialog.report.ReportsController">
+   <children>
+      <MenuBar layoutX="32.0" layoutY="12.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="Archivo">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Close" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Herramientas">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Action 1" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Ayuda">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="About" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+      <VBox layoutX="40.0" layoutY="55.0" prefHeight="46.0" prefWidth="427.0">
+         <children>
+            <Label text="Compañía:">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+            <JFXComboBox fx:id="companieCB" prefHeight="25.0" prefWidth="415.0" promptText="Elegir compañía" />
+         </children>
+      </VBox>
+      <VBox layoutX="40.0" layoutY="134.0" prefHeight="46.0" prefWidth="226.0">
+         <children>
+            <Label text="Tipo:">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+            <JFXComboBox fx:id="typeCB" prefHeight="25.0" prefWidth="203.0" promptText="Elegir tipo" />
+         </children>
+      </VBox>
+      <HBox layoutX="40.0" layoutY="222.0" prefHeight="75.0" prefWidth="770.0" spacing="20.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0">
+         <children>
+            <VBox prefHeight="75.0" prefWidth="169.0">
+               <children>
+                  <Label text="Ejercicio:">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXComboBox fx:id="yearCB" prefHeight="25.0" prefWidth="203.0" promptText="Elegir ejercicio" />
+               </children>
+            </VBox>
+            <VBox prefHeight="75.0" prefWidth="165.0">
+               <children>
+                  <Label text="Mes:">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXComboBox fx:id="monthCB" prefHeight="25.0" prefWidth="203.0" promptText="Elegir mes" />
+               </children>
+            </VBox>
+            <VBox prefHeight="75.0" prefWidth="184.0">
+               <children>
+                  <Label text="Quincena:">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXComboBox fx:id="fortnightCB" prefHeight="25.0" prefWidth="203.0" promptText="Elegir mes" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="75.0" prefWidth="192.0">
+               <children>
+                  <JFXButton buttonType="RAISED" onAction="#generate" prefHeight="39.0" prefWidth="104.0" style="-fx-background-color: #324E7F;" text="Generar" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <TableView fx:id="reportTV" layoutX="47.0" layoutY="344.0" prefHeight="358.0" prefWidth="770.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0">
+        <columns>
+          <TableColumn prefWidth="160.0" text="Nombre" />
+          <TableColumn minWidth="8.0" text="Tipo" />
+            <TableColumn prefWidth="100.0" text="Asistencias" />
+            <TableColumn minWidth="0.0" prefWidth="100.0" text="Retardos" />
+            <TableColumn minWidth="0.0" prefWidth="100.0" text="Faltas" />
+            <TableColumn minWidth="0.0" prefWidth="117.0" text="Justificaciones" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

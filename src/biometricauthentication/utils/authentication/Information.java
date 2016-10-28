@@ -1,4 +1,4 @@
-package biometricauthentication.utils;
+package biometricauthentication.utils.authentication;
 
 /**
  *

@@ -5,9 +5,9 @@ import biometricauthentication.dialog.EmployeeDialogController;
 import biometricauthentication.model.Employee;
 
 import biometricauthentication.utils.Biometric;
-import biometricauthentication.utils.Reader;
-import biometricauthentication.utils.Clock;
-import biometricauthentication.utils.Information;
+import biometricauthentication.utils.reader.Reader;
+import biometricauthentication.utils.authentication.Clock;
+import biometricauthentication.utils.authentication.Information;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,10 +33,10 @@ import javafx.scene.layout.Pane;
 
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
-import javafx.stage.WindowEvent;
 
 /**
  *
@@ -100,6 +100,8 @@ public class BiometricController implements Initializable {
                 
                 for (Employee employee : biometric.getEmployees()) {
                     
+                    System.out.println(employee);
+                    
                     DPFPTemplate template = biometric.deserializeTemplate(employee);
                     
                     if (template != null) {
@@ -110,11 +112,22 @@ public class BiometricController implements Initializable {
                             
                             Information info = biometric.saveBinnacleRecord(employee);
                             
-                            if (!info.getVerification().equals("temprano")) {
+                            String verification = info.getVerification();
+                            
+                            if (!verification.equals("temprano")) {
                                 
-                                if (!info.getOperation().equals("same_day")) {
+                                if (!verification.equals("sameDay")) {
+                                    
+                                    if (!verification.equals("outOfRange")) {
                                         
-                                    this.openDialogEmployee(employee, info);
+                                        this.openDialogEmployee(employee, info);
+                                        
+                                    } else {
+                                        
+                                        errorDialog.setContentText("Fuera del rango de tiempo");
+                                        errorDialog.show();
+                                        
+                                    }
                                     
                                 } else {
                                     
@@ -124,7 +137,7 @@ public class BiometricController implements Initializable {
                                 }
                                 
                             } else {
-                                
+                                    
                                 errorDialog.setContentText("Aún es muy temprano para checar");
                                 errorDialog.show();
                                 
@@ -157,19 +170,19 @@ public class BiometricController implements Initializable {
     
     private void closeDialogs() {
         
-        if (errorDialog.isShowing()) {
-                    
-            try {
-
-                Thread.sleep(3000);
-
-                errorDialog.close();
-
-            } catch (InterruptedException ex) {
-
-            }
-
-        }
+//        if (errorDialog.isShowing()) {
+//                    
+//            try {
+//
+//                Thread.sleep(3000);
+//
+//                errorDialog.close();
+//
+//            } catch (InterruptedException ex) {
+//
+//            }
+//
+//        }
 
         if (employeeDialog.isShowing()) {
 

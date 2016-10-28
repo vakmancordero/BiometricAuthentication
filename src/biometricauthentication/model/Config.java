@@ -1,18 +1,41 @@
-package biometricauthentication.utils;
+package biometricauthentication.model;
+
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author VakSF
  */
-public class Check {
+@Entity
+@Table (name = "config")
+public class Config implements Serializable {
     
-    /* Tiempo para entrada */
-    private int earlyIn, normalIn, lateIn;
+    @Id
+    private int id;
     
-    /* Tiempo para salida */
-    private int earlyOut, normalOut;
+    @Column
+    private String name;
     
-    public Check() {
+    @Column (name = "early_in")
+    private int earlyIn;
+    
+    @Column (name = "normal_in")
+    private int normalIn;
+    
+    @Column (name = "late_in")
+    private int lateIn;
+    
+    @Column (name = "early_out")
+    private int earlyOut;
+    
+    @Column (name = "normal_out")
+    private int normalOut;
+    
+    public Config() {
         
         /* CheckIn */
         this.earlyIn = -30;
@@ -24,16 +47,39 @@ public class Check {
         this.normalOut = 3;
         
     }
-    
-    public void setCheckIn(int earlyIn, int normalIn, int lateIn) {
+
+    public Config(String name, int earlyIn, int normalIn, int lateIn, int earlyOut, int normalOut) {
+        this.name = name;
         this.earlyIn = earlyIn;
         this.normalIn = normalIn;
         this.lateIn = lateIn;
-    }
-    
-    public void setCheckOut(int earlyOut, int normalOut) {
         this.earlyOut = earlyOut;
         this.normalOut = normalOut;
+    }
+    
+    public void setConfig(String name, int earlyIn, int normalIn, int lateIn, int earlyOut, int normalOut) {
+        this.name = name;
+        this.earlyIn = earlyIn;
+        this.normalIn = normalIn;
+        this.lateIn = lateIn;
+        this.earlyOut = earlyOut;
+        this.normalOut = normalOut;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getEarlyIn() {
@@ -81,13 +127,13 @@ public class Check {
         System.out.println("Entrada");
             
         if (hours == 0) {
-
+            
             if (minutes < 0) {
-
+                
                 if (minutes >= earlyIn) {
-
+                    
                     return "normal";
-
+                    
                 } else {
 
                     return "temprano";

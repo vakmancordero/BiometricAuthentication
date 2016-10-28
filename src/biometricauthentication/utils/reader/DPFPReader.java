@@ -1,4 +1,4 @@
-package biometricauthentication.utils;
+package biometricauthentication.utils.reader;
 
 import com.digitalpersona.onetouch.DPFPGlobal;
 import com.digitalpersona.onetouch.DPFPSample;

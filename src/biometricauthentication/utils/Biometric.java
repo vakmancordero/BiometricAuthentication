@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
+import java.text.SimpleDateFormat;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -27,11 +29,18 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import biometricauthentication.utils.authentication.Information;
+import biometricauthentication.utils.hibernate.HibernateUtil;
+import biometricauthentication.utils.date.DateUtil;
+
 import biometricauthentication.model.BinnacleRecord;
 import biometricauthentication.model.Company;
 import biometricauthentication.model.Employee;
 import biometricauthentication.model.Shift;
-
+import biometricauthentication.model.Config;
+import biometricauthentication.model.EmployeeType;
+import java.util.Calendar;
+import org.hibernate.Query;
 
 /**
  *
@@ -39,11 +48,11 @@ import biometricauthentication.model.Shift;
  */
 public class Biometric {
     
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
     
-    private DateUtil dateUtil;
+    private final DateUtil dateUtil;
     
-    private Check check;
+    private final Config configuration;
 
     public Biometric() {
         
@@ -51,36 +60,60 @@ public class Biometric {
         
         this.dateUtil = new DateUtil();
         
-        XMLUtil xmlUtil = new XMLUtil("BConfig.xml");
+        Config config = this.getConfiguration();
         
-        Check getCheck = xmlUtil.getConfig();
-        
-        if (getCheck != null) {
-            
-            this.check = getCheck;
-            
-        } else {
-            
-            System.out.println(
-                    "No se ha podido cargar la configuracion\n" + 
-                    "Se creara una por defecto..."
-            );
-            
-            this.check = new Check();
-            
-            xmlUtil.buildConfig(check);
-            
-        }
+        this.configuration = config != null ? config : new Config();
         
         this.createRoot();
     }
-
-    public Check getCheck() {
-        return check;
+    
+    public Config getConfig() {
+        return this.configuration;
     }
-
-    public void setCheck(Check check) {
-        this.check = check;
+    
+    public void saveConfiguration(Config config) {
+        
+        Session session = this.sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        session.saveOrUpdate(config);
+        
+        transaction.commit();
+        session.flush(); session.close();
+    }
+    
+    private Config getConfiguration() {
+        
+        Session session = this.sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        Config config = null;
+        
+        try {
+            
+            Query query = session.createQuery("FROM Config WHERE name=:name");
+            
+            query.setParameter("name", "Axkan");
+            
+            config = (Config) query.uniqueResult();
+            
+            transaction.commit();
+             
+        } catch (HibernateException ex) {
+              
+            if (transaction != null) {
+                
+                transaction.rollback();
+                
+            }
+             
+        } finally {
+            
+            session.close();
+            
+        }
+        
+        return config;
     }
     
     /**
@@ -130,7 +163,7 @@ public class Biometric {
      */
     public void saveEmployee(Employee employee) {
         
-        Session session = sessionFactory.openSession();
+        Session session = this.sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         
         /*
@@ -155,7 +188,7 @@ public class Biometric {
         // Se obtiene el ID del empleado
         int employeeId = employee.getId();
         
-        Session session = sessionFactory.openSession();
+        Session session = this.sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         
         BinnacleRecord binnacleRecord = null;
@@ -173,8 +206,6 @@ public class Biometric {
             transaction.commit();
              
         } catch (HibernateException ex) {
-            
-            ex.printStackTrace();
               
             if (transaction != null) {
                 
@@ -224,7 +255,7 @@ public class Biometric {
             /*
                 Se obtiene el Check In del último registro
             */
-            Date checkIn = lastBinnacleRecord.getCheck_in();
+            Date checkIn = lastBinnacleRecord.getCheckIn();
             
             /*
                 Se comprueba si existe un Check In 
@@ -233,11 +264,11 @@ public class Biometric {
             */
             if (checkIn == null) {
                 
-                verification = this.verifyRange(employee, currentDate, "check_in");
+                verification = this.verifyRange(employee, currentDate, "checkIn");
                 
-                if (!verification.equals("temprano")) {
+                if (!verification.equals("temprano") && !verification.equals("outOfRange")) {
                     
-                    lastBinnacleRecord.setCheck_in(currentDate);
+                    lastBinnacleRecord.setCheckIn(currentDate);
                 
                     /*
                         La operación es de entrada
@@ -255,7 +286,7 @@ public class Biometric {
                 /*
                     Se obtiene el Check Out del último registro
                 */
-                Date checkOut = lastBinnacleRecord.getCheck_out();
+                Date checkOut = lastBinnacleRecord.getCheckOut();
                 
                 /*
                     Se comprueba si existe un Check Out
@@ -264,7 +295,7 @@ public class Biometric {
                 if (checkOut == null) {
                     
                     Date cinDate = this.dateUtil.parseSimpleDate(
-                            lastBinnacleRecord.getCheck_in(), "date"
+                            lastBinnacleRecord.getCheckIn(), "date"
                     );
                     
                     Date nowDate = this.dateUtil.parseSimpleDate(
@@ -284,11 +315,11 @@ public class Biometric {
                             /* Comprueba si el checkOut puede ser válido */
                             if (days == -1) {
                                 
-                                verification = this.verifyRange(employee, currentDate, "check_out");
+                                verification = this.verifyRange(employee, currentDate, "checkOut");
                                 
-                                if (!verification.equals("temprano")) {
+                                if (!verification.equals("temprano") && !verification.equals("outOfRange")) {
                                     
-                                    lastBinnacleRecord.setCheck_out(currentDate);
+                                    lastBinnacleRecord.setCheckOut(currentDate);
                                     
                                     /*
                                         La operación es de salida
@@ -311,7 +342,7 @@ public class Biometric {
                                 
                                 verification = "temprano";
                                 
-                                operation = "same_day";
+                                operation = "ninguna";
                                 
                             }
                             
@@ -321,16 +352,20 @@ public class Biometric {
                         
                         if (days == 0) {
                             
-                            verification = this.verifyRange(employee, currentDate, "check_out");
+                            verification = this.verifyRange(employee, currentDate, "checkOut");
 
                             if (!verification.equals("temprano")) {
 
-                                lastBinnacleRecord.setCheck_out(currentDate);
+                                lastBinnacleRecord.setCheckOut(currentDate);
 
                                 /*
                                     La operación es de salida
                                 */
                                 operation = "Salida";
+                                
+                                String workedHours = getWorkedHours(lastBinnacleRecord);
+                                
+                                lastBinnacleRecord.setWorked_hours(workedHours);
 
                             }
                             
@@ -395,8 +430,8 @@ public class Biometric {
                     */
                     } else {
                         
-                        operation = "same_day";
-                        verification = "same_day";
+                        verification = "sameDay";
+                        operation = "ninguna";
                         
                     }
                     
@@ -408,6 +443,13 @@ public class Biometric {
                 Finalmente se realiza una actualización
                 a la base de datos.
             */
+            
+            /* 
+                Se obtiene el día de la semana y se establece al registro
+            */
+            String day = new SimpleDateFormat("EEEE", new Locale("es", "ES")).format(currentDate);
+            
+            lastBinnacleRecord.setDay(day);
             
             session.saveOrUpdate(lastBinnacleRecord);   
             
@@ -450,18 +492,25 @@ public class Biometric {
         
         /*
             Se crea un nuevo registro.
-            Se establecen los atributos date, employee_id, check_in.
+            Se establecen los atributos date, employee_id, checkIn.
         */
         
-        String verified = this.verifyRange(employee, currentDate, "check_in");
+        String verification = this.verifyRange(employee, currentDate, "checkIn");
         
-        if (!verified.equals("temprano")) {
-            
+        if (!verification.equals("temprano") && !verification.equals("outOfRange")) {
+                
             Date newDate = new Date();
-            
+
             BinnacleRecord binnacleRecord = new BinnacleRecord(
                     newDate, employee.getId(), newDate 
             );
+            
+            /* 
+                Se obtiene el día de la semana y se establece al registro
+            */
+            String day = new SimpleDateFormat("EEEE", new Locale("es", "ES")).format(currentDate);
+            
+            binnacleRecord.setDay(day);
             
             /*
                 Se inserta el nuevo registro.
@@ -474,7 +523,7 @@ public class Biometric {
         
         session.flush(); session.close();
         
-        return verified;
+        return verification;
         
     }
     
@@ -502,10 +551,10 @@ public class Biometric {
         /*
             Si la operación es de entrada
         */
-        if (type.equals("check_in")) {
+        if (type.equals("checkIn")) {
             
             /* Se obtiene el checkIn del turno */
-            String checkInSt = shift.getCheck_in();
+            String checkInSt = shift.getCheckIn();
             
             /* Se convierte el checkIn del turno a una fecha de tiempo */
             Date checkIn = this.dateUtil.parseSimpleDate(checkInSt, "time");
@@ -521,19 +570,25 @@ public class Biometric {
             int hours = this.dateUtil.getHours(difference);
             int minutes = this.dateUtil.getMinutes(difference);
             
-            /*
-                Horas y minutos se envían como argumento al CheckIn
-            */
-            String cin = this.check.checkIn(hours, minutes);
+            //System.out.println("Horas: " + hours + "\ntoWork: " + shift.getToWork());
             
-            return cin;
+            if (hours < shift.getToWork()) {
+                
+                /*
+                    Horas y minutos se envían como argumento al CheckIn
+                */
+                String cin = this.configuration.checkIn(hours, minutes);
+                
+                return cin;
+                
+            }
             
         } else {
             
-            if (type.equals("check_out")) {
+            if (type.equals("checkOut")) {
                 
                 /* Se obtiene el checkIn del turno */
-                String checkOutSt = shift.getCheck_out();
+                String checkOutSt = shift.getCheckOut();
                 
                 /* Se convierte el checkIn del turno a una fecha de tiempo */
                 Date checkOut = this.dateUtil.parseSimpleDate(checkOutSt, "time");
@@ -552,7 +607,7 @@ public class Biometric {
                 /*
                     Horas y minutos se envían como argumento al CheckOut
                 */
-                String cout = this.check.checkOut(hours, minutes);
+                String cout = this.configuration.checkOut(hours, minutes);
                 
                 return cout;
                 
@@ -560,7 +615,27 @@ public class Biometric {
             
         }
         
-        return "early";
+        return "outOfRange";
+    }
+    
+    private String getWorkedHours(BinnacleRecord br) {
+        
+        Map<TimeUnit, Long> difference = this.dateUtil.getDifference(
+                this.dateUtil.parseSimpleDate(br.getCheckIn(), "time"), 
+                this.dateUtil.parseSimpleDate(br.getCheckOut(), "time")
+        );
+        
+        int hours = difference.get(TimeUnit.HOURS).intValue();
+        int minutes = difference.get(TimeUnit.MINUTES).intValue();
+        
+        Calendar calendar = Calendar.getInstance();
+        
+        calendar.set(Calendar.HOUR_OF_DAY, hours);
+        calendar.set(Calendar.MINUTE, minutes);
+        
+        String workedHours = this.dateUtil.getSimpleDate(calendar.getTime(), "simpleTime");
+        
+        return workedHours;
     }
     
     /**
@@ -589,8 +664,6 @@ public class Biometric {
             transaction.commit();
              
         } catch (HibernateException ex) {
-            
-            ex.printStackTrace();
               
             if (transaction != null) {
                 
@@ -634,8 +707,6 @@ public class Biometric {
             transaction.commit();
              
         } catch (HibernateException ex) {
-            
-            ex.printStackTrace();
               
             if (transaction != null) {
                 
@@ -680,8 +751,43 @@ public class Biometric {
              
         } catch (HibernateException ex) {
             
-            ex.printStackTrace();
-              
+            if (transaction != null) {
+                
+                transaction.rollback();
+                
+            }
+             
+        } finally {
+            
+            session.close();
+            
+        }
+        
+        return employees;
+        
+    }
+    
+    public List<EmployeeType> getEmployeeTypes() {
+        
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        /*
+            Se crea una lista para almacenar a los empleados.
+        */
+        List<EmployeeType> employees = new ArrayList<>();
+        
+        /*
+            Se obtienen los empleados existentes.
+        */
+        try {
+            
+            employees = session.createQuery("FROM EmployeeType").list();
+            
+            transaction.commit();
+             
+        } catch (HibernateException ex) {
+            
             if (transaction != null) {
                 
                 transaction.rollback();

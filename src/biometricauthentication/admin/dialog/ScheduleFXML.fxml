@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="512.0" prefWidth="469.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.dialog.ScheduleController">
+   <children>
+      <AnchorPane layoutX="7.0" minHeight="0.0" minWidth="0.0" prefHeight="481.0" prefWidth="547.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label layoutX="87.0" layoutY="106.0" text="Detalles de horario:" textFill="#324d7d">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Label>
+            <AnchorPane layoutX="87.0" layoutY="140.0" prefHeight="272.0" prefWidth="295.0">
+               <children>
+                  <Label layoutY="2.0" text="Check In: " AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold Italic" size="16.0" />
+                     </font>
+                  </Label>
+                  <VBox layoutY="28.0" prefHeight="114.0" prefWidth="295.0" AnchorPane.leftAnchor="0.0">
+                     <children>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0" spacing="5.0">
+                           <children>
+                              <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Temprano: ">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="earlyInCB" prefHeight="25.0" prefWidth="195.0" promptText="Early In" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0" spacing="5.0">
+                           <children>
+                              <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Normal: ">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="normalInCB" prefHeight="25.0" prefWidth="195.0" promptText="Normal In" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0" spacing="5.0">
+                           <children>
+                              <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Retardo: ">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="lateInCB" prefHeight="25.0" prefWidth="195.0" promptText="Late In" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox layoutY="177.0" prefHeight="80.0" prefWidth="295.0" AnchorPane.leftAnchor="0.0">
+                     <children>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0" spacing="5.0">
+                           <children>
+                              <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Temprano: ">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="earlyOutCB" prefHeight="25.0" prefWidth="195.0" promptText="Early Out" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="300.0" spacing="5.0">
+                           <children>
+                              <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="111.0" text="Normal: ">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="normalOutCB" prefHeight="25.0" prefWidth="195.0" promptText="Normal Out" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <Label layoutY="151.0" text="Check Out: " AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font name="System Bold Italic" size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <JFXButton buttonType="RAISED" layoutX="87.0" layoutY="434.0" onAction="#setConfiguration" prefHeight="39.0" prefWidth="295.0" ripplerFill="WHITE" style="-fx-background-color: #324E7F;" text="Terminado" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </JFXButton>
+            <Label fx:id="titleLabel1" alignment="CENTER" layoutX="150.0" text="Configuración de Horario" textFill="#1e2546" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font name="Freestyle Script" size="60.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

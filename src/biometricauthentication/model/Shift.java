@@ -6,7 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-
 /**
  *
  * @author VakSF
@@ -21,18 +20,18 @@ public class Shift implements Serializable {
     @Column
     private String description;
     
-    @Column
-    private String check_in;
+    @Column (name = "check_in")
+    private String checkIn;
     
-    @Column
-    private String check_out;
+    @Column (name = "check_out")
+    private String checkOut;
     
-    @Column
-    private int to_work;
+    @Column (name = "to_work")
+    private int toWork;
     
     @Column
     private int status;
-    
+
     public int getId() {
         return id;
     }
@@ -40,50 +39,50 @@ public class Shift implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public String getDescription() {
         return description;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    public String getCheck_in() {
-        return check_in;
+
+    public String getCheckIn() {
+        return checkIn;
     }
-    
-    public void setCheck_in(String check_in) {
-        this.check_in = check_in;
+
+    public void setCheckIn(String checkIn) {
+        this.checkIn = checkIn;
     }
-    
-    public String getCheck_out() {
-        return check_out;
+
+    public String getCheckOut() {
+        return checkOut;
     }
-    
-    public void setCheck_out(String check_out) {
-        this.check_out = check_out;
+
+    public void setCheckOut(String checkOut) {
+        this.checkOut = checkOut;
     }
-    
-    public int getTo_work() {
-        return to_work;
+
+    public int getToWork() {
+        return toWork;
     }
-    
-    public void setTo_work(int to_work) {
-        this.to_work = to_work;
+
+    public void setToWork(int toWork) {
+        this.toWork = toWork;
     }
-    
+
     public int getStatus() {
         return status;
     }
-    
+
     public void setStatus(int status) {
         this.status = status;
     }
     
     @Override
     public String toString() {
-        return this.id + " : " + this.description + " : " + to_work + " horas";
+        return this.description;
     }
     
 }

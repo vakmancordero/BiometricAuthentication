@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<biometric><checkin id="axkan"><earlyIn>-14</earlyIn><normalIn>11</normalIn><lateIn>14</lateIn></checkin><checkout id="axkan"><earlyOut>-10</earlyOut><normalOut>1</normalOut></checkout></biometric>
+<biometric><checkin id="axkan"><earlyIn>-2</earlyIn><normalIn>15</normalIn><lateIn>30</lateIn></checkin><checkout id="axkan"><earlyOut>-5</earlyOut><normalOut>1</normalOut></checkout></biometric>

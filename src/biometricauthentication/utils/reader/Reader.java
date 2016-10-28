@@ -1,4 +1,4 @@
-package biometricauthentication.utils;
+package biometricauthentication.utils.reader;
 
 import java.util.Observable;
 import com.digitalpersona.onetouch.DPFPSample;
@@ -10,7 +10,7 @@ import com.digitalpersona.onetouch.DPFPSample;
 public class Reader extends Observable implements Runnable {
         
     private volatile boolean isRunning;
-    private DPFPReader myReader;
+    private final DPFPReader myReader;
     
     public Reader() {
         this.myReader = new DPFPReader();

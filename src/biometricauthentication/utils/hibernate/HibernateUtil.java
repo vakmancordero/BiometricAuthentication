@@ -1,5 +1,6 @@
-package biometricauthentication.utils;
+package biometricauthentication.utils.hibernate;
 
+import org.hibernate.HibernateException;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
 
@@ -17,7 +18,7 @@ public class HibernateUtil {
             
             sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
             
-        } catch (Throwable ex) {
+        } catch (HibernateException ex) {
             
             System.err.println("Initial SessionFactory creation failed." + ex);
             

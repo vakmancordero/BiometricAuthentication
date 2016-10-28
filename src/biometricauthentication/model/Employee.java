@@ -176,7 +176,7 @@ public class Employee implements Serializable {
 
     @Override
     public String toString() {
-        return "\n\tNombre: " + this.name;
+        return this.name + " " + this.lastName + " " + this.mothersLastName;
     }
     
 }

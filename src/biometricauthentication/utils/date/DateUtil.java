@@ -1,4 +1,4 @@
-package biometricauthentication.utils;
+package biometricauthentication.utils.date;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -134,11 +134,20 @@ public class DateUtil {
         */
         } else {
             
-            if (type.equals("date")) {
+            if (type.equals("simpleTime")) {
                 
-                return calendar.get(Calendar.DAY_OF_MONTH) + "-"
-                        + calendar.get(Calendar.MONTH) + "-"
-                        + calendar.get(Calendar.YEAR);
+                return calendar.get(Calendar.HOUR_OF_DAY) + ":"
+                    + calendar.get(Calendar.MINUTE);
+                
+            } else {
+                
+                if (type.equals("date")) {
+                
+                    return calendar.get(Calendar.DAY_OF_MONTH) + "-"
+                            + calendar.get(Calendar.MONTH) + "-"
+                            + calendar.get(Calendar.YEAR);
+
+                }
                 
             }
             

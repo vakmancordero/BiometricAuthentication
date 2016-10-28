@@ -19,26 +19,23 @@ public class BinnacleRecord implements Serializable {
     @Id
     private int id;
     
-    @Column
-    private int operation;
+    @Column (name = "employee_id")
+    private int employeeId;
+    
+    @Column (name = "check_in")
+    private Date checkIn;
+    
+    @Column (name = "check_out")
+    private Date checkOut;
     
     @Column
     private Date date;
     
     @Column
-    private int employee_id;
+    private String day;
     
     @Column
-    private Date check_in;
-    
-    @Column
-    private Date check_out;
-    
-    @Column
-    private int hours_worked;
-    
-    @Column
-    private int situation;
+    private String worked_hours;
     
     @Column
     private String observation;
@@ -48,8 +45,8 @@ public class BinnacleRecord implements Serializable {
 
     public BinnacleRecord(Date date, int employee_id, Date check_in) {
         this.date = date;
-        this.employee_id = employee_id;
-        this.check_in = check_in;
+        this.employeeId = employee_id;
+        this.checkIn = check_in;
     }
 
     public int getId() {
@@ -60,12 +57,28 @@ public class BinnacleRecord implements Serializable {
         this.id = id;
     }
 
-    public int getOperation() {
-        return operation;
+    public int getEmployeeId() {
+        return employeeId;
     }
 
-    public void setOperation(int operation) {
-        this.operation = operation;
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public Date getCheckIn() {
+        return checkIn;
+    }
+
+    public void setCheckIn(Date checkIn) {
+        this.checkIn = checkIn;
+    }
+
+    public Date getCheckOut() {
+        return checkOut;
+    }
+
+    public void setCheckOut(Date checkOut) {
+        this.checkOut = checkOut;
     }
 
     public Date getDate() {
@@ -76,44 +89,20 @@ public class BinnacleRecord implements Serializable {
         this.date = date;
     }
 
-    public int getEmployee_id() {
-        return employee_id;
+    public String getDay() {
+        return day;
     }
 
-    public void setEmployee_id(int employee_id) {
-        this.employee_id = employee_id;
+    public void setDay(String day) {
+        this.day = day;
     }
 
-    public Date getCheck_in() {
-        return check_in;
+    public String getWorked_hours() {
+        return worked_hours;
     }
 
-    public void setCheck_in(Date check_in) {
-        this.check_in = check_in;
-    }
-
-    public Date getCheck_out() {
-        return check_out;
-    }
-
-    public void setCheck_out(Date check_out) {
-        this.check_out = check_out;
-    }
-
-    public int getHours_worked() {
-        return hours_worked;
-    }
-
-    public void setHours_worked(int hours_worked) {
-        this.hours_worked = hours_worked;
-    }
-
-    public int getSituation() {
-        return situation;
-    }
-
-    public void setSituation(int situation) {
-        this.situation = situation;
+    public void setWorked_hours(String worked_hours) {
+        this.worked_hours = worked_hours;
     }
 
     public String getObservation() {
@@ -126,8 +115,8 @@ public class BinnacleRecord implements Serializable {
     
     @Override
     public String toString() {
-        return this.id + " : " + this.operation + " : " + this.date.toString() + " : " 
-             + this.check_in + " : " + this.check_out;
+        return this.id + " : " + this.date.toString() + " : " 
+             + this.checkIn + " : " + this.checkOut;
     }
     
 }

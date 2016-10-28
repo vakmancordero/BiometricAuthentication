@@ -149,7 +149,7 @@ public class Company implements Serializable {
 
     @Override
     public String toString() {
-        return this.id + " : " + this.description;
+        return this.description;
     }
     
 }

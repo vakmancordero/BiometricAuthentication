@@ -13,13 +13,19 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import javafx.scene.layout.Pane;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.fxml.FXMLLoader;
 
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -36,18 +42,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import biometricauthentication.utils.reader.DPFPReader;
 import biometricauthentication.utils.Biometric;
+
 import biometricauthentication.model.Employee;
 import biometricauthentication.model.Shift;
-import biometricauthentication.utils.DPFPReader;
+import biometricauthentication.model.Company;
 
 import static biometricauthentication.BiometricController.readerEvent;
 import static biometricauthentication.BiometricController.readerThread;
 
-import biometricauthentication.model.Company;
-import biometricauthentication.utils.Check;
-import biometricauthentication.utils.XMLUtil;
-
+import biometricauthentication.admin.dialog.ScheduleController;
 
 /**
  *
@@ -72,9 +77,6 @@ public class AdminController implements Initializable {
     
     @FXML
     private ComboBox<Company> companyCB;
-    
-    @FXML
-    private ComboBox<Integer> earlyInCB, normalInCB, lateInCB, earlyOutCB, normalOutCB;
     
     @FXML
     private TableView<Employee> employeesTV;
@@ -113,8 +115,6 @@ public class AdminController implements Initializable {
         
         this.accordion.setExpandedPane(first);
         
-        this.setXMLCBs();
-        
     }
     
     private void initCBs() {
@@ -124,49 +124,6 @@ public class AdminController implements Initializable {
         this.fillEmployees();
         
         this.fillCompanies();
-        
-        this.initXMLConfigCBs();
-        
-    }
-    
-    private void initXMLConfigCBs() {
-        
-        for (int i = 0; i <= 59; i++) {
-            
-            this.normalInCB.getItems().add(i);
-            
-            this.lateInCB.getItems().add(i);
-            
-        }
-        
-        for (int i = 0; i >= -59; i--) {
-            
-            this.earlyInCB.getItems().add(i);
-            
-            this.earlyOutCB.getItems().add(i);
-            
-        }
-        
-        this.normalOutCB.getItems().addAll(1, 2, 3, 4, 5);
-        
-        
-        this.earlyInCB.getSelectionModel().selectFirst();   this.normalInCB.getSelectionModel().selectFirst();
-            
-        this.lateInCB.getSelectionModel().selectFirst();    this.earlyOutCB.getSelectionModel().selectFirst();
-        
-        this.normalOutCB.getSelectionModel().selectFirst();
-        
-    }
-    
-    private void setXMLCBs() {
-        
-        Check check = this.biometric.getCheck();
-        
-        this.earlyInCB.setValue(check.getEarlyIn());    this.normalInCB.setValue(check.getNormalIn());
-        
-        this.lateInCB.setValue(check.getLateIn());    this.earlyOutCB.setValue(check.getEarlyOut());    
-        
-        this.normalOutCB.setValue(check.getNormalOut());
         
     }
     
@@ -181,7 +138,7 @@ public class AdminController implements Initializable {
                 
                 companyTF.setText(employee.getCompany().getDescription());
                 
-                nameTF.setText(employee.getName());
+                nameTF.setText(employee.toString());
                 
                 shiftCB.getSelectionModel().select(employee.getShift());
                 
@@ -237,7 +194,7 @@ public class AdminController implements Initializable {
                 name, lastName, mothersLastName, shift, company
         );
         
-        biometric.saveEmployee(employee);
+        this.biometric.saveEmployee(employee);
         
         new Alert(
                 Alert.AlertType.INFORMATION, "Empleado creado", ButtonType.OK
@@ -250,17 +207,17 @@ public class AdminController implements Initializable {
     @FXML
     private void setShift() {
         
-        Employee employee = employeesTV.getSelectionModel().getSelectedItem();
+        Employee employee = this.employeesTV.getSelectionModel().getSelectedItem();
         
-        employee.setShift(shiftCB.getValue());
+        employee.setShift(this.shiftCB.getValue());
         
-        biometric.saveEmployee(employee);
+        this.biometric.saveEmployee(employee);
         
         this.employeesTV.refresh();
         
         new Alert(
                 Alert.AlertType.INFORMATION,
-                "Turno del empleado asignado: " + employee.getShift() + ", ha sido establecida",
+                "El turno : " + employee.getShift() + ", ha sido establecido",
                 ButtonType.OK
         ).show();
         
@@ -314,17 +271,15 @@ public class AdminController implements Initializable {
                 
             } catch (DPFPImageQualityException | InterruptedException ex) {
                 
-                ex.printStackTrace();
-                
             }
             
-            Employee employee = employeesTV.getSelectionModel().getSelectedItem();
+            Employee employee = this.employeesTV.getSelectionModel().getSelectedItem();
             
             DPFPTemplate template = enrollment.getTemplate();
             
-            employee.setTemplate(biometric.serializeTemplate(template));
+            employee.setTemplate(this.biometric.serializeTemplate(template));
             
-            biometric.saveEmployee(employee);
+            this.biometric.saveEmployee(employee);
             
             new Alert(
                     Alert.AlertType.INFORMATION, 
@@ -386,36 +341,30 @@ public class AdminController implements Initializable {
     }
     
     @FXML
-    private void setXMLConfiguration() {
+    private void openScheduleConfiguration() throws IOException {
         
-        /* CheckIn */
-        Integer earlyIn = this.earlyInCB.getValue();
-        Integer normalIn = this.normalInCB.getValue();
-        Integer lateIn = this.lateInCB.getValue();
-        
-        /* CheckOut */
-        Integer earlyOut = this.earlyOutCB.getValue();
-        Integer normalOut = this.normalOutCB.getValue();
-        
-        XMLUtil xmlUtil = new XMLUtil("BConfig.xml");
-        
-        boolean built = xmlUtil.buildConfig(
-                earlyIn, normalIn, lateIn, earlyOut, normalOut
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                "/biometricauthentication/admin/dialog/ScheduleFXML.fxml")
         );
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene((Pane) loader.load()));
+
+        stage.showAndWait();
         
-        if (built) {
-            
-            Check check = xmlUtil.getConfig();
-            
-            this.biometric.setCheck(check);
-            
-            new Alert(
-                    Alert.AlertType.INFORMATION,
-                    "Se ha establecido la nueva configuración\n" + xmlUtil.getConfig(),
-                    ButtonType.OK
-            ).show();
-            
-        }
+    }
+    
+    @FXML
+    private void openReports() throws IOException {
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                "/biometricauthentication/admin/dialog/report/ReportsFXML.fxml")
+        );
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene((Pane) loader.load()));
+
+        stage.showAndWait();
         
     }
     
