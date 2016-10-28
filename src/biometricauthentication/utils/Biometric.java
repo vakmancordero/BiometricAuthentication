@@ -222,6 +222,8 @@ public class Biometric {
         return binnacleRecord;
     }
     
+    
+    
     /**
      * Retorna la información del guardado en bitácora.
      * 

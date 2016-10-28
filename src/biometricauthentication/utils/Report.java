@@ -1,5 +1,6 @@
 package biometricauthentication.utils;
 
+import biometricauthentication.admin.dialog.report.beans.RecordContainer;
 import java.util.List;
 import java.time.Month;
 
@@ -14,7 +15,9 @@ import biometricauthentication.admin.dialog.report.beans.ReportRecord;
 
 import biometricauthentication.model.BinnacleRecord;
 import biometricauthentication.model.Company;
+import biometricauthentication.model.Employee;
 import biometricauthentication.model.EmployeeType;
+import java.util.ArrayList;
 
 import org.hibernate.SQLQuery;
 
@@ -26,10 +29,14 @@ public class Report {
     
     private final SessionFactory sessionFactory;
     
+    private RecordContainer recordContainer;
+    
     public Report() {
-        
         this.sessionFactory = HibernateUtil.getSessionFactory();
-        
+    }
+    
+    public void setEmployees(List<Employee> employees) {
+        this.recordContainer = new RecordContainer(employees);
     }
     
     public List<ReportRecord> getReportRecords(Company company, EmployeeType employeeType,
@@ -63,23 +70,43 @@ public class Report {
                     + "str_to_date(" + initialDate + ", '%Y-%m-%d') AND "
                     + "str_to_date(" + finalDate + ", '%Y-%m-%d')";
             
-            System.out.println(statement);
-            
             SQLQuery query = session.createSQLQuery(statement);
             
             query.addEntity(BinnacleRecord.class);
             
             List<BinnacleRecord> records = query.list();
             
-            records.forEach((record) -> {
+            if (records.size() > 0) {
                 
-                System.out.println(record.getWorked_hours());
+                records.forEach((record) -> {
+                    
+                    System.out.println(record);
+                    
+                    Employee employee = (Employee) session.get(Employee.class, record.getEmployeeId());
+                    
+                    System.out.println(employee);
+                    
+                    recordContainer.getMap().get(employee).add(record);
+
+                });
+                
+            } else {
+                
+                System.out.println("No hay registros");
+                
+            }
+            
+            recordContainer.getMap().forEach((Employee employee, ArrayList<BinnacleRecord> list) -> {
+                
+                System.out.println("Employee = " + employee + " : Cantidad = " + list.size());
                 
             });
             
             transaction.commit();
              
         } catch (HibernateException ex) {
+            
+            ex.printStackTrace();
               
             if (transaction != null) {
                 

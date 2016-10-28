@@ -112,11 +112,12 @@ public class BinnacleRecord implements Serializable {
     public void setObservation(String observation) {
         this.observation = observation;
     }
-    
+
     @Override
     public String toString() {
-        return this.id + " : " + this.date.toString() + " : " 
-             + this.checkIn + " : " + this.checkOut;
+        return "BinnacleRecord{" + "id=" + id + ", employeeId=" + employeeId + ", " +
+               "checkIn=" + checkIn + ", checkOut=" + checkOut + ", date=" + date + ", " +
+               "day=" + day + ", worked_hours=" + worked_hours + ", observation=" + observation + '}';
     }
     
 }

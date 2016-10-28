@@ -3,9 +3,13 @@ package biometricauthentication.model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -17,15 +21,23 @@ import javax.persistence.Table;
 public class Employee implements Serializable {
     
     @Id
+    @GeneratedValue
+    @Column (name = "id")
     private int id;
     
-    @OneToOne
+    @OneToOne (optional = true)
+    @JoinColumn(name = "shift_id", insertable = false, updatable = false)
+    @NotFound(action=NotFoundAction.IGNORE)
     private Shift shift;
     
-    @OneToOne
+    @OneToOne (optional = true)
+    @JoinColumn(name = "employeetype_id", insertable = false, updatable = false)
+    @NotFound(action=NotFoundAction.IGNORE)
     private EmployeeType employeetype;
     
-    @OneToOne
+    @OneToOne (optional = true)
+    @JoinColumn(name = "company_id", insertable = false, updatable = false)
+    @NotFound(action=NotFoundAction.IGNORE)
     private Company company;
     
     @Column
@@ -172,6 +184,42 @@ public class Employee implements Serializable {
     
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+    
+    private int hash;
+    
+    @Override
+    public int hashCode() {
+        
+        int h = hash;
+        
+        char[] value = this.toString().toCharArray();
+        
+        if (h == 0 && value.length > 0) {
+            char val[] = value;
+
+            for (int i = 0; i < value.length; i++) {
+                h = 31 * h + val[i];
+            }
+            hash = h;
+        }
+        return h;
+    }
+    
+    @Override
+    public boolean equals(Object anObject) {
+        if (this == anObject) {
+            return true;
+        }
+        if (anObject instanceof Employee) {
+            Employee anotherClient = (Employee) anObject;
+            
+            if (anotherClient.toString().equals(this.toString())) {
+                return true;
+            }
+            
+        }
+        return false;
     }
 
     @Override

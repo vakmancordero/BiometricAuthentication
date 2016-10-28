@@ -26,9 +26,7 @@ import biometricauthentication.utils.Biometric;
 import biometricauthentication.utils.Report;
 import com.jfoenix.controls.JFXComboBox;
 import java.time.Month;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 
 /**
  *
@@ -78,6 +76,8 @@ public class ReportsController implements Initializable {
         Month month = this.monthCB.getValue();
         
         String fortnight = this.fortnightCB.getValue();
+        
+        this.report.setEmployees(this.biometric.getEmployees());
         
         List<ReportRecord> reportRecords = this.report.getReportRecords(
                 company, employeeType, year, month, fortnight
