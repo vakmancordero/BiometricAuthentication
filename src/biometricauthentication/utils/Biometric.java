@@ -167,12 +167,31 @@ public class Biometric {
         Session session = this.sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         
-        System.out.println("Guardado");
-        
         /*
             Se guarda o actualiza el empleado
         */
         session.saveOrUpdate(employee);
+        
+        transaction.commit();
+        session.flush(); session.close();
+        
+    }
+    
+    /**
+     * Guarda un registro de bitácora
+     * 
+     * @param binnacleRecord  es un registro de bitácora
+     * @see         BinnacleRecord
+     */
+    public void saveBinnacleRecord(BinnacleRecord binnacleRecord) {
+        
+        Session session = this.sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        /*
+            Se guarda o actualiza el empleado
+        */
+        session.saveOrUpdate(binnacleRecord);
         
         transaction.commit();
         session.flush(); session.close();

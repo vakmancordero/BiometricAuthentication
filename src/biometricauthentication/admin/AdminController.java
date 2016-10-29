@@ -366,4 +366,13 @@ public class AdminController implements Initializable {
         
     }
     
+    @FXML
+    private void createBinnacleRecord() {
+        
+        System.out.println("Creando un registro nuevo");
+        
+        
+        
+    }
+    
 }

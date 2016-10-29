@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="338.0" prefWidth="509.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.dialog.report.details.justify.JustifyController">
+   <children>
+      <VBox alignment="BOTTOM_LEFT" layoutX="67.0" prefHeight="129.0" prefWidth="469.0" AnchorPane.bottomAnchor="63.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="145.0">
+         <children>
+            <Label text="Observación:">
+               <font>
+                  <Font name="Roboto Regular" size="18.0" />
+               </font>
+            </Label>
+            <JFXTextArea fx:id="observationTA" focusColor="#ffa400" maxWidth="1229.0" minWidth="337.0" prefHeight="621.0" prefWidth="1229.0" />
+         </children>
+      </VBox>
+      <Label alignment="CENTER" layoutX="58.0" layoutY="14.0" text="Justificación de inasistencias" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <font>
+            <Font name="Freestyle Script" size="55.0" />
+         </font>
+      </Label>
+      <JFXButton buttonType="RAISED" layoutX="383.0" layoutY="299.0" onAction="#justify" prefHeight="39.0" prefWidth="120.0" style="-fx-background-color: #FFA400;" text="Finalizar" textFill="WHITE" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="20.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </JFXButton>
+      <HBox alignment="CENTER" layoutX="10.0" layoutY="69.0" prefHeight="56.0" prefWidth="489.0" spacing="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+         <children>
+            <VBox prefHeight="56.0" prefWidth="250.0">
+               <children>
+                  <Label text="Empleado:">
+                     <font>
+                        <Font name="Roboto Regular" size="18.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="nameTF" focusColor="#ffa400" />
+               </children>
+            </VBox>
+            <VBox prefHeight="56.0" prefWidth="220.0">
+               <children>
+                  <Label text="Fecha:">
+                     <font>
+                        <Font name="Roboto Regular" size="18.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="dateTF" focusColor="#ffa400" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

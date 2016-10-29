@@ -38,6 +38,10 @@ public class Report {
         this.recordContainer = new RecordContainer(employees);
     }
     
+    public RecordContainer getRecordContainer() {
+        return recordContainer;
+    }
+    
     public List<ReportRecord> getReportRecords(Company company, EmployeeType employeeType,
             String year, Month month, String fortnight) {
         

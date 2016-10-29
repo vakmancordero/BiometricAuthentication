@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.text.*?>
-<?import com.jfoenix.controls.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.cell.*?>
+<?import com.jfoenix.controls.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="694.0" prefWidth="850.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.dialog.report.ReportsController">
+<AnchorPane id="AnchorPane" prefHeight="729.0" prefWidth="850.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.dialog.report.ReportsController">
    <children>
       <MenuBar layoutX="32.0" layoutY="12.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <menus>
@@ -84,7 +84,7 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="75.0" prefWidth="192.0">
                <children>
-                  <JFXButton buttonType="RAISED" onAction="#generate" prefHeight="39.0" prefWidth="104.0" style="-fx-background-color: #324E7F;" text="Generar" textFill="WHITE">
+                  <JFXButton buttonType="RAISED" onAction="#generate" prefHeight="39.0" prefWidth="130.0" style="-fx-background-color: #324E7F;" text="Generar" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -93,39 +93,50 @@
             </VBox>
          </children>
       </HBox>
-      <TableView fx:id="reportTV" layoutX="47.0" layoutY="344.0" prefHeight="358.0" prefWidth="770.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0">
+      <TableView fx:id="reportTV" layoutX="47.0" layoutY="344.0" prefHeight="324.0" prefWidth="770.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="300.0">
         <columns>
-            <TableColumn prefWidth="160.0" text="Empleado" >
+            <TableColumn prefWidth="160.0" text="Empleado">
                 <cellValueFactory>
                     <PropertyValueFactory property="employee" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn minWidth="8.0" text="Tipo" >
+            <TableColumn minWidth="8.0" text="Tipo">
                 <cellValueFactory>
                     <PropertyValueFactory property="employeeType" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn prefWidth="100.0" text="Asistencias" >
+            <TableColumn prefWidth="100.0" text="Asistencias">
                 <cellValueFactory>
                     <PropertyValueFactory property="assistance" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn minWidth="0.0" prefWidth="100.0" text="Retardos" >
+            <TableColumn minWidth="0.0" prefWidth="100.0" text="Retardos">
                 <cellValueFactory>
                     <PropertyValueFactory property="deelays" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn minWidth="0.0" prefWidth="100.0" text="Faltas" >
+            <TableColumn minWidth="0.0" prefWidth="100.0" text="Faltas">
                 <cellValueFactory>
                     <PropertyValueFactory property="lacks" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn minWidth="0.0" prefWidth="117.0" text="Justificaciones" >
+            <TableColumn minWidth="0.0" prefWidth="117.0" text="Justificaciones">
                 <cellValueFactory>
                     <PropertyValueFactory property="justifications" />
                 </cellValueFactory>
             </TableColumn>
+            <TableColumn fx:id="detailsColumn" prefWidth="112.0" text="Detalles" />
         </columns>
       </TableView>
+      <Label layoutX="561.0" layoutY="122.0" text="Reporte general por compañía" textFill="#0d3357c4" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="120.0">
+         <font>
+            <Font name="Freestyle Script" size="51.0" />
+         </font>
+      </Label>
+      <JFXButton buttonType="RAISED" layoutX="693.0" layoutY="670.0" onAction="#export" prefHeight="39.0" prefWidth="192.0" style="-fx-background-color: #324E7F;" text="Exportar" textFill="WHITE" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="40.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </JFXButton>
    </children>
 </AnchorPane>
