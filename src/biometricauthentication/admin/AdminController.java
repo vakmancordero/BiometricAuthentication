@@ -51,6 +51,7 @@ import biometricauthentication.model.Company;
 
 import static biometricauthentication.BiometricController.readerEvent;
 import static biometricauthentication.BiometricController.readerThread;
+import biometricauthentication.admin.dialog.record.BinnacleRecordController;
 
 /**
  *
@@ -367,10 +368,23 @@ public class AdminController implements Initializable {
     }
     
     @FXML
-    private void createBinnacleRecord() {
+    private void createBinnacleRecord() throws IOException {
         
         System.out.println("Creando un registro nuevo");
         
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                "/biometricauthentication/admin/dialog/record/BinnacleRecordFXML.fxml")
+        );
+        
+        Stage stage = new Stage();
+        stage.setScene(new Scene((Pane) loader.load()));
+        
+        BinnacleRecordController binnacleRecordController = 
+                loader.<BinnacleRecordController>getController();
+        
+        binnacleRecordController.setData(this.employeesList);
+        
+        stage.showAndWait();
         
         
     }

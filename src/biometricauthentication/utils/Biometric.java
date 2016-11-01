@@ -122,14 +122,40 @@ public class Biometric {
      */
     private void createRoot() {
         
-        File file = new File("C:\\Biometric\\");
+        File biometricDirectory = new File("C:\\Biometric\\");
         
-        if (!file.exists()) {
+        if (!biometricDirectory.exists()) {
             
-            if (file.mkdir()) {
+            if (biometricDirectory.mkdir()) {
                 
-                System.out.println("Root creado: " + file.getAbsolutePath());
+                System.out.println("Root creado: Biometric -> " + biometricDirectory.getAbsolutePath());
                 
+                File reportDirectory = new File("C:\\Biometric\\Reportes\\");
+                
+                if (!reportDirectory.exists()) {
+                    
+                    if (reportDirectory.mkdir()) {
+                        
+                        System.out.println("Root creado: Reportes -> " + reportDirectory.getAbsolutePath());
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        } else {
+            
+            File reportDirectory = new File("C:\\Biometric\\Reportes\\");
+                
+            if (!reportDirectory.exists()) {
+
+                if (reportDirectory.mkdir()) {
+
+                    System.out.println("Root creado: Reportes -> " + reportDirectory.getAbsolutePath());
+
+                }
+
             }
             
         }

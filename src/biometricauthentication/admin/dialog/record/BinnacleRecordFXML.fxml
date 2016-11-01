@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import com.jfoenix.controls.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="337.0" prefWidth="600.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.dialog.record.BinnacleRecordController">
+<AnchorPane id="AnchorPane" prefHeight="455.0" prefWidth="596.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.dialog.record.BinnacleRecordController">
    <children>
       <VBox layoutX="256.0" layoutY="139.0" prefHeight="11.0" prefWidth="200.0">
          <children>
@@ -42,7 +42,7 @@
                   <Font name="Roboto Regular" size="18.0" />
                </font>
             </Label>
-            <JFXTextField editable="false" focusColor="#c61111" />
+            <JFXTextField fx:id="checkInTF" focusColor="#c61111" />
             <!--<CalendarTimeTextField />-->
          </children>
       </VBox>
@@ -53,15 +53,15 @@
                   <Font name="Roboto Regular" size="18.0" />
                </font>
             </Label>
-            <JFXTextField editable="false" focusColor="#c61111" />
+            <JFXTextField fx:id="checkOutTF" focusColor="#c61111" />
             <!--<CalendarTimeTextField />-->
          </children>
       </VBox>
-      <JFXButton buttonType="RAISED" layoutX="413.0" layoutY="278.0" prefHeight="39.0" prefWidth="141.0" style="-fx-background-color: #CC1E13;" text="Crear" textFill="WHITE">
+      <JFXButton buttonType="RAISED" layoutX="413.0" layoutY="278.0" onAction="#create" prefHeight="39.0" prefWidth="141.0" style="-fx-background-color: #CC1E13;" text="Crear" textFill="WHITE">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </JFXButton>
-      <ListView layoutX="14.0" layoutY="75.0" prefHeight="242.0" prefWidth="216.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="75.0" />
+      <ListView fx:id="employeesLV" layoutX="14.0" layoutY="75.0" prefHeight="242.0" prefWidth="216.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="75.0" />
    </children>
 </AnchorPane>

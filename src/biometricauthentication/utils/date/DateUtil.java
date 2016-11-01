@@ -1,6 +1,5 @@
 package biometricauthentication.utils.date;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

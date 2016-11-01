@@ -54,6 +54,13 @@ public class BinnacleRecord implements Serializable {
         this.checkIn = check_in;
     }
     
+    public BinnacleRecord(int employee_id, Date date, Date check_in, Date check_out) {
+        this.employeeId = employee_id;
+        this.date = date;
+        this.checkIn = check_in;
+        this.checkOut = check_out;
+    }
+    
     public void update(BinnacleRecord binnacleRecord) {
         
         this.observation = binnacleRecord.getObservation();

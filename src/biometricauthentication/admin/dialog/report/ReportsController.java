@@ -2,6 +2,7 @@ package biometricauthentication.admin.dialog.report;
 
 import java.time.Month;
 
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -42,9 +43,12 @@ import biometricauthentication.model.Employee;
 import biometricauthentication.model.EmployeeType;
 import biometricauthentication.utils.Biometric;
 import biometricauthentication.utils.Report;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.FileChooser;
 import net.sf.dynamicreports.examples.Templates;
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
 import static net.sf.dynamicreports.report.builder.DynamicReports.cht;
@@ -243,56 +247,95 @@ public class ReportsController implements Initializable {
     }
     
     @FXML
-    private void export() throws ClassNotFoundException, DRException {
+    private void export() throws ClassNotFoundException, DRException, IOException {
         
-        JasperPdfExporterBuilder fileExporter = export.pdfExporter("file.pdf");
-        
-        TextColumnBuilder<String> employeeColumn = 
-                col.column("Empleado", "employee", type.stringType());
-        
-        TextColumnBuilder<String> typeColumn = 
-                col.column("Tipo", "type", type.stringType());
-        
-        TextColumnBuilder<Integer> assistanceColumn = 
-                col.column("Asistencias", "assistance", type.integerType());
-        
-        TextColumnBuilder<Integer> deelaysColumn = 
-                col.column("Retardos", "deelays", type.integerType());
-        
-        TextColumnBuilder<Integer> lacksColumn = 
-                col.column("Faltas", "lacks", type.integerType());
-        
-        TextColumnBuilder<Integer> justificactionsColumn = 
-                col.column("Justificaciones", "justifications", type.integerType());
-        
-        try {
+        if (!this.reportList.isEmpty()) {
             
-            report()
-                    
-                .setTemplate(Templates.reportTemplate)
-                    
-                .columns(
-                        employeeColumn,
-                        typeColumn,
-                        assistanceColumn,
-                        deelaysColumn,
-                        lacksColumn,
-                        justificactionsColumn
-                )
-                    
-                .title(Templates.createTitleComponent("Reporte de bitácora"))
-                    
-                .pageFooter(Templates.footerComponent)
-                    
-                .setDataSource(createDataSource())
-                    
-                .toPdf(fileExporter)
-                    
-                .show();
+//            String initialName = 
+//                    "Reporte " + new SimpleDateFormat(
+//                            "yyyy-mm-dd"
+//                    ).format(new Date()) + ".pdf";
             
-        } catch (DRException ex) {
-            ex.printStackTrace();
+            String initialName = 
+                    "Reporte " + this.fortnightCB.getValue() + " - " + 
+                    this.monthCB.getValue() + " - " + this.yearCB.getValue() + ".pdf";
+            
+            FileChooser fileChooser = new FileChooser();
+
+            fileChooser.setInitialFileName(initialName);
+
+            fileChooser.setSelectedExtensionFilter(
+                    new FileChooser.ExtensionFilter(
+                            "Archivos PDF", ".pdf"
+                    )
+            );
+
+            File file = fileChooser.showSaveDialog(null);
+
+            if (file == null) {
+                file = new File("C:\\Biometric\\Reportes\\" + initialName);
+            }
+            
+            JasperPdfExporterBuilder fileExporter = export.pdfExporter(file);
+            
+            TextColumnBuilder<String> employeeColumn = 
+                    col.column("Empleado", "employee", type.stringType());
+
+            TextColumnBuilder<String> typeColumn = 
+                    col.column("Tipo", "type", type.stringType());
+
+            TextColumnBuilder<Integer> assistanceColumn = 
+                    col.column("Asistencias", "assistance", type.integerType());
+
+            TextColumnBuilder<Integer> deelaysColumn = 
+                    col.column("Retardos", "deelays", type.integerType());
+
+            TextColumnBuilder<Integer> lacksColumn = 
+                    col.column("Faltas", "lacks", type.integerType());
+
+            TextColumnBuilder<Integer> justificactionsColumn = 
+                    col.column("Justificaciones", "justifications", type.integerType());
+
+            try {
+
+                report()
+
+                    .setTemplate(Templates.reportTemplate)
+
+                    .columns(
+                            employeeColumn,
+                            typeColumn,
+                            assistanceColumn,
+                            deelaysColumn,
+                            lacksColumn,
+                            justificactionsColumn
+                    )
+
+                    .title(Templates.createTitleComponent("Reporte de bitácora"))
+
+                    .pageFooter(Templates.footerComponent)
+
+                    .setDataSource(createDataSource())
+
+                    .toPdf(fileExporter)
+
+                    .show(false);
+
+            } catch (DRException ex) {
+
+                ex.printStackTrace();
+
+            }
+            
+        } else {
+            
+            new Alert(
+                    AlertType.INFORMATION,
+                    "No hay registros para exportar"
+            ).show();
+            
         }
+        
     }
     
     private JRDataSource createDataSource() {
@@ -312,8 +355,7 @@ public class ReportsController implements Initializable {
             
             String employeeTypeSt = 
                     employeeType != null ? 
-                        employeeType.toString() :
-                        "";
+                        employeeType.toString() : "";
             
             dataSource.add(
                     reportRecord.getEmployee().toString(),

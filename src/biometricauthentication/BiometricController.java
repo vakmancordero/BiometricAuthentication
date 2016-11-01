@@ -37,6 +37,7 @@ import javafx.stage.WindowEvent;
 
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  *
@@ -90,79 +91,90 @@ public class BiometricController implements Initializable {
     
     private void initObserver() {
         
-        Observer observer = (Observable observable, Object sampleObject) -> {
+        try {
             
-            DPFPSample sample = (DPFPSample) sampleObject;
-            
-            Platform.runLater(() -> {
-                
-                boolean verified = false;
-                
-                for (Employee employee : biometric.getEmployees()) {
-                    
-                    DPFPTemplate template = biometric.deserializeTemplate(employee);
-                    
-                    if (template != null) {
-                        
-                        verified = biometric.verify(sample, template);
-                        
-                        if (verified) {
-                            
-                            Information info = biometric.saveBinnacleRecord(employee);
-                            
-                            String verification = info.getVerification();
-                            
-                            if (!verification.equals("temprano")) {
-                                
-                                if (!verification.equals("sameDay")) {
-                                    
-                                    if (!verification.equals("outOfRange")) {
-                                        
-                                        this.openDialogEmployee(employee, info);
-                                        
+            Observer observer = (Observable observable, Object sampleObject) -> {
+
+                DPFPSample sample = (DPFPSample) sampleObject;
+
+                Platform.runLater(() -> {
+
+                    boolean verified = false;
+
+                    for (Employee employee : biometric.getEmployees()) {
+
+                        DPFPTemplate template = biometric.deserializeTemplate(employee);
+
+                        if (template != null) {
+
+                            verified = biometric.verify(sample, template);
+
+                            if (verified) {
+
+                                Information info = biometric.saveBinnacleRecord(employee);
+
+                                String verification = info.getVerification();
+
+                                if (!verification.equals("temprano")) {
+
+                                    if (!verification.equals("sameDay")) {
+
+                                        if (!verification.equals("outOfRange")) {
+
+                                            this.openDialogEmployee(employee, info);
+
+                                        } else {
+
+                                            errorDialog.setContentText("Fuera del rango de tiempo");
+                                            errorDialog.show();
+
+                                        }
+
                                     } else {
-                                        
-                                        errorDialog.setContentText("Fuera del rango de tiempo");
+
+                                        errorDialog.setContentText("Usted ya ha checado un turno completo");
                                         errorDialog.show();
-                                        
+
                                     }
-                                    
+
                                 } else {
-                                    
-                                    errorDialog.setContentText("Usted ya ha checado un turno completo");
+
+                                    errorDialog.setContentText("Aún es muy temprano para checar");
                                     errorDialog.show();
 
                                 }
-                                
-                            } else {
-                                    
-                                errorDialog.setContentText("Aún es muy temprano para checar");
-                                errorDialog.show();
-                                
+
+                                return;
+
                             }
-                            
-                            return;
 
                         }
-                        
+
                     }
-                    
-                }
-                
-                if (!verified) {
-                    
-                    errorDialog.setContentText("No encontrado, inténtelo de nuevo");
-                    errorDialog.show();
-                    
-                }
-                
-                this.closeDialogs();
-                
-            });
-        };
-        
-        readerEvent = new Reader();
-        readerEvent.addObserver(observer);
+
+                    if (!verified) {
+
+                        errorDialog.setContentText("No encontrado, inténtelo de nuevo");
+                        errorDialog.show();
+
+                    }
+
+                    this.closeDialogs();
+
+                });
+            };
+
+            readerEvent = new Reader();
+            readerEvent.addObserver(observer);
+            
+        } catch (Exception ex) {
+            
+            new Alert(
+                    AlertType.ERROR,
+                    "Error"
+            ).show();
+            
+        }
         
     }
     
