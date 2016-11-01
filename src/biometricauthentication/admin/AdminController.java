@@ -11,7 +11,9 @@ import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
 
 import java.net.URL;
 import java.sql.SQLException;
+
 import java.util.ResourceBundle;
+import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -28,12 +30,13 @@ import javafx.scene.layout.Pane;
 import javafx.fxml.FXMLLoader;
 
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ButtonType;
 
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -42,16 +45,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import biometricauthentication.admin.dialog.record.BinnacleRecordController;
+
+import static biometricauthentication.BiometricController.readerEvent;
+import static biometricauthentication.BiometricController.readerThread;
+
 import biometricauthentication.utils.reader.DPFPReader;
 import biometricauthentication.utils.Biometric;
 
 import biometricauthentication.model.Employee;
 import biometricauthentication.model.Shift;
 import biometricauthentication.model.Company;
+import javafx.event.ActionEvent;
+import javafx.scene.control.MenuItem;
 
-import static biometricauthentication.BiometricController.readerEvent;
-import static biometricauthentication.BiometricController.readerThread;
-import biometricauthentication.admin.dialog.record.BinnacleRecordController;
 
 /**
  *
@@ -63,19 +70,25 @@ public class AdminController implements Initializable {
     private Accordion accordion;
     
     @FXML
-    private TitledPane first;
+    private TitledPane registerPane, createPane, editPane;
     
     @FXML
     private Pane blockPane;
     
     @FXML
-    private TextField companyTF, nameTF, createNameTF, lastNameTF, mothersLastNameTF;
+    private TextField companyTF, nameTF;
     
     @FXML
-    private ComboBox<Shift> shiftCB, createShiftCB;
+    private TextField createNameTF, createLastNameTF, createMothersLastNameTF;
     
     @FXML
-    private ComboBox<Company> companyCB;
+    private TextField editNameTF, editLastNameTF, editMothersLastNameTF;
+    
+    @FXML
+    private ComboBox<Shift> shiftCB, createShiftCB, editShiftCB;
+    
+    @FXML
+    private ComboBox<Company> createCompanyCB, editCompanyCB;
     
     @FXML
     private TableView<Employee> employeesTV;
@@ -85,6 +98,8 @@ public class AdminController implements Initializable {
     private Biometric biometric;
     
     private DPFPReader myReader;
+    
+    private TextField[] createArr, editArr; 
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -104,6 +119,8 @@ public class AdminController implements Initializable {
         
         this.initTV();
         
+        this.initArrays();
+        
         if (!this.employeesList.isEmpty()) {
             
             this.employeesTV.getSelectionModel().selectFirst();
@@ -112,7 +129,7 @@ public class AdminController implements Initializable {
             
         }
         
-        this.accordion.setExpandedPane(first);
+        this.accordion.setExpandedPane(registerPane);
         
     }
     
@@ -135,15 +152,44 @@ public class AdminController implements Initializable {
                 
                 Employee employee = employeesTV.getSelectionModel().getSelectedItem();
                 
-                companyTF.setText(employee.getCompany().getDescription());
+                String employeeFullName = employee.toString();
+                String employeeName = employee.getName();
+                String employeeLastName = employee.getLastName();
+                String employeeMothersLastName = employee.getMothersLastName();
                 
-                nameTF.setText(employee.toString());
+                Company company = employee.getCompany();
                 
-                shiftCB.getSelectionModel().select(employee.getShift());
+                Shift shift = employee.getShift();
+                
+                nameTF.setText(employeeFullName);
+                companyTF.setText(company.toString());
+                shiftCB.getSelectionModel().select(shift);
+                
+                editNameTF.setText(employeeName);
+                editLastNameTF.setText(employeeLastName);
+                editMothersLastNameTF.setText(employeeMothersLastName);
+                editCompanyCB.getSelectionModel().select(company);
+                editShiftCB.getSelectionModel().select(shift);
                 
             }
             
         });
+        
+    }
+    
+    private void initArrays() {
+        
+        this.createArr = new TextField[] {
+            this.createNameTF, 
+            this.createLastNameTF, 
+            this.createMothersLastNameTF
+        };
+        
+        this.editArr = new TextField[] {
+            this.editNameTF, 
+            this.editLastNameTF, 
+            this.editMothersLastNameTF
+        };
         
     }
     
@@ -156,8 +202,10 @@ public class AdminController implements Initializable {
             this.shiftCB.getSelectionModel().selectFirst();
             
             this.createShiftCB.getItems().addAll(shiftCB.getItems());
-            
             this.createShiftCB.getSelectionModel().selectFirst();
+            
+            this.editShiftCB.getItems().addAll(shiftCB.getItems());
+            this.editShiftCB.getSelectionModel().selectFirst();
             
         }
         
@@ -165,10 +213,15 @@ public class AdminController implements Initializable {
     
     private void fillCompanies() {
         
-        this.companyCB.getItems().addAll(biometric.getCompanies());
+        this.createCompanyCB.getItems().addAll(biometric.getCompanies());
         
-        if (!this.companyCB.getItems().isEmpty()) {
-            this.companyCB.getSelectionModel().selectFirst();
+        if (!this.createCompanyCB.getItems().isEmpty()) {
+            
+            this.createCompanyCB.getSelectionModel().selectFirst();
+            
+            this.editCompanyCB.getItems().addAll(this.createCompanyCB.getItems());
+            this.editCompanyCB.getSelectionModel().selectFirst();
+            
         }
         
     }
@@ -182,24 +235,68 @@ public class AdminController implements Initializable {
     @FXML
     private void saveEmployee() {
         
-        String name = this.createNameTF.getText();
-        String lastName = this.lastNameTF.getText();
-        String mothersLastName = this.mothersLastNameTF.getText();
+        if (this.check("create")) {
+            
+            String name = this.createNameTF.getText();
+            String lastName = this.createLastNameTF.getText();
+            String mothersLastName = this.createMothersLastNameTF.getText();
+
+            Shift shift = this.createShiftCB.getValue();
+            Company company = this.createCompanyCB.getValue();
+
+            Employee employee = new Employee(
+                    name, lastName, mothersLastName, shift, company
+            );
+
+            this.biometric.saveEmployee(employee);
+
+            new Alert(
+                    AlertType.INFORMATION, 
+                    "Empleado creado"
+            ).show();
+
+            this.employeesList.add(employee);
+            
+        } else {
+            
+            this.emptyFields();
+            
+        }
         
-        Shift shift = this.createShiftCB.getValue();
-        Company company = this.companyCB.getValue();
+    }
+    
+    @FXML
+    private void updateEmployee() {
         
-        Employee employee = new Employee(
-                name, lastName, mothersLastName, shift, company
-        );
-        
-        this.biometric.saveEmployee(employee);
-        
-        new Alert(
-                Alert.AlertType.INFORMATION, "Empleado creado", ButtonType.OK
-        ).showAndWait();
-        
-        this.employeesList.add(employee);
+        if (this.check("update")) {
+            
+            Employee employee = this.employeesTV.getSelectionModel().getSelectedItem();
+            
+            String name = this.editNameTF.getText();
+            String lastName = this.editLastNameTF.getText();
+            String mothersLastName = this.editMothersLastNameTF.getText();
+            
+            Shift shift = this.editShiftCB.getValue();
+            Company company = this.editCompanyCB.getValue();
+            
+            employee.updateEmployee(
+                    name, lastName, mothersLastName, shift, company
+            );
+            
+            this.biometric.saveEmployee(employee);
+            
+            new Alert(
+                    AlertType.INFORMATION, 
+                    "Empleado editado"
+            ).show();
+            
+            this.employeesTV.refresh();
+            
+        } else {
+            
+            this.emptyFields();
+            
+        }
         
     }
     
@@ -215,84 +312,95 @@ public class AdminController implements Initializable {
         this.employeesTV.refresh();
         
         new Alert(
-                Alert.AlertType.INFORMATION,
-                "El turno : " + employee.getShift() + ", ha sido establecido",
-                ButtonType.OK
+                AlertType.INFORMATION,
+                "El turno : " + employee.getShift() + ", ha sido establecido"
         ).show();
         
     }
     
     @FXML
     private void setFinger() throws SQLException, InterruptedException {
+        
+        Employee employee = this.employeesTV.getSelectionModel().getSelectedItem();
+        
+        Alert confirmation = new Alert(AlertType.CONFIRMATION);
+        
+        confirmation.setTitle("Confirmacion de modificación");
+        confirmation.setHeaderText("Está seguro?");
+        confirmation.setContentText(
+                "Desea modificar la huella del empleado " + employee + "?"
+        );
+        
+        Optional<ButtonType> option = confirmation.showAndWait();
+        
+        if (option.get() == ButtonType.OK) {
             
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Captura");
-        alert.setHeaderText("Captura de datos");
-        
-        DPFPFeatureExtraction featureExtractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
-        DPFPEnrollment enrollment = DPFPGlobal.getEnrollmentFactory().createEnrollment();
-        
-        this.myReader.findReader();
-        
-        if (!this.myReader.getActiveReader().equals("empty")) {
-            
-            try {
-                
-                while (enrollment.getFeaturesNeeded() > 0) {
-                    
-                    alert.setContentText("Ingresar dedo... " + enrollment.getFeaturesNeeded());
-                    alert.show();
-                    
-                    DPFPSample sample = this.myReader.getSample();
-                    
-                    if (sample == null) {
-                        continue;
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Captura");
+            alert.setHeaderText("Captura de datos");
+
+            DPFPFeatureExtraction featureExtractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
+            DPFPEnrollment enrollment = DPFPGlobal.getEnrollmentFactory().createEnrollment();
+
+            this.myReader.findReader();
+
+            if (!this.myReader.getActiveReader().equals("empty")) {
+
+                try {
+
+                    while (enrollment.getFeaturesNeeded() > 0) {
+
+                        alert.setContentText("Ingresar dedo... " + enrollment.getFeaturesNeeded());
+                        alert.show();
+
+                        DPFPSample sample = this.myReader.getSample();
+
+                        if (sample == null) {
+                            continue;
+                        }
+
+                        DPFPFeatureSet featureSet;
+
+                        try {
+
+                            featureSet = featureExtractor.createFeatureSet(sample, DPFPDataPurpose.DATA_PURPOSE_ENROLLMENT);
+
+                        } catch (DPFPImageQualityException ex) {
+
+                            System.out.println("Error, mala calidad en la huella capturada");
+
+                            continue;
+
+                        }
+
+                        alert.close();
+
+                        enrollment.addFeatures(featureSet);
                     }
-                    
-                    DPFPFeatureSet featureSet;
-                    
-                    try {
-                        
-                        featureSet = featureExtractor.createFeatureSet(sample, DPFPDataPurpose.DATA_PURPOSE_ENROLLMENT);
-                        
-                    } catch (DPFPImageQualityException ex) {
-                        
-                        System.out.println("Error, mala calidad en la huella capturada");
-                        
-                        continue;
-                        
-                    }
-                    
-                    alert.close();
-                    
-                    enrollment.addFeatures(featureSet);
+
+                } catch (DPFPImageQualityException | InterruptedException ex) {
+
                 }
-                
-            } catch (DPFPImageQualityException | InterruptedException ex) {
-                
+
+                DPFPTemplate template = enrollment.getTemplate();
+
+                employee.setTemplate(this.biometric.serializeTemplate(template));
+
+                this.biometric.saveEmployee(employee);
+
+                new Alert(
+                        AlertType.INFORMATION, 
+                        "La huella ha sido registrada correctamente"
+                ).show();
+
+            } else {
+
+                new Alert(
+                        AlertType.ERROR, 
+                        "No hay lector conectado"
+                ).show();
+
             }
-            
-            Employee employee = this.employeesTV.getSelectionModel().getSelectedItem();
-            
-            DPFPTemplate template = enrollment.getTemplate();
-            
-            employee.setTemplate(this.biometric.serializeTemplate(template));
-            
-            this.biometric.saveEmployee(employee);
-            
-            new Alert(
-                    Alert.AlertType.INFORMATION, 
-                    "La huella ha sido registrada correctamente",
-                    ButtonType.OK
-            ).show();
-            
-        } else {
-            
-            new Alert(
-                    Alert.AlertType.ERROR, 
-                    "No hay lector conectado", 
-                    ButtonType.OK
-            ).show();
             
         }
         
@@ -318,9 +426,8 @@ public class AdminController implements Initializable {
                 if (biometric.saveFile(employee, file)) {
 
                     new Alert(
-                            Alert.AlertType.INFORMATION,
-                            "La imagen del empleado: " + employee.getName() + ", ha sido establecida",
-                            ButtonType.OK
+                            AlertType.INFORMATION,
+                            "La imagen del empleado: " + employee.getName() + ", ha sido establecida"
                     ).show();
                     
                 }
@@ -328,14 +435,123 @@ public class AdminController implements Initializable {
             } else {
                 
                 new Alert(
-                        Alert.AlertType.ERROR,
-                        "La imagen es demasiado grande, intente con otra",
-                        ButtonType.OK
+                        AlertType.ERROR,
+                        "La imagen es demasiado grande, intente con otra"
                 ).show();
                 
             }
             
         }
+        
+    }
+    
+    @FXML
+    private void context(ActionEvent event) {
+        
+        MenuItem menuItem = (MenuItem) event.getSource();
+        
+        String item = menuItem.getText();
+        
+        if (item.equals("Registrar")) {
+            
+            this.accordion.setExpandedPane(registerPane);
+            
+        } else {
+            
+            if (item.equals("Crear")) {
+                
+                this.accordion.setExpandedPane(createPane);
+                
+            } else {
+                
+                if (item.equals("Editar")) {
+                    
+                    this.accordion.setExpandedPane(editPane);
+                    
+                } else {
+                    
+                    if (item.equals("Eliminar")) {
+                        
+                        this.deleteEmployee();
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    private void deleteEmployee() {
+        
+        Employee employee = this.employeesTV.getSelectionModel().getSelectedItem();
+        
+        Alert confirmation = new Alert(AlertType.CONFIRMATION);
+        
+        confirmation.setTitle("Confirmacion de eliminación");
+        confirmation.setHeaderText("Está seguro?");
+        confirmation.setContentText(
+                "Desea eliminar al empleado " + employee + "?"
+        );
+        
+        Optional<ButtonType> option = confirmation.showAndWait();
+        
+        if (option.get() == ButtonType.OK) {
+        
+            this.biometric.deleteEmployee(employee);
+
+            this.employeesList.remove(employee);
+
+            new Alert(
+                    AlertType.INFORMATION, 
+                    "Empleado eliminado"
+            ).show();
+            
+        }
+        
+    }
+    
+    private boolean check(String type) {
+        
+        if (type.equals("create")) {
+            
+            for (TextField createTF : this.createArr) {
+                
+                if (createTF.getText().isEmpty()) {
+                    return false;
+                }
+                
+            }
+            
+        } else {
+            
+            if (type.equals("update")) {
+                
+                for (TextField editTF : this.editArr) {
+                    
+                    if (editTF.getText().isEmpty()) {
+                        return false;
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+        return true;
+        
+    }
+    
+    private void emptyFields() {
+        
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error!");
+        alert.setHeaderText("Ha olvidado llenar algún campo");
+        alert.setContentText("Por favor introduzca los campos faltantes...");
+        alert.showAndWait();
         
     }
     

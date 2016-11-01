@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
@@ -101,6 +102,17 @@
                             </cellValueFactory>
                         </TableColumn>
                     </columns>
+                     <contextMenu>
+                        <ContextMenu>
+                          <items>
+                              <MenuItem mnemonicParsing="false" onAction="#context" text="Registrar" />
+                              <MenuItem mnemonicParsing="false" onAction="#context" text="Crear" />
+                              <MenuItem mnemonicParsing="false" onAction="#context" text="Editar" />
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                            <MenuItem mnemonicParsing="false" onAction="#context" text="Eliminar" />
+                          </items>
+                        </ContextMenu>
+                     </contextMenu>
                   </TableView>
                </children>
             </AnchorPane>
@@ -113,7 +125,7 @@
                   </Label>
                   <Accordion fx:id="accordion" layoutX="59.0" layoutY="43.0" prefHeight="471.0" prefWidth="511.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="45.0">
                     <panes>
-                      <TitledPane fx:id="first" animated="false" expanded="false" text="Registrar" textFill="#727272">
+                      <TitledPane fx:id="registerPane" animated="false" expanded="false" text="Registrar" textFill="#727272">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
@@ -134,13 +146,13 @@
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="330.0" spacing="16.0">
                                                    <children>
                                                       <Label text="Empresa:" />
-                                                      <TextField fx:id="companyTF" prefHeight="25.0" prefWidth="327.0" promptText="Nombre de la empresa" HBox.hgrow="ALWAYS" />
+                                                      <TextField fx:id="companyTF" editable="false" prefHeight="25.0" prefWidth="327.0" promptText="Nombre de la empresa" HBox.hgrow="ALWAYS" />
                                                    </children>
                                                 </HBox>
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
                                                    <children>
                                                       <Label prefHeight="17.0" prefWidth="56.0" text="Nombre:" />
-                                                      <TextField fx:id="nameTF" prefHeight="25.0" prefWidth="330.0" promptText="Nombre del empleado" HBox.hgrow="ALWAYS" />
+                                                      <TextField fx:id="nameTF" editable="false" prefHeight="25.0" prefWidth="330.0" promptText="Nombre del empleado" HBox.hgrow="ALWAYS" />
                                                    </children>
                                                 </HBox>
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="31.0">
@@ -185,7 +197,7 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                       </TitledPane>
-                        <TitledPane fx:id="first1" animated="false" expanded="false" text="Crear" textFill="#727272">
+                        <TitledPane fx:id="createPane" animated="false" expanded="false" text="Crear" textFill="#727272">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -212,13 +224,13 @@
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
                                                    <children>
                                                       <Label prefHeight="17.0" prefWidth="102.0" text="Apellido paterno:" />
-                                                      <TextField fx:id="lastNameTF" prefHeight="29.0" prefWidth="234.0" promptText="Apellido paterno" HBox.hgrow="ALWAYS" />
+                                                      <TextField fx:id="createLastNameTF" prefHeight="29.0" prefWidth="234.0" promptText="Apellido paterno" HBox.hgrow="ALWAYS" />
                                                    </children>
                                                 </HBox>
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
                                                    <children>
                                                       <Label prefHeight="17.0" prefWidth="143.0" text="Apellido materno:" />
-                                                      <TextField fx:id="mothersLastNameTF" prefHeight="25.0" prefWidth="330.0" promptText="Apellido materno" HBox.hgrow="ALWAYS" />
+                                                      <TextField fx:id="createMothersLastNameTF" prefHeight="25.0" prefWidth="330.0" promptText="Apellido materno" HBox.hgrow="ALWAYS" />
                                                    </children>
                                                 </HBox>
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="31.0">
@@ -230,7 +242,7 @@
                                                 <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="31.0">
                                                    <children>
                                                       <Label text="Compañia:" />
-                                                      <ComboBox fx:id="companyCB" prefHeight="25.0" prefWidth="180.0" promptText="Hotel, empresa, etc" />
+                                                      <ComboBox fx:id="createCompanyCB" prefHeight="25.0" prefWidth="180.0" promptText="Hotel, empresa, etc" />
                                                    </children>
                                                 </HBox>
                                              </children>
@@ -239,7 +251,7 @@
                                              <children>
                                                 <HBox alignment="CENTER" prefHeight="25.0" prefWidth="373.0" spacing="40.0">
                                                    <children>
-                                                      <JFXButton buttonType="RAISED" onAction="#saveEmployee" prefHeight="39.0" prefWidth="295.0" ripplerFill="WHITE" style="-fx-background-color: #324E7F;" text="Terminado" textFill="WHITE">
+                                                      <JFXButton buttonType="RAISED" onAction="#saveEmployee" prefHeight="39.0" prefWidth="295.0" ripplerFill="WHITE" style="-fx-background-color: #324E7F;" text="Terminar" textFill="WHITE">
                                                          <font>
                                                             <Font name="System Bold" size="18.0" />
                                                          </font>
@@ -249,6 +261,79 @@
                                              </children>
                                           </VBox>
                                           <Pane fx:id="blockPane1" layoutX="68.0" layoutY="266.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </TitledPane>
+                        <TitledPane fx:id="editPane" animated="false" expanded="false" text="Editar" textFill="#727272">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <AnchorPane id="AnchorPane" layoutX="14.0" prefHeight="369.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <Label fx:id="titleLabel11" alignment="CENTER" layoutX="96.0" layoutY="14.0" text="Editar empleado" textFill="#1e2546" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-10.0">
+                                             <font>
+                                                <Font name="Freestyle Script" size="52.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="50.0" layoutY="69.0" text="Datos del empleado:" textFill="#000000bf" AnchorPane.leftAnchor="50.0">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox layoutX="50.0" layoutY="102.0" prefHeight="187.0" prefWidth="406.0" spacing="10.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
+                                                   <children>
+                                                      <Label prefHeight="17.0" prefWidth="53.0" text="Nombre:" />
+                                                      <TextField fx:id="editNameTF" prefHeight="25.0" prefWidth="330.0" promptText="Nombre del empleado" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
+                                                   <children>
+                                                      <Label prefHeight="17.0" prefWidth="102.0" text="Apellido paterno:" />
+                                                      <TextField fx:id="editLastNameTF" prefHeight="29.0" prefWidth="234.0" promptText="Apellido paterno" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="13.0">
+                                                   <children>
+                                                      <Label prefHeight="17.0" prefWidth="143.0" text="Apellido materno:" />
+                                                      <TextField fx:id="editMothersLastNameTF" prefHeight="25.0" prefWidth="330.0" promptText="Apellido materno" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="31.0">
+                                                   <children>
+                                                      <Label text="Turno:" />
+                                                      <ComboBox fx:id="editShiftCB" prefHeight="25.0" prefWidth="180.0" promptText="Turno laboral" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="215.0" spacing="31.0">
+                                                   <children>
+                                                      <Label text="Compañia:" />
+                                                      <ComboBox fx:id="editCompanyCB" prefHeight="25.0" prefWidth="180.0" promptText="Hotel, empresa, etc" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          <VBox layoutX="50.0" layoutY="319.0" prefHeight="20.0" prefWidth="406.0" spacing="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+                                             <children>
+                                                <HBox alignment="CENTER" prefHeight="25.0" prefWidth="373.0" spacing="40.0">
+                                                   <children>
+                                                      <JFXButton buttonType="RAISED" onAction="#updateEmployee" prefHeight="39.0" prefWidth="295.0" ripplerFill="WHITE" style="-fx-background-color: #324E7F;" text="Terminar" textFill="WHITE">
+                                                         <font>
+                                                            <Font name="System Bold" size="18.0" />
+                                                         </font>
+                                                      </JFXButton>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          <Pane fx:id="blockPane11" layoutX="68.0" layoutY="266.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>

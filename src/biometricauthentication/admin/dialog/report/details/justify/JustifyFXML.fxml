@@ -55,5 +55,10 @@
             </VBox>
          </children>
       </HBox>
+      <JFXButton buttonType="RAISED" layoutX="236.0" layoutY="284.0" onAction="#cancel" prefHeight="39.0" prefWidth="120.0" style="-fx-background-color: #CC1E13;" text="Cancelar" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </JFXButton>
    </children>
 </AnchorPane>

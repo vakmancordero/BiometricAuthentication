@@ -179,18 +179,6 @@ public class BiometricController implements Initializable {
     }
     
     private void closeDialogs() {
-        
-//        if (errorDialog.isShowing()) {
-//                    
-//            try {
-//
-//                Thread.sleep(3000);
-//
-//                errorDialog.close();
-//
-//            } catch (InterruptedException ex) {}
-//
-//        }
 
         if (employeeDialog.isShowing()) {
 

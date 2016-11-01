@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
@@ -61,5 +62,10 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
+      <JFXButton buttonType="RAISED" layoutX="529.0" layoutY="45.0" onAction="#openAuthentication" prefHeight="39.0" prefWidth="164.0" ripplerFill="#324e7f" style="-fx-background-color: #FCFCFF;" text="Administrador" textFill="#656565" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="45.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </JFXButton>
    </children>
 </AnchorPane>

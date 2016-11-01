@@ -1,28 +1,35 @@
 package biometricauthentication.admin.dialog.record;
 
 import java.net.URL;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.time.LocalDate;
+
 import java.util.Date;
+import java.util.Locale;
 import java.util.ResourceBundle;
+
+import java.sql.Time;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
+
 import com.jfoenix.controls.JFXTextField;
 
 import biometricauthentication.model.Employee;
 import biometricauthentication.model.BinnacleRecord;
 import biometricauthentication.utils.Biometric;
-import java.sql.Time;
-import java.util.Locale;
-import javafx.scene.control.Alert.AlertType;
 
 /**
  *
@@ -71,11 +78,15 @@ public class BinnacleRecordController implements Initializable {
     }
     
     public void setData(ObservableList<Employee> employeesList) {
+        
         this.employeesLV.setItems(employeesList);
         
         if (!this.employeesLV.getItems().isEmpty()) {
+            
             this.employeesLV.getSelectionModel().selectFirst();
+            
         }
+        
     }
     
     @FXML
@@ -91,13 +102,9 @@ public class BinnacleRecordController implements Initializable {
             String checkInString = this.checkInTF.getText();
             String checkOutString = this.checkOutTF.getText();
             
-            Date checkIn = this.createCheck(
-                    localDate, checkInString
-            );
+            Date checkIn = this.createCheck(localDate, checkInString);
             
-            Date checkOut = this.createCheck(
-                    localDate, checkOutString
-            );
+            Date checkOut = this.createCheck(localDate, checkOutString);
             
             Date date = createCheck(localDate, "");
             
@@ -111,8 +118,12 @@ public class BinnacleRecordController implements Initializable {
             );
             
             binnacleRecord.setDay(day);
+            
             binnacleRecord.setReport("normal");
-            binnacleRecord.setWorked_hours(new Time(8, 0, 0));
+            
+            binnacleRecord.setWorked_hours(
+                    new Time(8, 0, 0)
+            );
             
             this.biometric.saveBinnacleRecord(binnacleRecord);
             
@@ -151,15 +162,13 @@ public class BinnacleRecordController implements Initializable {
                 ).parse(dateString);
                 
             }
-            
-            System.out.println(date);
         
         } catch (ParseException ex) {
             
             new Alert(
                     AlertType.ERROR,
-                    "Los valores introducidos no cumplen con"
-                  + "el formato de fecha"
+                    "Los valores introducidos no "
+                  + "cumplen con el formato de fecha"
             ).show();
             
         }

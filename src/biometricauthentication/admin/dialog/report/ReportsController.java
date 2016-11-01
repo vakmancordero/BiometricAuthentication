@@ -2,14 +2,12 @@ package biometricauthentication.admin.dialog.report;
 
 import java.time.Month;
 
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import javafx.util.Callback;
 import java.util.ResourceBundle;
 
 import java.net.URL;
-
-import javafx.util.Callback;
 
 import java.io.IOException;
 
@@ -25,7 +23,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
+import java.io.File;
+import javafx.geometry.Pos;
+import javafx.stage.FileChooser;
+
 import javafx.scene.control.TableCell;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -34,34 +38,27 @@ import javafx.scene.paint.Paint;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 
-import biometricauthentication.admin.dialog.report.beans.ReportRecord;
-import biometricauthentication.admin.dialog.report.details.ReportRecordDetailController;
-import biometricauthentication.model.BinnacleRecord;
-
-import biometricauthentication.model.Company;
-import biometricauthentication.model.Employee;
-import biometricauthentication.model.EmployeeType;
-import biometricauthentication.utils.Biometric;
-import biometricauthentication.utils.Report;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.stage.FileChooser;
 import net.sf.dynamicreports.examples.Templates;
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
-import static net.sf.dynamicreports.report.builder.DynamicReports.cht;
-import static net.sf.dynamicreports.report.builder.DynamicReports.col;
-import static net.sf.dynamicreports.report.builder.DynamicReports.export;
-import static net.sf.dynamicreports.report.builder.DynamicReports.report;
-import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
-import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.style.FontBuilder;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
+
+import static net.sf.dynamicreports.report.builder.DynamicReports.col;
+import static net.sf.dynamicreports.report.builder.DynamicReports.export;
+import static net.sf.dynamicreports.report.builder.DynamicReports.report;
+import static net.sf.dynamicreports.report.builder.DynamicReports.type;
+
+import biometricauthentication.admin.dialog.report.beans.ReportRecord;
+import biometricauthentication.admin.dialog.report.details.ReportRecordDetailController;
+
+import biometricauthentication.model.Company;
+import biometricauthentication.model.Employee;
+import biometricauthentication.model.BinnacleRecord;
+import biometricauthentication.model.EmployeeType;
+import biometricauthentication.utils.Biometric;
+import biometricauthentication.utils.Report;
 
 /**
  *
@@ -251,11 +248,6 @@ public class ReportsController implements Initializable {
         
         if (!this.reportList.isEmpty()) {
             
-//            String initialName = 
-//                    "Reporte " + new SimpleDateFormat(
-//                            "yyyy-mm-dd"
-//                    ).format(new Date()) + ".pdf";
-            
             String initialName = 
                     "Reporte " + this.fortnightCB.getValue() + " - " + 
                     this.monthCB.getValue() + " - " + this.yearCB.getValue() + ".pdf";
@@ -349,13 +341,13 @@ public class ReportsController implements Initializable {
                 "justifications"
         );
       
-        for (ReportRecord reportRecord : this.reportList) {
+        this.reportList.forEach((reportRecord) -> {
             
             EmployeeType employeeType = reportRecord.getEmployeeType();
             
-            String employeeTypeSt = 
-                    employeeType != null ? 
-                        employeeType.toString() : "";
+            String employeeTypeSt =
+                    employeeType != null ?
+                    employeeType.toString() : "";
             
             dataSource.add(
                     reportRecord.getEmployee().toString(),
@@ -365,7 +357,8 @@ public class ReportsController implements Initializable {
                     reportRecord.getLacks(),
                     reportRecord.getJustifications()
             );
-        }
+            
+        });
       
         return dataSource;
         
@@ -402,7 +395,9 @@ public class ReportsController implements Initializable {
             stage.showAndWait();
             
         } catch (IOException ex) {
+            
             ex.printStackTrace();
+            
         }
         
     }

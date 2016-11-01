@@ -5,11 +5,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 /**
  *
@@ -61,7 +58,10 @@ public class Employee implements Serializable {
     @Column (name = "photo")
     private String photo;
     
+    private int hash;
+    
     public Employee() {
+        
     }
     
     public Employee(String name) {
@@ -69,6 +69,14 @@ public class Employee implements Serializable {
     }
 
     public Employee(String name, String lastName, String mothersLastName, Shift shift, Company company) {
+        this.name = name;
+        this.lastName = lastName;
+        this.mothersLastName = mothersLastName;
+        this.shift = shift;
+        this.company = company;
+    }
+    
+    public void updateEmployee(String name, String lastName, String mothersLastName, Shift shift, Company company) {
         this.name = name;
         this.lastName = lastName;
         this.mothersLastName = mothersLastName;
@@ -180,7 +188,6 @@ public class Employee implements Serializable {
         this.photo = photo;
     }
     
-    private int hash;
     
     @Override
     public int hashCode() {

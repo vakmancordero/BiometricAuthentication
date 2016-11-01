@@ -1,5 +1,4 @@
-package biometricauthentication.admin.dialog.
-            report.details.justify;
+package biometricauthentication.admin.dialog.report.details.justify;
 
 import biometricauthentication.admin.dialog.report.beans.ReportRecord;
 import java.net.URL;
@@ -13,12 +12,14 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-import biometricauthentication.model.BinnacleRecord;
-import biometricauthentication.utils.Biometric;
 import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
+
+import biometricauthentication.model.BinnacleRecord;
+import biometricauthentication.utils.Biometric;
+import javafx.stage.Stage;
 
 /**
  *
@@ -95,6 +96,12 @@ public class JustifyController implements Initializable {
             
         }
         
+    }
+    
+    @FXML
+    private void cancel(ActionEvent event) {
+        
+        ((Stage)((Node) event.getSource()).getScene().getWindow()).close();
         
     }
     

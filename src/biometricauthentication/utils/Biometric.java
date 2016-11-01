@@ -47,6 +47,7 @@ import biometricauthentication.model.EmployeeType;
  *
  * @author VakSF
  */
+@SuppressWarnings("CallToPrintStackTrace")
 public class Biometric {
     
     private final SessionFactory sessionFactory;
@@ -197,6 +198,27 @@ public class Biometric {
             Se guarda o actualiza el empleado
         */
         session.saveOrUpdate(employee);
+        
+        transaction.commit();
+        session.flush(); session.close();
+        
+    }
+    
+    /**
+     * Elimina un empleado
+     * 
+     * @param employee es el empleado que se eliminará
+     * @see         Employee
+     */
+    public void deleteEmployee(Employee employee) {
+        
+        Session session = this.sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        /*
+            Se elimina el empleado
+        */
+        session.delete(employee);
         
         transaction.commit();
         session.flush(); session.close();
@@ -801,6 +823,8 @@ public class Biometric {
             transaction.commit();
              
         } catch (HibernateException ex) {
+            
+            ex.printStackTrace();
               
             if (transaction != null) {
                 
@@ -844,6 +868,8 @@ public class Biometric {
             transaction.commit();
              
         } catch (HibernateException ex) {
+            
+            ex.printStackTrace();
               
             if (transaction != null) {
                 
@@ -888,6 +914,8 @@ public class Biometric {
              
         } catch (HibernateException ex) {
             
+            ex.printStackTrace();
+            
             if (transaction != null) {
                 
                 transaction.rollback();
@@ -924,6 +952,8 @@ public class Biometric {
             transaction.commit();
              
         } catch (HibernateException ex) {
+            
+            ex.printStackTrace();
             
             if (transaction != null) {
                 
@@ -978,6 +1008,8 @@ public class Biometric {
             template.deserialize(employee.getTemplate());
             
         } catch (IllegalArgumentException ex) {
+            
+            ex.printStackTrace();
             
             /*
                 Si existe algún problema con la deserialización, 

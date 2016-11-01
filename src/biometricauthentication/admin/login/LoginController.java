@@ -19,9 +19,9 @@ import javafx.stage.StageStyle;
 import javafx.stage.Stage;
 
 import biometricauthentication.utils.Biometric;
+
 import static biometricauthentication.BiometricController.readerEvent;
 import static biometricauthentication.BiometricController.readerThread;
-
 
 /**
  *
