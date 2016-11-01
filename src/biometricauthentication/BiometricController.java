@@ -188,9 +188,7 @@ public class BiometricController implements Initializable {
 //
 //                errorDialog.close();
 //
-//            } catch (InterruptedException ex) {
-//
-//            }
+//            } catch (InterruptedException ex) {}
 //
 //        }
 
