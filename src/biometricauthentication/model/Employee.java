@@ -73,6 +73,15 @@ public class Employee implements Serializable {
         this.company = company;
     }
     
+    public void updateEmployee(Employee employee) {
+        this.name = employee.getName();
+        this.lastName = employee.getLastName();
+        this.mothersLastName = employee.getMothersLastName();
+        this.shift = employee.getShift();
+        this.company = employee.getCompany();
+        this.hash = employee.hashCode();
+    }
+    
     public void updateEmployee(String name, String lastName, String mothersLastName, Shift shift, Company company) {
         this.name = name;
         this.lastName = lastName;

@@ -4,8 +4,10 @@ import java.time.Month;
 
 import java.util.List;
 import java.util.ArrayList;
-import javafx.util.Callback;
 import java.util.ResourceBundle;
+
+import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 import java.net.URL;
 
@@ -23,9 +25,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
-import java.io.File;
 import javafx.geometry.Pos;
-import javafx.stage.FileChooser;
 
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Alert;
@@ -38,19 +38,8 @@ import javafx.scene.paint.Paint;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 
-import net.sf.dynamicreports.examples.Templates;
-import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.dynamicreports.report.exception.DRException;
-import net.sf.jasperreports.engine.JRDataSource;
-
-import static net.sf.dynamicreports.report.builder.DynamicReports.col;
-import static net.sf.dynamicreports.report.builder.DynamicReports.export;
-import static net.sf.dynamicreports.report.builder.DynamicReports.report;
-import static net.sf.dynamicreports.report.builder.DynamicReports.type;
-
 import biometricauthentication.admin.dialog.report.beans.ReportRecord;
+import biometricauthentication.admin.dialog.report.beans.SimpleReportRecord;
 import biometricauthentication.admin.dialog.report.details.ReportRecordDetailController;
 
 import biometricauthentication.model.Company;
@@ -58,7 +47,19 @@ import biometricauthentication.model.Employee;
 import biometricauthentication.model.BinnacleRecord;
 import biometricauthentication.model.EmployeeType;
 import biometricauthentication.utils.Biometric;
-import biometricauthentication.utils.Report;
+import biometricauthentication.utils.report.Report;
+
+import java.net.URISyntaxException;
+import java.time.format.TextStyle;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -90,17 +91,27 @@ public class ReportsController implements Initializable {
     
     private Report report;
     
+    private Company company;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
         this.reportList = FXCollections.observableArrayList();
         
-        this.biometric = new Biometric();
-        
         this.report = new Report();
         
         this.setupTV();
+        
+    }
+    
+    public void setBiometric(Biometric biometric) {
+        
+        this.biometric = biometric;
+        
         this.fillInputs();
+        
+        this.company = this.biometric.getCompany();
+        
     }
     
     @FXML
@@ -164,6 +175,26 @@ public class ReportsController implements Initializable {
         this.monthCB.getItems().addAll(
                 Month.values()
         );
+        
+        this.monthCB.setConverter(new StringConverter<Month>() {
+            
+            @Override
+            public String toString(Month month) {
+                
+                String displayName = month.getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+                
+                displayName = displayName.substring(0, 1).toUpperCase() + displayName.substring(1);
+                
+                return displayName;
+                
+            }
+            
+            @Override
+            public Month fromString(String month) {
+                return Month.valueOf(month);
+            }
+            
+        });
         
         this.monthCB.getSelectionModel().selectFirst();
         
@@ -244,79 +275,43 @@ public class ReportsController implements Initializable {
     }
     
     @FXML
-    private void export() throws ClassNotFoundException, DRException, IOException {
+    private void export() throws URISyntaxException {
         
         if (!this.reportList.isEmpty()) {
             
-            String initialName = 
-                    "Reporte " + this.fortnightCB.getValue() + " - " + 
-                    this.monthCB.getValue() + " - " + this.yearCB.getValue() + ".pdf";
+            String details = ("Reporte - " + this.fortnightCB.getValue() + " quincena de " +
+                    this.monthCB.getValue().getDisplayName(TextStyle.FULL, new Locale("es", "ES")) + " de " + this.yearCB.getValue()).toUpperCase();
+                
+            String fileName = "C:\\Users\\VakSF\\Desktop\\BiometricAuthentication\\src\\biometricauthentication\\utils\\report\\mexica_template.jasper";
             
-            FileChooser fileChooser = new FileChooser();
-
-            fileChooser.setInitialFileName(initialName);
-
-            fileChooser.setSelectedExtensionFilter(
-                    new FileChooser.ExtensionFilter(
-                            "Archivos PDF", ".pdf"
-                    )
-            );
-
-            File file = fileChooser.showSaveDialog(null);
-
-            if (file == null) {
-                file = new File("C:\\Biometric\\Reportes\\" + initialName);
+            ArrayList<SimpleReportRecord> filterDataSource = new ArrayList<>();
+            
+            filterDataSource.add(new SimpleReportRecord());
+            
+            for (ReportRecord reportRecord : this.reportList) {
+                filterDataSource.add(new SimpleReportRecord(reportRecord));
             }
             
-            JasperPdfExporterBuilder fileExporter = export.pdfExporter(file);
+            JRBeanCollectionDataSource beans = new JRBeanCollectionDataSource(filterDataSource);
             
-            TextColumnBuilder<String> employeeColumn = 
-                    col.column("Empleado", "employee", type.stringType());
-
-            TextColumnBuilder<String> typeColumn = 
-                    col.column("Tipo", "type", type.stringType());
-
-            TextColumnBuilder<Integer> assistanceColumn = 
-                    col.column("Asistencias", "assistance", type.integerType());
-
-            TextColumnBuilder<Integer> deelaysColumn = 
-                    col.column("Retardos", "deelays", type.integerType());
-
-            TextColumnBuilder<Integer> lacksColumn = 
-                    col.column("Faltas", "lacks", type.integerType());
-
-            TextColumnBuilder<Integer> justificactionsColumn = 
-                    col.column("Justificaciones", "justifications", type.integerType());
-
+            Map parameters = new HashMap();
+            
+            parameters.put("company", this.company.toString());
+            parameters.put("details", details);
+            
             try {
-
-                report()
-
-                    .setTemplate(Templates.reportTemplate)
-
-                    .columns(
-                            employeeColumn,
-                            typeColumn,
-                            assistanceColumn,
-                            deelaysColumn,
-                            lacksColumn,
-                            justificactionsColumn
-                    )
-
-                    .title(Templates.createTitleComponent("Reporte de bitácora"))
-
-                    .pageFooter(Templates.footerComponent)
-
-                    .setDataSource(createDataSource())
-
-                    .toPdf(fileExporter)
-
-                    .show(false);
-
-            } catch (DRException ex) {
-
+                
+                JasperPrint print = JasperFillManager.fillReport(fileName, parameters, beans);
+                
+                JasperViewer jasperViewer = new JasperViewer(print, false);
+                
+                jasperViewer.setVisible(true);
+                
+                jasperViewer.setTitle("Reporte");
+                
+            } catch (JRException ex) {
+                
                 ex.printStackTrace();
-
             }
             
         } else {
@@ -329,41 +324,6 @@ public class ReportsController implements Initializable {
         }
         
     }
-    
-    private JRDataSource createDataSource() {
-        
-        DRDataSource dataSource = new DRDataSource(
-                "employee", 
-                "type", 
-                "assistance", 
-                "deelays", 
-                "lack",
-                "justifications"
-        );
-      
-        this.reportList.forEach((reportRecord) -> {
-            
-            EmployeeType employeeType = reportRecord.getEmployeeType();
-            
-            String employeeTypeSt =
-                    employeeType != null ?
-                    employeeType.toString() : "";
-            
-            dataSource.add(
-                    reportRecord.getEmployee().toString(),
-                    employeeTypeSt,
-                    reportRecord.getAssistance(),
-                    reportRecord.getDeelays(),
-                    reportRecord.getLacks(),
-                    reportRecord.getJustifications()
-            );
-            
-        });
-      
-        return dataSource;
-        
-   }
-
     
     @FXML
     private void openReportRecordDetail(

@@ -28,6 +28,8 @@ import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 
 import javafx.scene.control.Accordion;
@@ -38,6 +40,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -51,15 +55,17 @@ import biometricauthentication.admin.dialog.record.BinnacleRecordController;
 import static biometricauthentication.BiometricController.readerEvent;
 import static biometricauthentication.BiometricController.readerThread;
 
+import biometricauthentication.admin.dialog.config.company.CompanyController;
+import biometricauthentication.admin.dialog.config.schedule.ScheduleController;
+import biometricauthentication.admin.dialog.report.ReportsController;
+
 import biometricauthentication.utils.reader.DPFPReader;
 import biometricauthentication.utils.Biometric;
 
 import biometricauthentication.model.Employee;
 import biometricauthentication.model.Shift;
 import biometricauthentication.model.Company;
-import javafx.event.ActionEvent;
-import javafx.scene.control.MenuItem;
-
+import javafx.scene.layout.AnchorPane;
 
 /**
  *
@@ -74,7 +80,7 @@ public class AdminController implements Initializable {
     private TitledPane registerPane, createPane, editPane;
     
     @FXML
-    private Pane blockPane;
+    private AnchorPane registerAnchorPane, createAnchorPane, editAnchorPane;
     
     @FXML
     private TextField companyTF, nameTF;
@@ -86,10 +92,16 @@ public class AdminController implements Initializable {
     private TextField editNameTF, editLastNameTF, editMothersLastNameTF;
     
     @FXML
+    private Label companyLabel;
+    
+    @FXML
     private ComboBox<Shift> shiftCB, createShiftCB, editShiftCB;
     
     @FXML
     private ComboBox<Company> createCompanyCB, editCompanyCB;
+    
+    @FXML
+    private MenuItem configMI, reportMI, binnacleMI;
     
     @FXML
     private TableView<Employee> employeesTV;
@@ -100,7 +112,9 @@ public class AdminController implements Initializable {
     
     private DPFPReader myReader;
     
-    private TextField[] createArr, editArr; 
+    private TextField[] createArr, editArr;
+    
+    private Company company;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -109,30 +123,62 @@ public class AdminController implements Initializable {
         readerThread.interrupt();
         
         this.myReader = new DPFPReader();
-        
         this.biometric = new Biometric();
         
-        this.employeesList = FXCollections.observableArrayList();
+        this.setCompany();
         
-        this.employeesTV.setItems(employeesList);
+        this.initTV();
         
         this.fillEmployees();
         
         this.initCBs();
         
-        this.initTV();
-        
         this.initArrays();
         
-        if (!this.employeesList.isEmpty()) {
-            
-            this.employeesTV.getSelectionModel().selectFirst();
-            
-            this.blockPane.setVisible(false);
-            
-        }
+        this.initAll();
+        
+    }
+    
+    private void setCompany() {
+        this.company = this.biometric.getCompany();
+    }
+    
+    public void initAll() {
         
         this.accordion.setExpandedPane(registerPane);
+        
+        if (this.company != null) {
+            
+            this.companyLabel.setText(this.company.toString());
+            
+            this.disableMI(false);
+            
+            if (!this.employeesList.isEmpty()) {
+                
+                this.accordion.setExpandedPane(registerPane);
+
+                this.employeesTV.getSelectionModel().selectFirst();
+                
+                this.disablePanes(false);
+                
+            } else {
+                
+                this.binnacleMI.setDisable(true);
+                
+                this.accordion.setExpandedPane(createPane);
+                
+                this.registerAnchorPane.setDisable(true);
+                this.editAnchorPane.setDisable(true);
+                
+            }
+            
+        } else {
+            
+            this.disableMI(true);
+            
+            this.disablePanes(true);
+            
+        }
         
     }
     
@@ -146,31 +192,46 @@ public class AdminController implements Initializable {
     
     private void initTV() {
         
+        this.employeesList = FXCollections.observableArrayList();
+        
+        this.employeesTV.setItems(this.employeesList);
+        
         this.employeesTV.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
             
             @Override
             public void changed(ObservableValue<? extends Employee> observable, Employee oldValue, Employee newValue) {
                 
-                Employee employee = employeesTV.getSelectionModel().getSelectedItem();
-                
-                String employeeFullName = employee.toString();
-                String employeeName = employee.getName();
-                String employeeLastName = employee.getLastName();
-                String employeeMothersLastName = employee.getMothersLastName();
-                
-                Company company = employee.getCompany();
-                
-                Shift shift = employee.getShift();
-                
-                nameTF.setText(employeeFullName);
-                companyTF.setText(company.toString());
-                shiftCB.getSelectionModel().select(shift);
-                
-                editNameTF.setText(employeeName);
-                editLastNameTF.setText(employeeLastName);
-                editMothersLastNameTF.setText(employeeMothersLastName);
-                editCompanyCB.getSelectionModel().select(company);
-                editShiftCB.getSelectionModel().select(shift);
+                if (!employeesList.isEmpty()) {
+                    
+                    Employee employee = employeesTV.getSelectionModel().getSelectedItem();
+                    
+                    if (employee != null) {
+
+                        String employeeFullName = employee.toString();
+                        String employeeName = employee.getName();
+                        String employeeLastName = employee.getLastName();
+                        String employeeMothersLastName = employee.getMothersLastName();
+                        
+                        Company company = employee.getCompany();
+                        
+                        Shift shift = employee.getShift();
+                        
+                        nameTF.setText(employeeFullName);
+                        companyTF.setText(company.toString());
+                        shiftCB.getSelectionModel().select(shift);
+                        
+                        editNameTF.setText(employeeName);
+                        editLastNameTF.setText(employeeLastName);
+                        editMothersLastNameTF.setText(employeeMothersLastName);
+                        editCompanyCB.getSelectionModel().select(company);
+                        editShiftCB.getSelectionModel().select(shift);
+                        
+                    }
+                    
+                    registerAnchorPane.setDisable(false);
+                    editAnchorPane.setDisable(false);
+                    
+                }
                 
             }
             
@@ -196,16 +257,16 @@ public class AdminController implements Initializable {
     
     private void fillShifts() {
         
-        this.shiftCB.getItems().addAll(biometric.getShifts());
+        this.shiftCB.getItems().addAll(this.biometric.getShifts());
         
         if (!this.shiftCB.getItems().isEmpty()) {
             
             this.shiftCB.getSelectionModel().selectFirst();
             
-            this.createShiftCB.getItems().addAll(shiftCB.getItems());
+            this.createShiftCB.getItems().addAll(this.shiftCB.getItems());
             this.createShiftCB.getSelectionModel().selectFirst();
             
-            this.editShiftCB.getItems().addAll(shiftCB.getItems());
+            this.editShiftCB.getItems().addAll(this.shiftCB.getItems());
             this.editShiftCB.getSelectionModel().selectFirst();
             
         }
@@ -214,7 +275,7 @@ public class AdminController implements Initializable {
     
     private void fillCompanies() {
         
-        this.createCompanyCB.getItems().addAll(biometric.getCompanies());
+        this.createCompanyCB.getItems().addAll(this.biometric.getCompanies());
         
         if (!this.createCompanyCB.getItems().isEmpty()) {
             
@@ -228,9 +289,7 @@ public class AdminController implements Initializable {
     }
     
     private void fillEmployees() {
-        
-        this.employeesList.addAll(biometric.getEmployees());
-        
+        this.employeesList.addAll(this.biometric.getEmployees());
     }
     
     @FXML
@@ -248,15 +307,34 @@ public class AdminController implements Initializable {
             Employee employee = new Employee(
                     name, lastName, mothersLastName, shift, company
             );
+            
+            boolean saved = this.biometric.saveEmployee(employee);
+            
+            if (saved) {
+                
+                new Alert(
+                        AlertType.INFORMATION, 
+                        "Empleado creado"
+                ).show();
 
-            this.biometric.saveEmployee(employee);
+                this.employeesList.add(employee);
 
-            new Alert(
-                    AlertType.INFORMATION, 
-                    "Empleado creado"
-            ).show();
+                this.employeesTV.getSelectionModel().selectFirst();
 
-            this.employeesList.add(employee);
+                if (!employeesList.isEmpty()) {
+                    
+                    this.disablePanes(false);
+                    
+                }
+                
+            } else {
+                
+                new Alert(
+                        AlertType.ERROR, 
+                        "Empleado duplicado"
+                ).show();
+                
+            }
             
         } else {
             
@@ -280,16 +358,32 @@ public class AdminController implements Initializable {
             Shift shift = this.editShiftCB.getValue();
             Company company = this.editCompanyCB.getValue();
             
+            Employee auxEmployee = new Employee();
+            auxEmployee.updateEmployee(employee);
+            
             employee.updateEmployee(
-                    name, lastName, mothersLastName, shift, company
+                    new Employee(name, lastName, mothersLastName, shift, company)
             );
             
-            this.biometric.saveEmployee(employee);
+            boolean updated = this.biometric.saveEmployee(employee);
             
-            new Alert(
-                    AlertType.INFORMATION, 
-                    "Empleado editado"
-            ).show();
+            if (updated) {
+                
+                new Alert(
+                        AlertType.INFORMATION, 
+                        "Empleado editado"
+                ).show();
+                
+            } else {
+                
+                employee.updateEmployee(auxEmployee);
+                
+                new Alert(
+                        AlertType.ERROR, 
+                        "Empleado duplicado"
+                ).show();
+                
+            }
             
             this.employeesTV.refresh();
             
@@ -353,9 +447,9 @@ public class AdminController implements Initializable {
 
                         alert.setContentText("Ingresar dedo... " + enrollment.getFeaturesNeeded());
                         alert.show();
-
+                        
                         DPFPSample sample = this.myReader.getSample();
-
+                        
                         if (sample == null) {
                             continue;
                         }
@@ -387,7 +481,7 @@ public class AdminController implements Initializable {
 
                 employee.setTemplate(this.biometric.serializeTemplate(template));
 
-                this.biometric.saveEmployee(employee);
+                this.biometric.saveFingerPrint(employee);
 
                 new Alert(
                         AlertType.INFORMATION, 
@@ -504,6 +598,13 @@ public class AdminController implements Initializable {
             this.biometric.deleteEmployee(employee);
 
             this.employeesList.remove(employee);
+            
+            if (this.employeesList.isEmpty()) {
+                
+                this.registerAnchorPane.setDisable(true);
+                this.editAnchorPane.setDisable(true);
+                
+            }
 
             new Alert(
                     AlertType.INFORMATION, 
@@ -556,17 +657,55 @@ public class AdminController implements Initializable {
         
     }
     
+    private void disablePanes(boolean value) {
+        
+        this.registerAnchorPane.setDisable(value);
+        this.createAnchorPane.setDisable(value);
+        this.editAnchorPane.setDisable(value);
+        
+    }
+    
+    private void disableMI(boolean value) {
+        
+        this.configMI.setDisable(value);
+        this.reportMI.setDisable(value);
+        this.binnacleMI.setDisable(value);
+        
+    }
+    
     @FXML
     private void openCompanyConfiguration(ActionEvent event) throws IOException {
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                "/biometricauthentication/admin/dialog/config/company/CompanyFXML.fxml")
-        );
+                "/biometricauthentication/admin/dialog/config/company/CompanyFXML.fxml"
+        ));
 
         Stage stage = new Stage();
         stage.setScene(new Scene((Pane) loader.load()));
         
+        CompanyController controller = 
+                loader.<CompanyController>getController();
+        
+        controller.setBiometric(this.biometric);
+        
+        controller.setCurrentCompany(this.company);
+        
         stage.setTitle("Establecer compañia");
+        
+        stage.setOnHidden((windowEvent) -> {
+            
+            if (controller.isSelectedCompany()) {
+                
+                new Alert(
+                        AlertType.WARNING,
+                        "Deberá volver a abrir el panel de administrador"
+                ).showAndWait();
+
+                this.employeesTV.getScene().getWindow().hide();
+                
+            }
+            
+        });
 
         stage.showAndWait();
         
@@ -576,14 +715,32 @@ public class AdminController implements Initializable {
     private void openScheduleConfiguration() throws IOException {
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                "/biometricauthentication/admin/dialog/config/schedule/ScheduleFXML.fxml")
-        );
-
+                "/biometricauthentication/admin/dialog/config/schedule/ScheduleFXML.fxml"
+        ));
+        
         Stage stage = new Stage();
         stage.setScene(new Scene((Pane) loader.load()));
         
+        ScheduleController controller = 
+                loader.<ScheduleController>getController();
+        
+        controller.setBiometric(this.biometric);
+        
+        stage.setOnHidden((event) -> {
+            
+            if (controller.isSelectedSchedule()) {
+                
+                new Alert(
+                        AlertType.WARNING,
+                        "Se recomienda reiniciar por completo la aplicación"
+                ).show();
+                
+            }
+            
+        });
+        
         stage.setTitle("Configuración de horario");
-
+        
         stage.showAndWait();
         
     }
@@ -592,11 +749,16 @@ public class AdminController implements Initializable {
     private void openReports() throws IOException {
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                "/biometricauthentication/admin/dialog/report/ReportsFXML.fxml")
-        );
-
+                "/biometricauthentication/admin/dialog/report/ReportsFXML.fxml"
+        ));
+        
         Stage stage = new Stage();
         stage.setScene(new Scene((Pane) loader.load()));
+        
+        ReportsController controller = 
+                loader.<ReportsController>getController();
+        
+        controller.setBiometric(this.biometric);
         
         stage.setTitle("Reportes");
         
@@ -607,24 +769,22 @@ public class AdminController implements Initializable {
     @FXML
     private void createBinnacleRecord() throws IOException {
         
-        System.out.println("Creando un registro nuevo");
-        
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                "/biometricauthentication/admin/dialog/record/BinnacleRecordFXML.fxml")
-        );
+                "/biometricauthentication/admin/dialog/record/BinnacleRecordFXML.fxml"
+        ));
         
         Stage stage = new Stage();
         stage.setScene(new Scene((Pane) loader.load()));
         
         stage.setTitle("Registros");
         
-        BinnacleRecordController binnacleRecordController = 
+        BinnacleRecordController controller = 
                 loader.<BinnacleRecordController>getController();
         
-        binnacleRecordController.setData(this.employeesList);
+        controller.init(this.employeesList);
+        controller.setBiometric(this.biometric);
         
         stage.showAndWait();
-        
         
     }
     

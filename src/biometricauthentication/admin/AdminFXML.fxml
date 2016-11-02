@@ -12,7 +12,7 @@
 <?import javafx.scene.control.cell.*?>
 <?import com.jfoenix.controls.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="614.0" prefWidth="1300.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.AdminController">
+<AnchorPane id="AnchorPane" prefHeight="635.0" prefWidth="1300.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometricauthentication.admin.AdminController">
    <children>
       <MenuBar layoutX="22.0" layoutY="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -23,9 +23,9 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Herramientas">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#openScheduleConfiguration" text="Configurar horario" />
-                  <MenuItem mnemonicParsing="false" onAction="#openReports" text="Generar reporte" />
-                  <MenuItem mnemonicParsing="false" onAction="#createBinnacleRecord" text="Crear un registro" />
+              <MenuItem fx:id="configMI" disable="true" mnemonicParsing="false" onAction="#openScheduleConfiguration" text="Configurar horario" />
+                  <MenuItem fx:id="reportMI" mnemonicParsing="false" onAction="#openReports" text="Generar reporte" />
+                  <MenuItem fx:id="binnacleMI" mnemonicParsing="false" onAction="#createBinnacleRecord" text="Crear un registro" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#openCompanyConfiguration" text="Establecer compañía" />
             </items>
@@ -37,7 +37,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <SplitPane dividerPositions="0.5608628659476117" layoutX="73.0" layoutY="409.0" prefHeight="413.0" prefWidth="946.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
+      <SplitPane dividerPositions="0.5608628659476117" layoutX="73.0" layoutY="409.0" prefHeight="558.0" prefWidth="1300.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
@@ -129,7 +129,7 @@
                     <panes>
                       <TitledPane fx:id="registerPane" animated="false" expanded="false" text="Registrar" textFill="#727272">
                         <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <AnchorPane fx:id="registerAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
                                <AnchorPane id="AnchorPane" layoutX="14.0" prefHeight="369.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
                                     <children>
@@ -189,7 +189,6 @@
                                                 </HBox>
                                              </children>
                                           </VBox>
-                                          <Pane fx:id="blockPane" layoutX="68.0" layoutY="266.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </children>
                                  </AnchorPane>
                             </children>
@@ -203,7 +202,7 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <AnchorPane id="AnchorPane" layoutX="14.0" prefHeight="369.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <AnchorPane id="AnchorPane" fx:id="createAnchorPane" layoutX="14.0" prefHeight="369.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <Label fx:id="titleLabel1" alignment="CENTER" layoutX="96.0" layoutY="14.0" text="Crear empleado" textFill="#1e2546" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-10.0">
                                              <font>
@@ -274,7 +273,7 @@
                         </TitledPane>
                         <TitledPane fx:id="editPane" animated="false" expanded="false" text="Editar" textFill="#727272">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <AnchorPane fx:id="editAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <AnchorPane id="AnchorPane" layoutX="14.0" prefHeight="369.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
@@ -351,5 +350,11 @@
             </AnchorPane>
         </items>
       </SplitPane>
+      <ToolBar layoutX="24.0" layoutY="477.0" prefHeight="25.0" prefWidth="747.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <items>
+            <Label text="Información:" />
+            <Label fx:id="companyLabel" prefHeight="20.0" prefWidth="448.0" text="Compañía no establecida" />
+         </items>
+      </ToolBar>
    </children>
 </AnchorPane>

@@ -51,8 +51,6 @@ public class BinnacleRecordController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        this.biometric = new Biometric();
-        
         this.datePicker.setValue(
                 LocalDate.now()
         );
@@ -77,7 +75,7 @@ public class BinnacleRecordController implements Initializable {
         
     }
     
-    public void setData(ObservableList<Employee> employeesList) {
+    public void init(ObservableList<Employee> employeesList) {
         
         this.employeesLV.setItems(employeesList);
         
@@ -89,80 +87,60 @@ public class BinnacleRecordController implements Initializable {
         
     }
     
+    public void setBiometric(Biometric biometric) {
+        this.biometric = biometric;
+    }
+    
     @FXML
     private void create() {
         
         try {
             
-            Employee employee = 
-                    this.employeesLV.getSelectionModel().getSelectedItem();
+            Employee employee = this.employeesLV.getSelectionModel().getSelectedItem();
             
             LocalDate localDate = this.datePicker.getValue();
             
             String checkInString = this.checkInTF.getText();
             String checkOutString = this.checkOutTF.getText();
             
-            Date checkIn = this.createCheck(localDate, checkInString);
-            
-            Date checkOut = this.createCheck(localDate, checkOutString);
-            
-            Date date = createCheck(localDate, "");
-            
-            String day = new SimpleDateFormat(
-                    "EEEE", new Locale("es", "ES")
-            ).format(date);
-            
-            BinnacleRecord binnacleRecord = new BinnacleRecord(
-                    employee.getId(),
-                    date, checkIn, checkOut
-            );
-            
-            binnacleRecord.setDay(day);
-            
-            binnacleRecord.setReport("normal");
-            
-            binnacleRecord.setWorked_hours(
-                    new Time(8, 0, 0)
-            );
-            
-            this.biometric.saveBinnacleRecord(binnacleRecord);
-            
-            new Alert(
-                    AlertType.INFORMATION,
-                    "Registro guardado"
-            ).show();
-            
-        } catch (Exception ex) {
-            
-            System.out.println("Unparseable string error");            
-        }
-        
-    }
-    
-    private Date createCheck(LocalDate localDate, String check) {
-        
-        Date date = null;
-        
-        try {
-            
-            String dateString = localDate.toString();
-        
-            if (!check.isEmpty()) {
+            if (!checkInString.isEmpty() || !checkOutString.isEmpty()) {
                 
-                dateString += " " + check;
-
-                date = new SimpleDateFormat(
-                        "yyyy-MM-dd HH:mm"
-                ).parse(dateString);
-
+                Date checkIn = this.createCheck(localDate, checkInString);
+                Date checkOut = this.createCheck(localDate, checkOutString);
+                Date date = createCheck(localDate, "");
+                
+                String day = new SimpleDateFormat(
+                        "EEEE", new Locale("es", "ES")
+                ).format(date);
+                
+                BinnacleRecord binnacleRecord = new BinnacleRecord(
+                        employee.getId(), date, checkIn, checkOut
+                );
+                
+                binnacleRecord.setDay(day);
+                
+                binnacleRecord.setReport("normal");
+                
+                binnacleRecord.setWorked_hours(
+                        new Time(8, 0, 0)
+                );
+                
+                this.biometric.saveBinnacleRecord(binnacleRecord);
+                
+                new Alert(
+                        AlertType.INFORMATION,
+                        "Registro guardado"
+                ).show();
+                
             } else {
                 
-                date = new SimpleDateFormat(
-                        "yyyy-MM-dd"
-                ).parse(dateString);
+                new Alert(
+                        AlertType.ERROR,
+                        "Por favor complete los campos faltantes"
+                ).show();
                 
             }
-        
+            
         } catch (ParseException ex) {
             
             new Alert(
@@ -171,6 +149,30 @@ public class BinnacleRecordController implements Initializable {
                   + "cumplen con el formato de fecha"
             ).show();
             
+        }
+        
+    }
+    
+    private Date createCheck(LocalDate localDate, String check) throws ParseException {
+        
+        Date date;
+            
+        String dateString = localDate.toString();
+
+        if (!check.isEmpty()) {
+
+            dateString += " " + check;
+
+            date = new SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm"
+            ).parse(dateString);
+
+        } else {
+
+            date = new SimpleDateFormat(
+                    "yyyy-MM-dd"
+            ).parse(dateString);
+
         }
         
         return date;

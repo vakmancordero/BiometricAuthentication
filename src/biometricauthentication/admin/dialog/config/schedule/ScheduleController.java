@@ -10,8 +10,10 @@ import javafx.scene.control.ComboBox;
 
 import biometricauthentication.model.Config;
 import biometricauthentication.utils.Biometric;
+import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 /**
  *
@@ -26,18 +28,30 @@ public class ScheduleController implements Initializable {
     
     private Config config;
     
+    private boolean selectedSchedule;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        this.initCBs();
+    }
+
+    public boolean isSelectedSchedule() {
+        return selectedSchedule;
+    }
+
+    public void setSelectedSchedule(boolean selectedSchedule) {
+        this.selectedSchedule = selectedSchedule;
+    }
+    
+    public void setBiometric(Biometric biometric) {
         
-        this.biometric = new Biometric();
-        
-        this.initXMLConfigCBs();
+        this.biometric = biometric;
         
         this.setConfigCBs();
         
     }
     
-    private void initXMLConfigCBs() {
+    private void initCBs() {
         
         for (int i = 0; i <= 59; i++) {
             
@@ -57,7 +71,6 @@ public class ScheduleController implements Initializable {
         
         this.normalOutCB.getItems().addAll(1, 2, 3, 4, 5);
         
-        
         this.earlyInCB.getSelectionModel().selectFirst();   this.normalInCB.getSelectionModel().selectFirst();
             
         this.lateInCB.getSelectionModel().selectFirst();    this.earlyOutCB.getSelectionModel().selectFirst();
@@ -70,9 +83,15 @@ public class ScheduleController implements Initializable {
         
         this.config = biometric.getConfig();
         
-        this.earlyInCB.setValue(this.config.getEarlyIn());    this.normalInCB.setValue(this.config.getNormalIn());
+        System.out.println(this.config);
         
-        this.lateInCB.setValue(this.config.getLateIn());    this.earlyOutCB.setValue(this.config.getEarlyOut());    
+        this.earlyInCB.setValue(this.config.getEarlyIn());    
+        
+        this.normalInCB.setValue(this.config.getNormalIn());
+        
+        this.lateInCB.setValue(this.config.getLateIn());    
+        
+        this.earlyOutCB.setValue(this.config.getEarlyOut());    
         
         this.normalOutCB.setValue(this.config.getNormalOut());
         
@@ -96,10 +115,18 @@ public class ScheduleController implements Initializable {
         
         this.biometric.saveConfiguration(config);
         
-        new Alert(
+        Optional<ButtonType> result = new Alert(
                 AlertType.INFORMATION,
                 "La configuración ha sido establecida"
-        ).show();
+        ).showAndWait();
+        
+        if (result.get() == ButtonType.OK) {
+            
+            this.setSelectedSchedule(true);
+            
+            earlyInCB.getScene().getWindow().hide();
+            
+        }
         
     }
     

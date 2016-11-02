@@ -1,6 +1,7 @@
 package biometricauthentication;
 
 import biometricauthentication.dialog.EmployeeDialogController;
+import biometricauthentication.model.Company;
 
 import biometricauthentication.model.Employee;
 
@@ -29,6 +30,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 
 import javafx.stage.Stage;
@@ -37,7 +39,8 @@ import javafx.stage.WindowEvent;
 
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
-import javafx.scene.control.Alert.AlertType;
+import java.util.List;
+import javafx.scene.control.Button;
 
 /**
  *
@@ -45,8 +48,15 @@ import javafx.scene.control.Alert.AlertType;
  */
 public class BiometricController implements Initializable {
     
+    public static Reader readerEvent;
+    
+    public static Thread readerThread;
+    
     @FXML
-    private Label hourLabel, dateLabel, dayLabel;
+    private Label hourLabel, dateLabel, dayLabel, companyLabel;
+    
+    @FXML
+    private Button adminButton;
     
     private Service<Void> clock;
     
@@ -58,10 +68,6 @@ public class BiometricController implements Initializable {
     
     private EmployeeDialogController dialogEmployeeController;
     
-    public static Reader readerEvent;
-    
-    public static Thread readerThread;
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -72,8 +78,29 @@ public class BiometricController implements Initializable {
         this.initDialogs();
         this.initObserver();
         
+        this.setCompany();
+        
         readerThread = new Thread(readerEvent);
         readerThread.start();
+        
+    }
+    
+    private void setCompany() {
+        
+        Company company = this.biometric.getCompany();
+        
+        if (company != null) {
+            
+            this.companyLabel.setText(company.toString());
+            
+        } else {
+            
+            new Alert(
+                    AlertType.WARNING,
+                    "No se ha establecido alguna compañía aún"
+            ).showAndWait();
+            
+        }
         
     }
     
@@ -100,9 +127,13 @@ public class BiometricController implements Initializable {
                 Platform.runLater(() -> {
 
                     boolean verified = false;
-
-                    for (Employee employee : biometric.getEmployees()) {
-
+                    
+                    List<Employee> employees = biometric.getEmployees();
+                    
+                    System.out.println("size() of the list = " + employees.size());
+                    
+                    for (Employee employee : employees) {
+                        
                         DPFPTemplate template = biometric.deserializeTemplate(employee);
 
                         if (template != null) {
@@ -264,6 +295,8 @@ public class BiometricController implements Initializable {
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setScene(new Scene((Pane) loader.load()));
         
+        this.adminButton.setDisable(true);
+        
         stage.setOnCloseRequest((WindowEvent event) -> {
             
             readerEvent.setIsRunning(true);
@@ -271,11 +304,21 @@ public class BiometricController implements Initializable {
             
             readerThread.start();
             
+            this.adminButton.setDisable(false);
+            
+        });
+        
+        stage.setOnHiding((event) -> {
+            this.adminButton.setDisable(false);
+        });
+        
+        stage.setOnHidden((event) -> {
+            this.adminButton.setDisable(false);
         });
         
         stage.setTitle(title);
         
-        stage.show();
+        stage.showAndWait();
         
     }
     

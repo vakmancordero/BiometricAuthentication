@@ -16,6 +16,7 @@
       <ToolBar layoutX="14.0" layoutY="467.0" prefHeight="25.0" prefWidth="747.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <items>
             <Label text="Información:" />
+            <Label fx:id="companyLabel" prefHeight="17.0" prefWidth="255.0" text="Compañía no establecida..." />
          </items>
       </ToolBar>
       <MenuBar layoutX="107.0" layoutY="102.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -62,7 +63,7 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <JFXButton buttonType="RAISED" layoutX="529.0" layoutY="45.0" onAction="#openAuthentication" prefHeight="39.0" prefWidth="164.0" ripplerFill="#324e7f" style="-fx-background-color: #FCFCFF;" text="Administrador" textFill="#656565" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="45.0">
+      <JFXButton fx:id="adminButton" buttonType="RAISED" layoutX="529.0" layoutY="45.0" onAction="#openAuthentication" prefHeight="39.0" prefWidth="164.0" ripplerFill="#324e7f" style="-fx-background-color: #FCFCFF;" text="Administrador" textFill="#656565" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="45.0">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>

@@ -57,31 +57,23 @@ public class Biometric {
     
     private final DateUtil dateUtil;
     
-    private final Config configuration;
+    private Config configuration;
     
-    private final Company company;
+    private Company company;
 
     public Biometric() {
         
-        this.sessionFactory = HibernateUtil.getSessionFactory();   
+        this.sessionFactory = HibernateUtil.getSessionFactory();
         
         this.dateUtil = new DateUtil();
         
-        this.company = this.setCompany();
-        
-        Config config = this.getConfiguration();
-        
-        this.configuration = config != null ? config : new Config();
-        
+        this.setCompany();
+        this.setConfig();
         this.createRoot();
         
     }
     
-    public Config getConfig() {
-        return this.configuration;
-    }
-    
-    private Company setCompany() {
+    public void setCompany() {
         
         String UUID = this.getUUID();
         
@@ -91,9 +83,7 @@ public class Biometric {
         
         query.setParameter("UUID", UUID);
         
-        Company setCompany = (Company) query.setMaxResults(1).uniqueResult();
-        
-        return setCompany;
+        this.company = (Company) query.setMaxResults(1).uniqueResult();
         
     }
     
@@ -101,18 +91,7 @@ public class Biometric {
         return this.company;
     }
     
-    public void saveConfiguration(Config config) {
-        
-        Session session = this.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        
-        session.saveOrUpdate(config);
-        
-        transaction.commit();
-        session.flush(); session.close();
-    }
-    
-    private Config getConfiguration() {
+    private void setConfig() {
         
         Session session = this.sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -145,7 +124,24 @@ public class Biometric {
             
         }
         
-        return config;
+        this.configuration = config != null ? config : new Config();
+        
+    }
+    
+    public Config getConfig() {
+        return this.configuration;
+    }
+    
+    public void saveConfiguration(Config config) {
+        
+        Session session = this.sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        session.saveOrUpdate(config);
+        
+        transaction.commit();
+        session.flush(); session.close();
+        
     }
     
     public void saveCompany(Company company) {
@@ -157,6 +153,50 @@ public class Biometric {
         
         transaction.commit();
         session.flush(); session.close();
+        
+    }
+    
+    public String getUUID() {
+        
+        String UUID = null;
+        
+        try {
+            
+            Process process = Runtime.getRuntime().exec(
+                    "wmic csproduct get uuid"
+            );
+            
+            BufferedReader inputStream = new BufferedReader(
+                    new InputStreamReader(
+                            process.getInputStream()
+                    )
+            );
+            
+            String patternSt = ".+-.+-.+-.+";
+            
+            Pattern pattern = Pattern.compile(patternSt, Pattern.UNICODE_CASE);
+            
+            for (Object line : inputStream.lines().toArray()) {
+                
+                String lineSt = line.toString();
+                
+                while (pattern.matcher(lineSt).find()) {
+                    
+                    UUID = lineSt;
+                    
+                    break;
+                    
+                }
+                
+            }
+            
+        } catch(IOException ex){
+            
+           ex.printStackTrace();
+           
+        }
+        
+        return UUID;
         
     }
     
@@ -244,18 +284,53 @@ public class Biometric {
      * Guarda un empleado
      * 
      * @param employee es el empleado que se guardará
+     * @return 
      * @see         Employee
      */
-    public void saveEmployee(Employee employee) {
+    public boolean saveEmployee(Employee employee) {
         
         Session session = this.sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         
         /*
-            Se guarda o actualiza el empleado
-        */
-        session.saveOrUpdate(employee);
+        Se guarda o actualiza el empleado
+         */
+        Employee employeeFound = this.findEmployee(employee, session);
         
+        if (employeeFound == null) {
+            
+            session.saveOrUpdate(employee);
+            
+            transaction.commit();
+            session.flush(); session.close();
+            
+            return true;
+            
+        } else {
+            
+            return false;
+            
+        }
+        
+    }
+    
+    /**
+     * Guarda una huella
+     * 
+     * @param employee es el empleado que se guardará la huella
+     * @see         Employee
+     */
+    public void saveFingerPrint(Employee employee) {
+        
+        Session session = this.sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        /*
+            Se una huella dactilar
+         */
+            
+        session.saveOrUpdate(employee);
+
         transaction.commit();
         session.flush(); session.close();
         
@@ -280,6 +355,21 @@ public class Biometric {
         transaction.commit();
         session.flush(); session.close();
         
+    }
+    
+    private Employee findEmployee(Employee employee, Session session) {
+        
+        int hashCode = employee.hashCode();
+        
+        System.out.println(hashCode);
+        
+        Query query = session.createQuery(
+                "FROM Employee employee WHERE employee.hash = :hash"
+        );
+        
+        query.setParameter("hash", hashCode);
+        
+        return (Employee) query.setMaxResults(1).uniqueResult();
     }
     
     /**
@@ -350,8 +440,6 @@ public class Biometric {
         
         return binnacleRecord;
     }
-    
-    
     
     /**
      * Retorna la información del guardado en bitácora.
@@ -1072,7 +1160,7 @@ public class Biometric {
             
         } catch (IllegalArgumentException ex) {
             
-            ex.printStackTrace();
+            System.out.println("Empleado sin huella: " + employee);
             
             /*
                 Si existe algún problema con la deserialización, 
@@ -1202,50 +1290,6 @@ public class Biometric {
         }
         
         return verified;
-        
-    }
-    
-    public String getUUID() {
-        
-        String UUID = null;
-        
-        try {
-            
-            Process process = Runtime.getRuntime().exec(
-                    "wmic csproduct get uuid"
-            );
-            
-            BufferedReader inputStream = new BufferedReader(
-                    new InputStreamReader(
-                            process.getInputStream()
-                    )
-            );
-            
-            String patternSt = ".+-.+-.+-.+";
-            
-            Pattern pattern = Pattern.compile(patternSt, Pattern.UNICODE_CASE);
-            
-            for (Object line : inputStream.lines().toArray()) {
-                
-                String lineSt = line.toString();
-                
-                while (pattern.matcher(lineSt).find()) {
-                    
-                    UUID = lineSt;
-                    
-                    break;
-                    
-                }
-                
-            }
-            
-        } catch(IOException ex){
-            
-           ex.printStackTrace();
-           
-        }
-        
-        return UUID;
         
     }
     
