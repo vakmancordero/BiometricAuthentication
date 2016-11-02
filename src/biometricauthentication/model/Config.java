@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -17,8 +18,8 @@ public class Config implements Serializable {
     @Id
     private int id;
     
-    @Column
-    private String name;
+    @OneToOne
+    private Company company;
     
     @Column (name = "early_in")
     private int earlyIn;
@@ -48,8 +49,8 @@ public class Config implements Serializable {
         
     }
 
-    public Config(String name, int earlyIn, int normalIn, int lateIn, int earlyOut, int normalOut) {
-        this.name = name;
+    public Config(Company company, int earlyIn, int normalIn, int lateIn, int earlyOut, int normalOut) {
+        this.company = company;
         this.earlyIn = earlyIn;
         this.normalIn = normalIn;
         this.lateIn = lateIn;
@@ -57,8 +58,8 @@ public class Config implements Serializable {
         this.normalOut = normalOut;
     }
     
-    public void setConfig(String name, int earlyIn, int normalIn, int lateIn, int earlyOut, int normalOut) {
-        this.name = name;
+    public void setConfig(Company company, int earlyIn, int normalIn, int lateIn, int earlyOut, int normalOut) {
+        this.company = company;
         this.earlyIn = earlyIn;
         this.normalIn = normalIn;
         this.lateIn = lateIn;
@@ -74,12 +75,12 @@ public class Config implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public int getEarlyIn() {

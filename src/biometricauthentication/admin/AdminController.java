@@ -5,6 +5,7 @@ import com.digitalpersona.onetouch.DPFPFeatureSet;
 import com.digitalpersona.onetouch.DPFPGlobal;
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
+
 import com.digitalpersona.onetouch.processing.DPFPEnrollment;
 import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
 import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
@@ -21,8 +22,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.fxml.FXML;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -115,6 +116,8 @@ public class AdminController implements Initializable {
         
         this.employeesTV.setItems(employeesList);
         
+        this.fillEmployees();
+        
         this.initCBs();
         
         this.initTV();
@@ -136,8 +139,6 @@ public class AdminController implements Initializable {
     private void initCBs() {
         
         this.fillShifts();
-        
-        this.fillEmployees();
         
         this.fillCompanies();
         
@@ -556,14 +557,32 @@ public class AdminController implements Initializable {
     }
     
     @FXML
-    private void openScheduleConfiguration() throws IOException {
+    private void openCompanyConfiguration(ActionEvent event) throws IOException {
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                "/biometricauthentication/admin/dialog/ScheduleFXML.fxml")
+                "/biometricauthentication/admin/dialog/config/company/CompanyFXML.fxml")
         );
 
         Stage stage = new Stage();
         stage.setScene(new Scene((Pane) loader.load()));
+        
+        stage.setTitle("Establecer compañia");
+
+        stage.showAndWait();
+        
+    }
+    
+    @FXML
+    private void openScheduleConfiguration() throws IOException {
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                "/biometricauthentication/admin/dialog/config/schedule/ScheduleFXML.fxml")
+        );
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene((Pane) loader.load()));
+        
+        stage.setTitle("Configuración de horario");
 
         stage.showAndWait();
         
@@ -578,7 +597,9 @@ public class AdminController implements Initializable {
 
         Stage stage = new Stage();
         stage.setScene(new Scene((Pane) loader.load()));
-
+        
+        stage.setTitle("Reportes");
+        
         stage.showAndWait();
         
     }
@@ -594,6 +615,8 @@ public class AdminController implements Initializable {
         
         Stage stage = new Stage();
         stage.setScene(new Scene((Pane) loader.load()));
+        
+        stage.setTitle("Registros");
         
         BinnacleRecordController binnacleRecordController = 
                 loader.<BinnacleRecordController>getController();

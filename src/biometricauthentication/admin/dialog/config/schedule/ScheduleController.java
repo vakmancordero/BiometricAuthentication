@@ -1,5 +1,6 @@
-package biometricauthentication.admin.dialog;
+package biometricauthentication.admin.dialog.config.schedule;
 
+import biometricauthentication.model.Company;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -87,13 +88,13 @@ public class ScheduleController implements Initializable {
         Integer earlyOut = this.earlyOutCB.getValue();
         Integer normalOut = this.normalOutCB.getValue();
         
-        String name = "Axkan";
+        Company company = this.biometric.getCompany();
         
         this.config.setConfig(
-                name, earlyIn, normalIn, lateIn, earlyOut, normalOut
+                company, earlyIn, normalIn, lateIn, earlyOut, normalOut
         );
         
-        biometric.saveConfiguration(config);
+        this.biometric.saveConfiguration(config);
         
         new Alert(
                 AlertType.INFORMATION,

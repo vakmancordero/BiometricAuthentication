@@ -55,9 +55,6 @@ public class Employee implements Serializable {
     @Column (name = "fingerprint")
     private byte[] template;
     
-    @Column (name = "photo")
-    private String photo;
-    
     private int hash;
     
     public Employee() {
@@ -179,15 +176,6 @@ public class Employee implements Serializable {
     public void setTemplate(byte[] template) {
         this.template = template;
     }
-    
-    public String getPhoto() {
-        return this.photo;
-    }
-    
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-    
     
     @Override
     public int hashCode() {

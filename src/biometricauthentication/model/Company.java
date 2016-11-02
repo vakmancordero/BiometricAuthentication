@@ -50,6 +50,9 @@ public class Company implements Serializable {
     
     @Column
     private int status;
+    
+    @Column (name = "uuid")
+    private String UUID;
 
     public int getId() {
         return id;
@@ -145,6 +148,14 @@ public class Company implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
     }
 
     @Override

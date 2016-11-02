@@ -26,6 +26,8 @@
               <MenuItem mnemonicParsing="false" onAction="#openScheduleConfiguration" text="Configurar horario" />
                   <MenuItem mnemonicParsing="false" onAction="#openReports" text="Generar reporte" />
                   <MenuItem mnemonicParsing="false" onAction="#createBinnacleRecord" text="Crear un registro" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#openCompanyConfiguration" text="Establecer compañía" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Ayuda">

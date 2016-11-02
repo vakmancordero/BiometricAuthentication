@@ -42,12 +42,15 @@ import biometricauthentication.model.Employee;
 import biometricauthentication.model.Shift;
 import biometricauthentication.model.Config;
 import biometricauthentication.model.EmployeeType;
+import biometricauthentication.model.User;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author VakSF
  */
-@SuppressWarnings("CallToPrintStackTrace")
 public class Biometric {
     
     private final SessionFactory sessionFactory;
@@ -55,6 +58,8 @@ public class Biometric {
     private final DateUtil dateUtil;
     
     private final Config configuration;
+    
+    private final Company company;
 
     public Biometric() {
         
@@ -62,15 +67,38 @@ public class Biometric {
         
         this.dateUtil = new DateUtil();
         
+        this.company = this.setCompany();
+        
         Config config = this.getConfiguration();
         
         this.configuration = config != null ? config : new Config();
         
         this.createRoot();
+        
     }
     
     public Config getConfig() {
         return this.configuration;
+    }
+    
+    private Company setCompany() {
+        
+        String UUID = this.getUUID();
+        
+        Query query = sessionFactory.openSession().createQuery(
+                "FROM Company company WHERE company.UUID = :UUID"
+        );
+        
+        query.setParameter("UUID", UUID);
+        
+        Company setCompany = (Company) query.setMaxResults(1).uniqueResult();
+        
+        return setCompany;
+        
+    }
+    
+    public Company getCompany() {
+        return this.company;
     }
     
     public void saveConfiguration(Config config) {
@@ -93,11 +121,13 @@ public class Biometric {
         
         try {
             
-            Query query = session.createQuery("FROM Config WHERE name=:name");
+            Query query = session.createQuery(
+                    "FROM Config config WHERE config.company = :company"
+            );
             
-            query.setParameter("name", "Axkan");
+            query.setParameter("company", this.company);
             
-            config = (Config) query.uniqueResult();
+            config = (Config) query.uniqueResult();            
             
             transaction.commit();
              
@@ -116,6 +146,18 @@ public class Biometric {
         }
         
         return config;
+    }
+    
+    public void saveCompany(Company company) {
+        
+        Session session = this.sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        session.saveOrUpdate(company);
+        
+        transaction.commit();
+        session.flush(); session.close();
+        
     }
     
     /**
@@ -173,13 +215,28 @@ public class Biometric {
     public boolean login(String user, String password) {
         
         /*
-            Se obtiene un registro correspondiente
-            al usuario y contraseña
-        */
-        return sessionFactory.openSession().createSQLQuery(
-                "SELECT * FROM user_account WHERE "
-              + "user = '" + user + "' AND password = '" + password + "'"
-        ).setMaxResults(1).uniqueResult() != null;
+        Se obtiene un registro correspondiente
+        al usuario y contraseña
+         */
+        Query query = sessionFactory.openSession().createQuery(
+                "FROM User admin WHERE "
+                + "admin.user = :user AND "
+                + "admin.password = :password"
+        );
+        
+        query.setParameter("user", user);
+        query.setParameter("password", password);
+        
+        User admin = (User) query.setMaxResults(1).uniqueResult();
+        
+        if (admin != null) {
+            
+            return admin.getUser().equals(user) 
+                    && admin.getPassword().equals(password);
+            
+        }
+        
+        return false;
         
     }
     
@@ -908,7 +965,13 @@ public class Biometric {
         */
         try {
             
-            employees = session.createQuery("FROM Employee").list();
+            Query query = session.createQuery(
+                    "FROM Employee employee WHERE employee.company = :company"
+            );
+            
+            query.setParameter("company", company);
+            
+            employees = query.list();
             
             transaction.commit();
              
@@ -1139,6 +1202,50 @@ public class Biometric {
         }
         
         return verified;
+        
+    }
+    
+    public String getUUID() {
+        
+        String UUID = null;
+        
+        try {
+            
+            Process process = Runtime.getRuntime().exec(
+                    "wmic csproduct get uuid"
+            );
+            
+            BufferedReader inputStream = new BufferedReader(
+                    new InputStreamReader(
+                            process.getInputStream()
+                    )
+            );
+            
+            String patternSt = ".+-.+-.+-.+";
+            
+            Pattern pattern = Pattern.compile(patternSt, Pattern.UNICODE_CASE);
+            
+            for (Object line : inputStream.lines().toArray()) {
+                
+                String lineSt = line.toString();
+                
+                while (pattern.matcher(lineSt).find()) {
+                    
+                    UUID = lineSt;
+                    
+                    break;
+                    
+                }
+                
+            }
+            
+        } catch(IOException ex){
+            
+           ex.printStackTrace();
+           
+        }
+        
+        return UUID;
         
     }
     
