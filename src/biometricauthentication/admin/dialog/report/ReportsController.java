@@ -48,12 +48,14 @@ import biometricauthentication.model.BinnacleRecord;
 import biometricauthentication.model.EmployeeType;
 import biometricauthentication.utils.Biometric;
 import biometricauthentication.utils.report.Report;
+import java.io.File;
 
 import java.net.URISyntaxException;
 import java.time.format.TextStyle;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import javafx.stage.FileChooser;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -281,38 +283,56 @@ public class ReportsController implements Initializable {
         
         if (!this.reportList.isEmpty()) {
             
-            String details = ("Reporte - " + this.fortnightCB.getValue() + " quincena de " +
-                    this.monthCB.getValue().getDisplayName(TextStyle.FULL, new Locale("es", "ES")) + " de " + this.yearCB.getValue()).toUpperCase();
+            String fileName = "";
+            
+            File templateFile = new File("C:\\Biometric\\Reportes\\mexica_template.jasper");
+            
+            if (templateFile.exists()) {
                 
-            String fileName = "C:\\Users\\VakSF\\Desktop\\BiometricAuthentication\\src\\biometricauthentication\\utils\\report\\mexica_template.jasper";
+                fileName = templateFile.getAbsolutePath();
+                
+            } else {
+                
+                File file = new FileChooser().showOpenDialog(null);
+
+                if (file != null) {
+                    
+                    fileName = file.getAbsolutePath();
+                    
+                }
+                
+            }
             
+            String details = ("Reporte - " + this.fortnightCB.getValue() + " quincena de " +
+                            this.monthCB.getValue().getDisplayName(TextStyle.FULL, new Locale("es", "ES")) + " de " + this.yearCB.getValue()).toUpperCase();
+
             ArrayList<SimpleReportRecord> filterDataSource = new ArrayList<>();
-            
+
             filterDataSource.add(new SimpleReportRecord());
-            
+
             for (ReportRecord reportRecord : this.reportList) {
                 filterDataSource.add(new SimpleReportRecord(reportRecord));
             }
-            
+
             JRBeanCollectionDataSource beans = new JRBeanCollectionDataSource(filterDataSource);
-            
+
             Map parameters = new HashMap();
-            
+
             parameters.put("company", this.company.toString());
             parameters.put("details", details);
-            
+
             try {
-                
+
                 JasperPrint print = JasperFillManager.fillReport(fileName, parameters, beans);
-                
+
                 JasperViewer jasperViewer = new JasperViewer(print, false);
-                
+
                 jasperViewer.setVisible(true);
-                
+
                 jasperViewer.setTitle("Reporte");
-                
+
             } catch (JRException ex) {
-                
+
                 ex.printStackTrace();
             }
             

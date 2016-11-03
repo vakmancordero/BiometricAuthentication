@@ -28,3 +28,15 @@ public class RecordContainer {
     }
     
 }
+/**
+ * 
+ * No we
+ * es para mira...
+ * 
+ * si te das cuenta en el tipo de Mapping que se está haciendo
+ * Es que cada empleado contiene un ArrayList<BinnacleRecord> entonces, para poder
+ * colocar los binnacleRecord correspondientes a cada empleado, tienes que utilizar el map
+ * 
+ * 
+ * 
+ */

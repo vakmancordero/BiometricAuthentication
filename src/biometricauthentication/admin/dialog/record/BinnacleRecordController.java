@@ -65,9 +65,13 @@ public class BinnacleRecordController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Employee> observable, Employee oldEmployee, Employee newEmployee) {
                 
-                nameTF.setText(
-                        newEmployee.getId() +  " : " + newEmployee.toString()
-                );
+                if (newEmployee != null) {
+                    
+                    nameTF.setText(
+                            newEmployee.getId() +  " : " + newEmployee.toString()
+                    );
+                    
+                }
                 
             }
             

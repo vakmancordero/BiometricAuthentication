@@ -323,6 +323,8 @@ public class AdminController implements Initializable {
 
                 if (!employeesList.isEmpty()) {
                     
+                    binnacleMI.setDisable(false);
+                    
                     this.disablePanes(false);
                     
                 }
@@ -594,22 +596,28 @@ public class AdminController implements Initializable {
         Optional<ButtonType> option = confirmation.showAndWait();
         
         if (option.get() == ButtonType.OK) {
-        
-            this.biometric.deleteEmployee(employee);
-
-            this.employeesList.remove(employee);
             
-            if (this.employeesList.isEmpty()) {
+            if (employee != null) {
                 
-                this.registerAnchorPane.setDisable(true);
-                this.editAnchorPane.setDisable(true);
+                this.biometric.deleteEmployee(employee);
+
+                this.employeesList.remove(employee);
+
+                if (this.employeesList.isEmpty()) {
+                    
+                    binnacleMI.setDisable(true);
+
+                    this.registerAnchorPane.setDisable(true);
+                    this.editAnchorPane.setDisable(true);
+
+                }
+
+                new Alert(
+                        AlertType.INFORMATION, 
+                        "Empleado eliminado"
+                ).show();
                 
             }
-
-            new Alert(
-                    AlertType.INFORMATION, 
-                    "Empleado eliminado"
-            ).show();
             
         }
         
