@@ -68,7 +68,7 @@ public class ReportRecord {
     public void addDeelay() {
         this.deelays++;
     }
-
+    
     public int getLacks() {
         return lacks;
     }
@@ -79,6 +79,10 @@ public class ReportRecord {
     
     public void addLack() {
         this.lacks++;
+    }
+    
+    public void removeLack() {
+        this.lacks--;
     }
 
     public int getJustifications() {

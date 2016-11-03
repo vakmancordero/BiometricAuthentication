@@ -54,6 +54,7 @@ public class JustifyController implements Initializable {
         this.nameTF.setText(
                 reportRecord.getEmployee().toString()
         );
+        
     }
     
     public BinnacleRecord getBinnacleRecord() {
@@ -63,15 +64,15 @@ public class JustifyController implements Initializable {
     @FXML
     private void justify(ActionEvent event) {
         
-        String text = observationTA.getText();
+        String text = this.observationTA.getText();
         
         if (!text.isEmpty()) {
             
-            binnacleRecord.setObservation(text);
+            this.binnacleRecord.setObservation(text);
             
-            binnacleRecord.setReport("normal");
+            this.binnacleRecord.setReport("normal");
             
-            biometric.saveBinnacleRecord(binnacleRecord);
+            this.biometric.saveBinnacleRecord(this.binnacleRecord);
             
             ButtonType finishButton = new ButtonType("Terminar");
             
@@ -84,7 +85,9 @@ public class JustifyController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             
             if (result.get() == finishButton) {
+                
                 ((Node) event.getSource()).getScene().getWindow().hide();
+                
             }
             
         } else {

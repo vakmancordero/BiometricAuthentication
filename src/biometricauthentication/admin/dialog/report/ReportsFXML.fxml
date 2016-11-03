@@ -30,7 +30,7 @@
             </Menu>
          </menus>
       </MenuBar>
-      <VBox layoutX="40.0" layoutY="55.0" prefHeight="46.0" prefWidth="427.0">
+      <VBox disable="true" layoutX="40.0" layoutY="55.0" prefHeight="46.0" prefWidth="427.0">
          <children>
             <Label text="Compañía:">
                <font>
@@ -40,7 +40,7 @@
             <JFXComboBox fx:id="companyCB" prefHeight="25.0" prefWidth="415.0" promptText="Elegir compañía" />
          </children>
       </VBox>
-      <VBox layoutX="40.0" layoutY="134.0" prefHeight="46.0" prefWidth="226.0">
+      <VBox disable="true" layoutX="40.0" layoutY="134.0" prefHeight="46.0" prefWidth="226.0">
          <children>
             <Label text="Tipo:">
                <font>
@@ -84,7 +84,7 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="75.0" prefWidth="192.0">
                <children>
-                  <JFXButton buttonType="RAISED" onAction="#generate" prefHeight="39.0" prefWidth="130.0" style="-fx-background-color: #324E7F;" text="Generar" textFill="WHITE">
+                  <JFXButton buttonType="RAISED" onAction="#generate" prefHeight="39.0" prefWidth="140.0" style="-fx-background-color: #324E7F;" text="Generar" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

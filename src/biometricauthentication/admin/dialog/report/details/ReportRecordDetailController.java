@@ -107,7 +107,7 @@ public class ReportRecordDetailController implements Initializable {
         
         this.binnacleRecordTV.setItems(binnacleRecordList);
         
-        justifyColumn.setCellFactory(new PropertyValueFactory("details"));
+        this.justifyColumn.setCellFactory(new PropertyValueFactory("details"));
         
         Callback<TableColumn<BinnacleRecord, String>, TableCell<BinnacleRecord, String>> cellFactory = 
                 (TableColumn<BinnacleRecord, String> value) -> {
@@ -120,8 +120,6 @@ public class ReportRecordDetailController implements Initializable {
                             final JFXButton button = new JFXButton("Justificar");
                             
                             button.setTextFill(Paint.valueOf("#ffffff"));
-                            
-                            button.setStyle("-fx-background-color: #107F32");
                             
                             super.updateItem(item, empty);
                             
@@ -145,9 +143,17 @@ public class ReportRecordDetailController implements Initializable {
                                     
                                 });
                                 
-                                button.setDisable(
-                                        binnacleRecord.getReport().equals("normal")
-                                );
+                                if (binnacleRecord.getReport().equals("normal")) {
+                                    
+                                    button.setDisable(true);
+                                    
+                                    button.setStyle("-fx-background-color: #107F32");
+                                    
+                                } else {
+                                    
+                                    button.setStyle("-fx-background-color: #CC1E13");
+                                    
+                                }
                                 
                                 super.setGraphic(button);
                                 

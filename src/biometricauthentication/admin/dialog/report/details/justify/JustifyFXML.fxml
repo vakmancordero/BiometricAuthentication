@@ -18,7 +18,7 @@
                   <Font name="Roboto Regular" size="18.0" />
                </font>
             </Label>
-            <JFXTextArea fx:id="observationTA" focusColor="#ffa400" maxWidth="1229.0" minWidth="337.0" prefHeight="621.0" prefWidth="1229.0" />
+            <JFXTextArea fx:id="observationTA" focusColor="#346b9e" maxWidth="1229.0" minWidth="337.0" prefHeight="621.0" prefWidth="1229.0" />
          </children>
       </VBox>
       <Label alignment="CENTER" layoutX="58.0" layoutY="14.0" text="Justificación de inasistencias" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -26,7 +26,7 @@
             <Font name="Freestyle Script" size="55.0" />
          </font>
       </Label>
-      <JFXButton buttonType="RAISED" layoutX="383.0" layoutY="299.0" onAction="#justify" prefHeight="39.0" prefWidth="120.0" style="-fx-background-color: #FFA400;" text="Finalizar" textFill="WHITE" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="20.0">
+      <JFXButton buttonType="RAISED" layoutX="383.0" layoutY="299.0" onAction="#justify" prefHeight="39.0" prefWidth="120.0" style="-fx-background-color: grey;" text="Finalizar" textFill="WHITE" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="20.0">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -40,7 +40,7 @@
                         <Font name="Roboto Regular" size="18.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="nameTF" focusColor="#ffa400" />
+                  <JFXTextField fx:id="nameTF" focusColor="GREY" />
                </children>
             </VBox>
             <VBox prefHeight="56.0" prefWidth="220.0">
@@ -50,7 +50,7 @@
                         <Font name="Roboto Regular" size="18.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="dateTF" focusColor="#ffa400" />
+                  <JFXTextField fx:id="dateTF" focusColor="GREY" />
                </children>
             </VBox>
          </children>

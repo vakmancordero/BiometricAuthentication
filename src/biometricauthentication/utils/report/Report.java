@@ -104,6 +104,14 @@ public class Report {
                     
                     for (BinnacleRecord binnacleRecord : employeeBinnacleRecords) {
                         
+                        String observation = binnacleRecord.getObservation();
+                        
+                        if (observation != null) {
+                            
+                            reportRecord.addJustification();
+                            
+                        }
+                        
                         String report = binnacleRecord.getReport();
                         
                         if (report.equalsIgnoreCase("normal")) {
