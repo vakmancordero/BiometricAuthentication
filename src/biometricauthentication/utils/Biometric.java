@@ -364,8 +364,10 @@ public class Biometric {
         System.out.println(hashCode);
         
         Query query = session.createQuery(
-                "FROM Employee employee WHERE employee.hash = :hash"
+                "FROM Employee employee WHERE employee.company = :company AND employee.hash = :hash"
         );
+        
+        query.setParameter("company", this.company);
         
         query.setParameter("hash", hashCode);
         
@@ -1057,7 +1059,7 @@ public class Biometric {
                     "FROM Employee employee WHERE employee.company = :company"
             );
             
-            query.setParameter("company", company);
+            query.setParameter("company", this.company);
             
             employees = query.list();
             

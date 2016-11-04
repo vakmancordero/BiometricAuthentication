@@ -75,7 +75,7 @@
             <Font name="Roboto Regular" size="15.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="nameTF" focusColor="#575757" layoutX="46.0" layoutY="73.0" maxWidth="326.0" minWidth="236.0" prefHeight="37.0" prefWidth="326.0" promptText="Nombre del empleado" unFocusColor="#ababab">
+      <JFXTextField fx:id="nameTF" editable="false" focusColor="#575757" layoutX="46.0" layoutY="73.0" maxWidth="326.0" minWidth="236.0" prefHeight="37.0" prefWidth="326.0" promptText="Nombre del empleado" unFocusColor="#ababab">
          <font>
             <Font name="Roboto Bold" size="15.0" />
          </font>

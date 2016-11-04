@@ -30,12 +30,18 @@ public class Report {
     
     private RecordContainer recordContainer;
     
+    private Company company;
+    
     public Report() {
         this.sessionFactory = HibernateUtil.getSessionFactory();
     }
     
     public void setEmployees(List<Employee> employees) {
         this.recordContainer = new RecordContainer(employees);
+    }
+    
+    public void setCompany(Company company) {
+        this.company = company;
     }
     
     public RecordContainer getRecordContainer() {
@@ -87,11 +93,19 @@ public class Report {
                 
                 recordsList.forEach((BinnacleRecord binnacleRecord) -> {
                     
+                    System.out.println(binnacleRecord);
+                    
                     Employee employee = (Employee) session.get(
                             Employee.class, binnacleRecord.getEmployeeId()
                     );
                     
-                    recordContainer.getMap().get(employee).add(binnacleRecord);
+                    if (employee.getCompany().toString().equals(this.company.toString())) {
+                        
+                        System.out.println("Iguales");
+                        
+                        recordContainer.getMap().get(employee).add(binnacleRecord);
+                        
+                    }
                     
                 });
                 
@@ -112,29 +126,38 @@ public class Report {
                             
                         }
                         
-                        String report = binnacleRecord.getReport();
-                        
-                        if (report.equalsIgnoreCase("normal")) {
+                        if (binnacleRecord.getCheckIn() == null || binnacleRecord.getCheckOut() == null) {
                             
-                            reportRecord.addAssistance();
+                            reportRecord.addLack();
                             
                         } else {
                             
-                            if (report.equalsIgnoreCase("retardo")) {
-                                
-                                reportRecord.addDeelay();
-                                
+                            String report = binnacleRecord.getReport();
+
+                            if (report.equalsIgnoreCase("normal")) {
+
+                                reportRecord.addAssistance();
+
                             } else {
-                                
-                                if (report.equalsIgnoreCase("falta")) {
-                                    
-                                    reportRecord.addLack();
-                                    
+
+                                if (report.equalsIgnoreCase("retardo")) {
+
+                                    reportRecord.addDeelay();
+
+                                } else {
+
+                                    if (report.equalsIgnoreCase("falta")) {
+
+                                        reportRecord.addLack();
+
+                                    }
+
                                 }
-                                
+
                             }
                             
                         }
+                        
                         
                     }
                     

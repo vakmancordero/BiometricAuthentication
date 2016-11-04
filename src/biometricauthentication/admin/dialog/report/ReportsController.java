@@ -133,6 +133,8 @@ public class ReportsController implements Initializable {
         
         this.report.setEmployees(this.biometric.getEmployees());
         
+        this.report.setCompany(this.biometric.getCompany());
+        
         List<ReportRecord> reportRecords = this.report.getReportRecords(
                 company, employeeType, year, month, fortnight
         );
