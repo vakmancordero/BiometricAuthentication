@@ -1,8 +1,6 @@
 package biometricauthentication;
 
-import biometricauthentication.dialog.EmployeeDialogController;
 import biometricauthentication.model.Company;
-
 import biometricauthentication.model.Employee;
 
 import biometricauthentication.utils.Biometric;
@@ -10,28 +8,32 @@ import biometricauthentication.utils.reader.Reader;
 import biometricauthentication.utils.authentication.Clock;
 import biometricauthentication.utils.authentication.Information;
 
+import biometricauthentication.dialog.EmployeeDialogController;
+
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
+import java.util.List;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
+import javafx.fxml.FXML;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.Pane;
 
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -39,8 +41,6 @@ import javafx.stage.WindowEvent;
 
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
-import java.util.List;
-import javafx.scene.control.Button;
 
 /**
  *
@@ -200,9 +200,11 @@ public class BiometricController implements Initializable {
             
         } catch (Exception ex) {
             
+            ex.printStackTrace();
+            
             new Alert(
                     AlertType.ERROR,
-                    "Error"
+                    "Error " + ex.toString()
             ).show();
             
         }

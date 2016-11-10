@@ -43,9 +43,10 @@ import biometricauthentication.model.Shift;
 import biometricauthentication.model.Config;
 import biometricauthentication.model.EmployeeType;
 import biometricauthentication.model.User;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.regex.Pattern;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
  *
@@ -73,7 +74,7 @@ public class Biometric {
         
     }
     
-    public void setCompany() {
+    private void setCompany() {
         
         String UUID = this.getUUID();
         
@@ -160,48 +161,83 @@ public class Biometric {
         
         String UUID = null;
         
-        try {
+//        try {
+//            
+//            Process process = Runtime.getRuntime().exec(
+//                    "wmic csproduct get uuid"
+//            );
+//            
+//            BufferedReader inputStream = new BufferedReader(
+//                    new InputStreamReader(
+//                            process.getInputStream()
+//                    )
+//            );
+//            
+//            String patternSt = ".+-.+-.+-.+";
+//            
+//            Pattern pattern = Pattern.compile(patternSt, Pattern.UNICODE_CASE);
+//            
+//            for (Object line : inputStream.lines().toArray()) {
+//                
+//                String lineSt = line.toString();
+//                
+//                while (pattern.matcher(lineSt).find()) {
+//                    
+//                    UUID = lineSt;
+//                    
+//                    break;
+//                    
+//                }
+//                
+//            }
+//            
+//        } catch(IOException ex){
+//            
+//           ex.printStackTrace();
+//           
+//        }
+
+        
+	try {
             
-            Process process = Runtime.getRuntime().exec(
-                    "wmic csproduct get uuid"
-            );
+            InetAddress ip = InetAddress.getLocalHost();
             
-            BufferedReader inputStream = new BufferedReader(
-                    new InputStreamReader(
-                            process.getInputStream()
-                    )
-            );
+            System.out.println("Current IP address : " + ip.getHostAddress());
             
-            String patternSt = ".+-.+-.+-.+";
+            NetworkInterface network = NetworkInterface.getByInetAddress(ip);
             
-            Pattern pattern = Pattern.compile(patternSt, Pattern.UNICODE_CASE);
+            byte[] mac = network.getHardwareAddress();
             
-            for (Object line : inputStream.lines().toArray()) {
+            StringBuilder sb = new StringBuilder();
+            
+            for (int i = 0; i < mac.length; i++) {
                 
-                String lineSt = line.toString();
-                
-                while (pattern.matcher(lineSt).find()) {
-                    
-                    UUID = lineSt;
-                    
-                    break;
-                    
-                }
+                sb.append(
+                        String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : "")
+                );
                 
             }
             
-        } catch(IOException ex){
+            UUID = sb.toString();
             
-           ex.printStackTrace();
-           
-        }
+            System.out.println("Current MAC address : " + UUID);;
+            
+	} catch (UnknownHostException ex) {
+            
+            ex.printStackTrace();
+            
+	} catch (SocketException ex){
+            
+            ex.printStackTrace();
+            
+	}
         
         return UUID;
         
     }
     
     /**
-     * Crea la carpeta raíz de las imágenes
+     * Crea la carpeta raíz de Biometric
      */
     private void createRoot() {
         

@@ -326,9 +326,9 @@ public class ReportsController implements Initializable {
                 JasperPrint print = JasperFillManager.fillReport(fileName, parameters, beans);
 
                 JasperViewer jasperViewer = new JasperViewer(print, false);
-
+                
                 jasperViewer.setVisible(true);
-
+                
                 jasperViewer.setTitle("Reporte");
 
             } catch (JRException ex) {
