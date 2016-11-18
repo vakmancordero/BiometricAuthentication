@@ -6,8 +6,8 @@
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/woloskyg_biometric</property>
-    <property name="hibernate.connection.username">Arturh</property>
-    <property name="hibernate.connection.password">jaqart_56923</property>
+    <property name="hibernate.connection.username">vaksfk</property>
+    <property name="hibernate.connection.password">jaqart_</property>
     <mapping class="biometricauthentication.model.Employee"/>
     <mapping class="biometricauthentication.model.Shift"/>
     <mapping class="biometricauthentication.model.EmployeeType"/>
